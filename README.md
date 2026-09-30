@@ -4,6 +4,18 @@ This repository estimates how far each of the 3,146 human cell-surface proteins 
 the membrane, and uses those heights to describe the surfaces of immune and cancer cells and
 the gaps between two cells in contact.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/monocyte_surface_dark.svg">
+    <img src="docs/img/monocyte_surface_light.svg" width="100%"
+         alt="Twenty surface proteins of a classical monocyte drawn to scale on a membrane, from AlphaFold structures, with grey capsules for disordered regions">
+  </picture>
+  <br>
+  <sub>Twenty proteins sampled by abundance from a classical monocyte's surface (Ravenhill et al.
+  2020), among those with an AlphaFold model, each at its estimated height. Structures are
+  outlined with CellScape; grey capsules are height from disordered regions or domains.</sub>
+</p>
+
 > **Status.** Analysis code for a manuscript in preparation. Result tables and figures will be
 > posted when it is published; until then, the pipeline regenerates them in about two minutes.
 > Figure numbers follow the draft and may change.
@@ -23,13 +35,12 @@ python code/run_notebooks.py out
 The run takes about two minutes on a laptop and writes tables to `out/database/` and
 `out/tables/`, figures to `out/figures/`, and the executed notebooks to `out/notebooks/`.
 
-## The height
+## The method
 
-A protein's height is the length of its extracellular region, the *ectodomain*, with its folded
-and disordered parts laid end to end along the membrane normal. It is therefore an upper bound:
-a tilted or bent ectodomain stands lower.
-
-Each residue is assigned to one source, in this order of preference:
+**1. Heights.** A protein's height is the length of its extracellular region, the
+*ectodomain*, with its folded and disordered parts laid end to end along the membrane normal.
+It is therefore an upper bound: a tilted or bent ectodomain stands lower. Each residue is
+assigned to one source, in this order of preference:
 
 | source | height it contributes |
 |---|---|
@@ -38,40 +49,56 @@ Each residue is assigned to one source, in this order of preference:
 | Pfam domain not covered by a model | the family's height, measured on solved structures as how far one domain advances its chain |
 | any residue left | 0.04 nm |
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/cd45_dark.svg">
+    <img src="docs/img/cd45_light.svg" width="520"
+         alt="CD45 on the membrane: a 15.5 nm folded region from its AlphaFold model, and a 25.6 nm glycosylated disordered region above it, 41.1 nm in all">
+  </picture>
+</p>
+
+The result is one height per gene for every reviewed human protein with an extracellular
+domain or a GPI anchor (`out/database/height_estimates.csv`).
+
+**2. Cell surfaces.** A cell type's surface is the surfaceome proteins detected in its
+proteome, each weighted by its share of total abundance.
+
+**3. Contacts.** Pairs that bind across two cells come from STRING and CellphoneDB. A pair's
+height is the sum of its partners' heights, unless a recorded rule gives another (a measured
+model of the complex, or partners that bind side by side). For an immune cell facing a cancer
+cell, the pairs both can form give the distribution of gaps between the membranes.
+
 [`docs/METHODS.md`](docs/METHODS.md) gives each rule, its parameters and its basis.
 
-## The pipeline
+## The code
 
-`code/run_notebooks.py` runs ten notebooks in order. `--stage database` builds the tables,
-`--stage figures` draws the figures, and the default does both.
+`code/run_notebooks.py` runs the method, then draws the figures from its tables
+(`--stage database` or `--stage figures` runs one stage).
 
-```
-code/database/notebooks/
-   01_height_estimates                       height of every surfaceome protein, one per gene
-   02_cellphonedb_interactions               CellphoneDB pairs and complexes
-   03_interaction_heights                    height of each bound pair
-code/figures/notebooks/
-   F1_domain_sizes                           Figure 1     domain heights by Pfam family
-   F2_height_histograms                      Figure 2     heights across the surfaceome
-   F3_F4_expression_weighted_topography      Figures 3–4  cell surfaces weighted by abundance
-   F4_ravenhill_monocyte_subtypes            Figure 4     monocyte subtypes
-   F5_david_clusters                         Figure 5     functional clusters of bound pairs
-   F6_cell_contacts                          Figure 6     four immune–cancer cell contacts
-   S2_methods_vs_structures                  Figure S2    predicted heights against solved structures
-```
+The method is three notebooks in `code/database/notebooks/`:
 
-- **Height table** (`out/database/height_estimates.csv`): every reviewed human protein with an
-  extracellular domain or a GPI anchor, one row per gene (its largest ectodomain), with its
-  height in nm and the sources used.
-- **Cell surfaces**: the surfaceome proteins detected in a cell type's proteome, each weighted
-  by its share of total abundance.
-- **Contacts**: pairs that bind across two cells, from STRING and CellphoneDB. A pair's height
-  is the sum of its partners' heights, unless a recorded rule gives another (a measured model
-  of the complex, or partners that bind side by side). For an immune cell facing a cancer cell,
-  the pairs both can form give the distribution of gaps between the membranes.
+| notebook | builds |
+|---|---|
+| `01_height_estimates` | the height of every surfaceome protein |
+| `02_cellphonedb_interactions` | CellphoneDB pairs and complexes |
+| `03_interaction_heights` | the height of each bound pair |
+
+The figures are drawn by one notebook each in `code/figures/notebooks/`:
+
+| notebook | figure |
+|---|---|
+| `F1_domain_sizes` | 1: domain heights by Pfam family |
+| `F2_height_histograms` | 2: heights across the surfaceome |
+| `F3_F4_expression_weighted_topography` | 3–4: cell surfaces weighted by abundance |
+| `F4_ravenhill_monocyte_subtypes` | 4: monocyte subtypes |
+| `F5_david_clusters` | 5: functional clusters of bound pairs |
+| `F6_cell_contacts` | 6: four immune–cancer cell contacts |
+| `S2_methods_vs_structures` | S2: predicted heights against solved structures |
 
 [`code/figures/figure_map.csv`](code/figures/figure_map.csv) maps each output file to its
-manuscript panel.
+manuscript panel. The illustrations in this README are drawn from a run's output by
+`code/figures/cellscape/readme_images.py`, in its own environment
+(`code/figures/cellscape/environment.yml`).
 
 ## Using the heights for your own cells
 
@@ -95,15 +122,17 @@ code/
   run_notebooks.py          runs the pipeline
   surfaceome_config.py      locates inputs under data/ and outputs under the run directory
   surfaceomeTopography/     the Python library the notebooks use
-  database/notebooks/       the database stage
+  database/notebooks/       the method
   database/inputs/          rebuild the inputs from their public sources (build_inputs.py runs them)
-  figures/notebooks/        the figure stage
+  figures/notebooks/        the manuscript figures
   figures/validation/       solved structures and complex models, for checking the heights
+  figures/cellscape/        the README illustrations
 data/
   curated/                  decision tables and their citations
   inputs/                   external inputs, by source
   measurements/             domain and structure measurements made for this work
 docs/METHODS.md             the method in full
+docs/img/                   the README illustrations
 ```
 
 [`data/README.md`](data/README.md) describes each input file.
@@ -153,4 +182,5 @@ change grouping defaults in ways that alter results without an error.
 Code: MIT ([`LICENSE`](LICENSE)). Data made for this work (`data/curated/`,
 `data/measurements/`): CC BY 4.0 ([`data/LICENSE`](data/LICENSE)).
 
-Structural illustrations in the manuscript use [CellScape](https://github.com/jordisr/cellscape).
+Protein illustrations use [CellScape](https://github.com/jordisr/cellscape) (Silvestre-Ryan,
+Fletcher and Holmes 2022, [doi:10.1101/2022.06.14.495869](https://doi.org/10.1101/2022.06.14.495869)).

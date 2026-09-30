@@ -1,0 +1,21 @@
+# The environment for the README's CellScape illustrations (readme_images.py), kept apart
+# from the pipeline's: CellScape needs shapely < 1.8, which conda-forge builds for Python 3.9.
+#
+#   conda env create -f code/figures/cellscape/environment.yml
+#   conda activate cellscape
+#
+name: cellscape
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - shapely=1.7
+  - numpy
+  - scipy
+  - matplotlib
+  - pandas
+  - biopython
+  - pip
+  - pip:
+      # CellScape (Silvestre-Ryan et al.), at the commit these images were drawn with
+      - git+https://github.com/jordisr/cellscape@f1ee7b480440825cea2ddffc4db029bf0d240ea2
