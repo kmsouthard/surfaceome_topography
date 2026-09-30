@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: >-
   If you use this code or the heights it produces, please cite it as below. A manuscript
   describing the method is in preparation.
-title: "Surfaceome topography: the heights of human cell-surface proteins"
+title: "The cell surface topography"
 type: software
 authors:
   - family-names: Southard
