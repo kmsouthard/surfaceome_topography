@@ -1,0 +1,33 @@
+Human ID link_prot1,Human ID link_prot2,gene_prot1,gene_prot2,label_2020,corrected,pmids,evidence
+Q495A1,P15151,TIGIT,PVR,cis,trans,19815499;22421438;19011627,TIGIT on NK and T cells binds PVR on target cells and dendritic cells; the crystal structure shows a cell-cell adhesion
+O95727,Q9BY67,CRTAM,CADM1,cis,trans,15811952;16091383,CRTAM on NK and CD8 T cells binds CADM1 (NECL-2) on target cells
+Q9NQS3,P15151,NECTIN3,PVR,cis,trans,12759359;12740392,PVR (CD155) and nectin-3 bind in trans at cell-cell junctions
+Q8N126,Q8NFZ8,CADM3,CADM4,cis,trans,17724124;17558405,CADM3 (Necl-1) on axons binds CADM4 (Necl-4) on Schwann cells along the internode
+Q8NHL6,P13747,LILRB1,HLA-E,trans,removed,9933109;12213342,"no binding to HLA-E shown: HLA-E tetramers identified CD94/NKG2 as its receptors, and on target cells ILT2 recognizes HLA-G1, not HLA-E"
+Q8N423,P13747,LILRB2,HLA-E,trans,removed,12213342,"no binding to HLA-E shown: HLA-E tetramers identified CD94/NKG2 as its receptors, while HLA-F and HLA-G tetramers bound ILT2 and ILT4"
+O75019,P13747,LILRA1,HLA-E,trans,removed,11698424,"LILRA1 (LIR6) binds HLA-B27; no binding to HLA-E, F or G shown"
+O75019,P30511,LILRA1,HLA-F,trans,removed,11698424,"LILRA1 (LIR6) binds HLA-B27; no binding to HLA-E, F or G shown"
+O75019,P17693,LILRA1,HLA-G,trans,removed,11698424,"LILRA1 (LIR6) binds HLA-B27; no binding to HLA-E, F or G shown"
+Q8N149,P13747,LILRA2,HLA-E,trans,removed,27572839;11698424,"LILRA2 senses microbially cleaved immunoglobulin and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+Q8N149,P30511,LILRA2,HLA-F,trans,removed,27572839;11698424,"LILRA2 senses microbially cleaved immunoglobulin and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+Q8N149,P17693,LILRA2,HLA-G,trans,removed,27572839;11698424,"LILRA2 senses microbially cleaved immunoglobulin and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+P59901,P13747,LILRA4,HLA-E,trans,removed,19564354,"LILRA4 (ILT7) binds BST2; no binding to HLA-E, F or G shown"
+P59901,P30511,LILRA4,HLA-F,trans,removed,19564354,"LILRA4 (ILT7) binds BST2; no binding to HLA-E, F or G shown"
+P59901,P17693,LILRA4,HLA-G,trans,removed,19564354,"LILRA4 (ILT7) binds BST2; no binding to HLA-E, F or G shown"
+A6NI73,P13747,LILRA5,HLA-E,trans,removed,16675463,LILRA5 bound none of the MHC class I molecules tested; its structure changes the site LILRB1 and LILRB2 use
+A6NI73,P30511,LILRA5,HLA-F,trans,removed,16675463,LILRA5 bound none of the MHC class I molecules tested; its structure changes the site LILRB1 and LILRB2 use
+A6NI73,P17693,LILRA5,HLA-G,trans,removed,16675463,LILRA5 bound none of the MHC class I molecules tested; its structure changes the site LILRB1 and LILRB2 use
+Q6PI73,P13747,LILRA6,HLA-E,trans,removed,26769854,"LILRA6 binds a cytokeratin 8-associated ligand; no binding to HLA-E, F or G shown"
+Q6PI73,P30511,LILRA6,HLA-F,trans,removed,26769854,"LILRA6 binds a cytokeratin 8-associated ligand; no binding to HLA-E, F or G shown"
+Q6PI73,P17693,LILRA6,HLA-G,trans,removed,26769854,"LILRA6 binds a cytokeratin 8-associated ligand; no binding to HLA-E, F or G shown"
+O75022,P13747,LILRB3,HLA-E,trans,removed,26769854;11698424,"LILRB3 binds a cytokeratin 8-associated ligand and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+O75022,P30511,LILRB3,HLA-F,trans,removed,26769854;11698424,"LILRB3 binds a cytokeratin 8-associated ligand and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+O75022,P17693,LILRB3,HLA-G,trans,removed,26769854;11698424,"LILRB3 binds a cytokeratin 8-associated ligand and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+Q8NHJ6,P13747,LILRB4,HLA-E,trans,removed,30333625;11698424,"LILRB4 binds ApoE and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+Q8NHJ6,P30511,LILRB4,HLA-F,trans,removed,30333625;11698424,"LILRB4 binds ApoE and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+Q8NHJ6,P17693,LILRB4,HLA-G,trans,removed,30333625;11698424,"LILRB4 binds ApoE and did not bind HLA-B27; no binding to HLA-E, F or G shown"
+O75023,P13747,LILRB5,HLA-E,trans,removed,26098415,"LILRB5 binds free HLA-B27 and HLA-B7 heavy chains, and no other HLA class I tetramer stained it"
+O75023,P30511,LILRB5,HLA-F,trans,removed,26098415,"LILRB5 binds free HLA-B27 and HLA-B7 heavy chains, and no other HLA class I tetramer stained it"
+O75023,P17693,LILRB5,HLA-G,trans,removed,26098415,"LILRB5 binds free HLA-B27 and HLA-B7 heavy chains, and no other HLA class I tetramer stained it"
+Q9P232,P23470,CNTN3,PTPRG,pathway,trans,27539848;20133774,PTPRG and CNTN3 form cis complexes on photoreceptors yet interact in trans when expressed on apposing cells; PTPRG binds CNTN3-6 directly
+P33681,Q9NZQ7,CD80,CD274,trans,cis,29871885;31000591;31757674;17629517;18585785,"PD-L1 cells did not bind CD80 cells in cell-to-cell assays and the two bind in cis on one surface (29871885); CD80 binds PD-L1 in cis on antigen-presenting cells (31000591); they heterodimerize in cis but not trans (31757674). The binding itself was established without testing the geometry (17629517, 18585785)"

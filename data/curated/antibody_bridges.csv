@@ -1,0 +1,23 @@
+role,accession,gene,entry_name,antibody,included,pmids,evidence
+antigen,P15391,CD19,CD19_HUMAN,tafasitamab,yes,32511983,tafasitamab is an Fc-enhanced humanised anti-CD19 monoclonal antibody
+antigen,P11836,MS4A1,CD20_HUMAN,rituximab,yes,9704735,rituximab (IDEC-C2B8) is a chimeric anti-CD20 monoclonal antibody
+antigen,P28907,CD38,CD38_HUMAN,daratumumab,yes,26308596,daratumumab is a CD38-targeting human IgG1 kappa monoclonal antibody
+antigen,P07766,CD3E,CD3E_HUMAN,muromonab-CD3 (OKT3),yes,2861567;15136729,the murine monoclonal antibody OKT3 was used against renal allograft rejection; crystal structure of OKT3 bound to CD3 epsilon
+antigen,P31358,CD52,CD52_HUMAN,alemtuzumab,yes,18946064,alemtuzumab is a humanized monoclonal antibody that targets CD52 on lymphocytes and monocytes
+antigen,P16410,CTLA4,CTLA4_HUMAN,ipilimumab,yes,20525992,ipilimumab blocks cytotoxic T-lymphocyte-associated antigen 4
+antigen,P00533,EGFR,EGFR_HUMAN,cetuximab,yes,15269313,cetuximab is a monoclonal antibody that specifically blocks EGFR
+antigen,P16422,EPCAM,EPCAM_HUMAN,catumaxomab,yes,20473913,catumaxomab is a trifunctional anti-EpCAM x anti-CD3 antibody
+antigen,P04626,ERBB2,ERBB2_HUMAN,trastuzumab,yes,11248153,trastuzumab is a recombinant monoclonal antibody against HER2
+antigen,Q9NZQ7,CD274,PD1L1_HUMAN,avelumab,yes,27592805,avelumab is an anti-PD-L1 monoclonal antibody
+antigen,Q15116,PDCD1,PDCD1_HUMAN,nivolumab (BMS-936558),yes,22658127,BMS-936558 is an antibody that specifically blocks PD-1
+antigen,P16234,PDGFRA,PGFRA_HUMAN,olaratumab,yes,27291997,olaratumab is a human anti-PDGFR alpha monoclonal antibody
+antigen,Q9NQ25,SLAMF7,SLAF7_HUMAN,elotuzumab,yes,26035255,elotuzumab is a monoclonal antibody targeting SLAMF7
+antigen,P35968,KDR,VGFR2_HUMAN,ramucirumab,yes,24094768,ramucirumab is a monoclonal antibody VEGFR-2 antagonist
+Fc receptor,P12314,FCGR1A,FCGR1_HUMAN,,yes,19018092,one of the six human Fc gamma receptors; IgG1 and IgG3 bind all of them
+Fc receptor,P12318,FCGR2A,FCG2A_HUMAN,,yes,19018092,one of the six human Fc gamma receptors; IgG1 and IgG3 bind all of them
+Fc receptor,P31994,FCGR2B,FCG2B_HUMAN,,yes,19018092,"one of the six human Fc gamma receptors; IgG1 and IgG3 bind all of them, FcgRIIB with lower affinity"
+Fc receptor,P31995,FCGR2C,FCG2C_HUMAN,,yes,19018092,one of the six human Fc gamma receptors; IgG1 and IgG3 bind all of them
+Fc receptor,P08637,FCGR3A,FCG3A_HUMAN,,yes,19018092,one of the six human Fc gamma receptors; IgG1 and IgG3 bind all of them
+Fc receptor,O75015,FCGR3B,FCG3B_HUMAN,,yes,19018092,one of the six human Fc gamma receptors; IgG1 and IgG3 bind all of them
+Fc receptor,Q92637,FCGR1B,FCGRB_HUMAN,,yes,1430234;1379234,FcgRIb1 is a surface receptor that binds aggregated IgG but not monomeric IgG with high affinity; it lacks the third extracellular domain of FcgRIA
+Fc receptor,P55899,FCGRN,FCGRN_HUMAN,,no,7578107;17703228,"FcRn binds IgG with high affinity at pH 6.0-6.5 but weakly or not at pH 7.0-7.5, so it cannot hold an antibody at the cell surface"

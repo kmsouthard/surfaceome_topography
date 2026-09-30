@@ -1,0 +1,33 @@
+file,notebook,manuscript_panel,status
+figures/F1_domain_sizes.pdf,F1_domain_sizes,Figure 1,provisional
+figures/F1_domain_sizes_most_common.pdf,F1_domain_sizes,Figure 1 (most common families),provisional
+figures/F2_heights_all_proteins.pdf,F2_height_histograms,Figure 2,provisional
+figures/F2_heights_by_domain_count.pdf,F2_height_histograms,Figure 2 / Supplementary,provisional
+figures/F2_heights_by_method_and_disorder.pdf,F2_height_histograms,Figure 2 / Supplementary,provisional
+figures/F2_heights_no_domains_mapped.pdf,F2_height_histograms,Supplementary,provisional
+figures/F2_heights_multipass.pdf,F2_height_histograms,Supplementary,provisional
+figures/F3_tcell_vs_bcell.pdf,F3_F4_expression_weighted_topography,Figure 3,provisional
+figures/F3_tcell_vs_nkcell.pdf,F3_F4_expression_weighted_topography,Figure 3,provisional
+figures/F3_tcell_vs_monocyte.pdf,F3_F4_expression_weighted_topography,Figure 3,provisional
+figures/F3_tcell_vs_cd8tcell.pdf,F3_F4_expression_weighted_topography,Figure 3,provisional
+figures/F3_tcell_vs_platelet.pdf,F3_F4_expression_weighted_topography,Figure 3,provisional
+figures/F4_monocyte_subtypes.pdf,F4_ravenhill_monocyte_subtypes,Figure 4,provisional
+figures/F4_monocyte_subtypes_overlap.pdf,F4_ravenhill_monocyte_subtypes,Figure 4,provisional
+figures/F4_expression_ratio_vs_size_*.pdf,F4_ravenhill_monocyte_subtypes,Supplementary Figure 4,provisional
+figures/F4_expression_ratio_vs_pval_*.pdf,F4_ravenhill_monocyte_subtypes,Supplementary Figure 4,provisional
+figures/F5_david_clusters.pdf,F5_david_clusters,Figure 5,provisional
+figures/F5_david_cluster_counts.pdf,F5_david_clusters,Figure 5,provisional
+figures/F6_monocyte_her2_bullseye.pdf,F6_cell_contacts,Figure 6 (monocyte vs HER2+ cancer),provisional
+figures/F6_monocyte_aHER2_bullseye.pdf,F6_cell_contacts,Figure 6 (monocyte vs HER2+ cancer with anti-HER2),provisional
+figures/F6_nk_aHER2_bullseye.pdf,F6_cell_contacts,Figure 6 (NK vs HER2+ cancer with anti-HER2),provisional
+figures/F6_nk_tripleneg_bullseye.pdf,F6_cell_contacts,Figure 6 (NK vs triple-negative cancer),provisional
+figures/F6_*_contact_gaps.pdf,F6_cell_contacts,Figure 6 gap panels,provisional
+figures/F6_*_interactions_vs_expression.svg,F6_cell_contacts,Figure 6 / Supplementary,provisional
+figures/F6_*_interactions_vs_proteins.pdf,F6_cell_contacts,Figure 6 / Supplementary,provisional
+figures/S2_methods_vs_structures.pdf,S2_methods_vs_structures,Supplementary Figure 2,provisional
+figures/01_heights_*.pdf,01_height_estimates,database-stage QC histograms,not a manuscript panel
+figures/03_heights_*.pdf,03_interaction_heights,database-stage QC histograms,not a manuscript panel
+figures/03_trans_vs_proteins_heatmap.html,03_interaction_heights,interactive heatmap,not a manuscript panel
+database/height_estimates_domain_counting.csv,01_height_estimates,Supplementary Table 5,provisional
+database/height_estimates.csv,01_height_estimates,Supplementary Table 6,provisional
+database/interaction_heights.csv,03_interaction_heights,Supplementary Table (interactions),provisional

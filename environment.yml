@@ -1,0 +1,40 @@
+# The software environment the pipeline is run and checked in.
+#
+# Pinned to Python 3.9, pandas 1.5 and seaborn 0.11 on purpose.  Several notebooks use
+# APIs pandas 2.0 removed (DataFrame.append, error_bad_lines, delim_whitespace), and
+# pandas 2 and 3 change group-by and reduction defaults (numeric_only, the string dtype)
+# in ways that alter results without raising.
+#
+#   conda env create -f environment.yml
+#   conda activate surfaceome
+#
+name: surfaceome
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.9
+  - numpy=1.23
+  - pandas=1.5.3
+  - matplotlib-base=3.6
+  - seaborn=0.11.2
+  - scipy=1.9
+  - statsmodels=0.13
+  - biopython=1.79
+  - matplotlib-venn
+  - plotly=6.3.0
+  - requests
+  - openpyxl
+  - jupyterlab
+  - nbconvert
+  - ipykernel
+  # Needed only to rebuild the inputs (code/database/build_inputs.py), not to run the analysis:
+  #   HMMER  - the Pfam domain search
+  #   PyMOL  - structure measurement; install separately (open-source PyMOL, conda-forge pymol-open-source)
+  - hmmer
+  - pip
+  - pip:
+      # plotly's static image export (fig.write_image); two notebooks need it. Kaleido 1.x
+      # drives an installed Chrome or Chromium: if there is none, run `plotly_get_chrome`.
+      - kaleido==1.3.0
+      - -e .

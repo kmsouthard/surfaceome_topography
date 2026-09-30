@@ -1,0 +1,5 @@
+panel,immune_sample,cancer_sample,antibody_target,cancer_include,label
+monocyte_her2,"adult, monocyte",HER2 Positive Breast Carcinoma,,ERBB2,monocyte – HER2+ contact
+monocyte_aHER2,"adult, monocyte",HER2 Positive Breast Carcinoma,ERBB2,ERBB2,"monocyte – HER2+, anti-HER2 contact"
+nk_aHER2,"adult, natural killer cell",HER2 Positive Breast Carcinoma,ERBB2,ERBB2,"NK – HER2+, anti-HER2 contact"
+nk_tripleneg,"adult, natural killer cell",triple-negative breast cancer,,ERBB2,NK – triple-negative contact

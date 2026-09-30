@@ -1,0 +1,57 @@
+{
+ "reduction": "rows whose first field is a covered surfaceome accession, header preserved, file order preserved, no other filtering",
+ "accession_universe": {
+  "count": 3322,
+  "sha256": "71dcd90d93595b1b6b82e7004cbef09c21d3b8b999da1ff585b644dcd94a373f",
+  "sources": [
+   "snapshot/database/UP000005640_ecds_total.csv",
+   "baseline_2022/database/UP000005640_ecds_total.csv"
+  ]
+ },
+ "files": {
+  "N_result.txt": {
+   "sha256": "ea310f7bfff58c4978384ec73e1dfb5fb4be18d946290085041deb0cffb65230",
+   "bytes": 1896153,
+   "source_sha256": "976041c3ef7eeb83ffaeffa72df393d9ff356cd29f10a388377ba453b63de86c",
+   "source_from": "archive",
+   "rows_total": 984263,
+   "rows_kept": 63860
+  },
+  "O_result.txt": {
+   "sha256": "4aca71f8444c64023273398dd9879bfe34c534f37b008ccc86bfbe96fb77c7b1",
+   "bytes": 7255756,
+   "source_sha256": "d62095dbe1466928e801104f2320b04de655a5d3f601a2163d87b63e734e6d7d",
+   "source_from": "archive",
+   "rows_total": 4696763,
+   "rows_kept": 278702
+  },
+  "C_result.txt": {
+   "sha256": "47aa071ba53b39f77e4850fb29d0807a6636a0d2c1f1ce1bffd61f4b0af6ed1c",
+   "bytes": 891515,
+   "source_sha256": "40ec117687385a959f53e2d41740588cf1d886c4d673631539814080d5195e5a",
+   "source_from": "archive",
+   "rows_total": 426220,
+   "rows_kept": 29864
+  }
+ },
+ "sources": {
+  "sources/glycomine/N_result.txt.gz": {
+   "sha256": "c8ba5e29aff75b2839f1f7d0197baf7a83277431e88dc081c00d96cdc7a0523c",
+   "bytes": 4362606,
+   "content_sha256": "976041c3ef7eeb83ffaeffa72df393d9ff356cd29f10a388377ba453b63de86c",
+   "of": "data/databases/glycosylation/glycomine/N_result.txt"
+  },
+  "sources/glycomine/O_result.txt.gz": {
+   "sha256": "7d8a53b3727206f74d354a05f8b722659b7c0274b1b67b64fe133cfbffe2adc0",
+   "bytes": 28091550,
+   "content_sha256": "d62095dbe1466928e801104f2320b04de655a5d3f601a2163d87b63e734e6d7d",
+   "of": "data/databases/glycosylation/glycomine/O_result.txt"
+  },
+  "sources/glycomine/C_result.txt.gz": {
+   "sha256": "89addf8e22d4624a0745347bb4c43d796d63609155d3b980e4a14df44387e6e3",
+   "bytes": 1826449,
+   "content_sha256": "40ec117687385a959f53e2d41740588cf1d886c4d673631539814080d5195e5a",
+   "of": "data/databases/glycosylation/glycomine/C_result.txt"
+  }
+ }
+}

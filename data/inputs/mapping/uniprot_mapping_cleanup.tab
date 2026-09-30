@@ -1,0 +1,3 @@
+ID link	Entry	Entry name	Status	Protein names	Gene names	Organism	Length	Cross-reference (PDB)	3D	Beta strand	Helix	Turn	Ensembl transcript
+P0DTE4	P0DTE4	UD2A1_HUMAN	reviewed	UDP-glucuronosyltransferase 2A1 (UDPGT 2A1) (UGT2A1) (EC 2.4.1.17)	UGT2A1	Homo sapiens (Human)	527						ENST00000286604;ENST00000503640;
+P31358	P31358	CD52_HUMAN	reviewed	CAMPATH-1 antigen (CDw52) (Cambridge pathology 1 antigen) (Epididymal secretory protein E5) (Human epididymis-specific protein 5) (He5) (CD antigen CD52)	CD52 CDW52 HE5	Homo sapiens (Human)	61	6OBD;	X-ray crystallography (1)				ENST00000374213;

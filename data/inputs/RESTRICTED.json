@@ -1,0 +1,59 @@
+{
+ "about": "Inputs whose licences do not allow redistribution. The public release does not commit them; code/database/fetch_restricted_inputs.py downloads each source and rebuilds these files, and they must match the hashes here byte for byte.",
+ "sources": {
+  "glycomine": {
+   "files": {
+    "inputs/glycosylation/glycomine/N_result.txt": {
+     "sha256": "ea310f7bfff58c4978384ec73e1dfb5fb4be18d946290085041deb0cffb65230",
+     "bytes": 1896153
+    },
+    "inputs/glycosylation/glycomine/O_result.txt": {
+     "sha256": "4aca71f8444c64023273398dd9879bfe34c534f37b008ccc86bfbe96fb77c7b1",
+     "bytes": 7255756
+    },
+    "inputs/glycosylation/glycomine/C_result.txt": {
+     "sha256": "47aa071ba53b39f77e4850fb29d0807a6636a0d2c1f1ce1bffd61f4b0af6ed1c",
+     "bytes": 891515
+    }
+   },
+   "url": "https://web.archive.org/web/20220418014414id_/https://glycomine.erc.monash.edu/Lab/GlycoMine/proteome_research.zip",
+   "download_sha256": "845266c520e2b6ac06e97c87a70c48351e2fe5de59e2bccf9ba09f73217311df",
+   "why": "no licence is stated by the GlycoMine server or paper (Li et al. 2015, Bioinformatics 31:1411); the server is offline and the Internet Archive holds the release",
+   "build": "rows whose first field is in inputs/glycosylation/glycomine/accessions.txt, header kept, file order kept"
+  },
+  "surfy": {
+   "files": {
+    "inputs/annotation/surfaceome_classification.csv": {
+     "sha256": "2e634276d7735871b8e6edc6ad8c9984249229034d272e15815ba9bfa406cf29",
+     "bytes": 249081
+    }
+   },
+   "url": "https://wollscheidlab.org/SURFY/table_S3_surfaceome.xlsx",
+   "why": "SURFY (Bausch-Fluck et al. 2018, PNAS 115:E10988) is published CC BY-NC-ND 4.0, which does not allow sharing a derived table",
+   "build": "code/database/inputs/build_surfaceome_classification.py over inputs/annotation/surfaceome_accessions.csv"
+  },
+  "cellphonedb": {
+   "files": {
+    "inputs/cellphonedb/interaction_curated.csv": {
+     "sha256": "bbf6095184e1194d2bc2b9808179c62ea644941672e7999ededcd42234da5c7f",
+     "bytes": 240110
+    },
+    "inputs/cellphonedb/protein_curated.csv": {
+     "sha256": "0977f2e59f624b9e7b5aa3aecfef1d0aa93f0058ba48f26736b92feed8dd760c",
+     "bytes": 107281
+    },
+    "inputs/cellphonedb/complex_curated.csv": {
+     "sha256": "df4bab62b383eeb8caf4f252db72e4891ba07d1b0c104852f54f0b0a5dd0c084",
+     "bytes": 41477
+    },
+    "inputs/cellphonedb/hla_curated.csv": {
+     "sha256": "102f4ee27c1e387f78455dedbdab4c3c2b226dadb75607a6ff606f79680b53b2",
+     "bytes": 38
+    }
+   },
+   "url": "https://github.com/ventolab/cellphonedb-data/raw/v5.0.0/cellphonedb.zip",
+   "why": "the cellphonedb-data repository states no licence",
+   "build": "code/database/inputs/build_cellphonedb_tables.py --version v5.0.0"
+  }
+ }
+}

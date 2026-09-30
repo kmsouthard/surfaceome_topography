@@ -1,0 +1,54 @@
+Human ID link_prot1,Human ID link_prot2,Human gene name_prot1,Human gene name_prot2,"Interaction Type (cis, trans, or secreted)",_merge,included,pmids,evidence
+Q8NHL6,P04439,LILRB1,HLA-A,trans,curated,yes,9842885;12897781;10591185;12853576,LIR-1 and LIR-2 recognize a broad spectrum of HLA-A -B and -C alleles; crystal structure of LIR-1 with HLA-A2; LIR-1 binds many class I alleles through the alpha3 domain; SPR with classical class I
+Q8NHL6,P01889,LILRB1,HLA-B,trans,curated,yes,9842885;11698424;10591185;12853576,LIR-1 and LIR-2 recognize a broad spectrum of HLA-A -B and -C alleles; classical HLA-B27 binds ILT2; LIR-1 binds many class I alleles through the alpha3 domain; SPR with classical class I
+Q8NHL6,P10321,LILRB1,HLA-C,trans,curated,yes,9842885;10591185;9382880,LIR-1 and LIR-2 recognize a broad spectrum of HLA-A -B and -C alleles; LIR-1 binds many class I alleles through the alpha3 domain; ILT2 binds MHC class I
+Q8N423,P04439,LILRB2,HLA-A,trans,curated,yes,9842885;9531263;12853576,LIR-1 and LIR-2 recognize a broad spectrum of HLA-A -B and -C alleles; ILT4 binds classical class I; SPR with classical class I
+Q8N423,P01889,LILRB2,HLA-B,trans,curated,yes,9842885;9531263;11698424;12853576,LIR-1 and LIR-2 recognize a broad spectrum of HLA-A -B and -C alleles; ILT4 binds classical class I; classical and free heavy chain HLA-B27 bind ILT4; SPR with classical class I
+Q8N423,P10321,LILRB2,HLA-C,trans,curated,yes,9842885;9531263,LIR-1 and LIR-2 recognize a broad spectrum of HLA-A -B and -C alleles; ILT4 binds classical class I
+P12830,P12830,CDH1,CDH1,trans,curated,yes,3498123;19553217;21300292,"E-cadherin transfectants aggregate; homodimer affinity measured; trans strand-swap interface in crystals, whose mutation ablates adhesion"
+P19022,P19022,CDH2,CDH2,trans,curated,yes,2831236;2762814;21300292,N-cadherin transfectants aggregate and sort from E- and P-cadherin cells; trans adhesive dimer in crystals
+P22223,P22223,CDH3,CDH3,trans,curated,yes,3416359;2793940;24559158,P-cadherin transfectants adhere preferentially to cells with the same cadherin; human P-cadherin ectodomain self-associates
+P55283,P55283,CDH4,CDH4,trans,curated,yes,8270638;1712604,R-cadherin transfectants adhere and segregate from E- and P-cadherin cells; partial co-aggregation with N-cadherin
+P55285,P55285,CDH6,CDH6,trans,curated,yes,10207020;10861224;29742438,cadherin-6 transfectants aggregate; tightest type II homodimer (3.1 uM); also binds cadherin-9 and -10
+Q9ULB5,Q9ULB5,CDH7,CDH7,trans,curated,yes,10861224;29742438,cadherin-7 transfectants aggregate; strand-swapped homodimer (32 uM); co-aggregates fully with cadherin-18
+P55286,P55286,CDH8,CDH8,trans,curated,yes,10861224;29742438,cadherin-8 transfectants aggregate; homodimer 15 uM; binds cadherin-11 more strongly than itself
+Q9Y6N8,Q9Y6N8,CDH10,CDH10,trans,curated,yes,10861224;29742438,"cadherin-10 transfectants aggregate; strand-swapped homodimer, weakest of the family (42 uM); binds cadherin-6 and -9 more strongly"
+P55287,P55287,CDH11,CDH11,trans,curated,yes,7750650;10861224;29742438,cadherin-11 transfectants aggregate with homophilic specificity; homodimer 34 uM; binds cadherin-8 more strongly
+P55289,P55289,CDH12,CDH12,trans,curated,yes,29742438,cadherin-12 ectodomain homodimer 8.3 uM by AUC with homophilic SPR binding (full text); no cell-based assay found
+Q13634,Q13634,CDH18,CDH18,trans,curated,yes,10207020;10861224;29742438,as cadherin-14: transfectants aggregate; homodimer 16.8 uM; co-aggregates fully with cadherin-7
+Q9H159,Q9H159,CDH19,CDH19,trans,curated,no,29742438,no self-binding measured: excluded from the type II cadherin binding study because no stable protein could be produced
+P55290,P55290,CDH13,CDH13,trans,curated,yes,1400585;20190755,T-cadherin transfectants show homophilic aggregation; adhesive dimer through a non-swapped interface whose mutation ablates adhesion
+P55291,P55291,CDH15,CDH15,trans,curated,yes,9545347,human cadherin-15 transfectants adhere in a homophilic and specific manner
+O75309,O75309,CDH16,CDH16,trans,curated,yes,15023525,"Ksp-cadherin transfectants show homotypic calcium-dependent adhesion; single study, mouse protein"
+Q12864,Q12864,CDH17,CDH17,trans,curated,yes,9060475;34364873,LI-cadherin mediates homophilic cell adhesion; EC1-4 homodimer structure necessary for cell adhesion
+Q9H251,Q9H251,CDH23,CDH23,trans,curated,yes,31729176,trans homodimer structure of cadherin-23 at epithelial junctions; its trans partner in hair-cell tip links is PCDH15
+Q86UP0,Q86UP0,CDH24,CDH24,trans,curated,yes,12734196,cadherin-24 transfectants mediate strong cell-cell adhesion in aggregation assays; single study
+Q96QU1,Q96QU1,PCDH15,PCDH15,trans,curated,no,30057206;23135401,PCDH15 self-association is cis; across the tip link it binds CDH23 heterophilically
+Q02487,Q02487,DSC2,DSC2,trans,curated,yes,21098030;24610950,homophilic trans binding by cross-linking in keratinocytes and single-molecule force spectroscopy; contested: desmocollins bind desmogleins in preference (27298358)
+Q14126,Q14126,DSG2,DSG2,trans,curated,yes,21098030;29062102,homophilic trans binding by cross-linking and force spectroscopy; contested: 27298358 and 24610950 find desmoglein-2 does not bind itself
+P13591,P13591,NCAM1,NCAM1,trans,curated,yes,14527396;1380002,NCAM transfectants aggregate through an Ig3 site; Ig1-2-3 structure gives a trans zipper
+P32004,P32004,L1CAM,L1CAM,trans,curated,yes,18701456;9721721,L1 ectodomain binds itself by SPR and L1 cells adhere to L1; Ig2 deletion abolishes self-aggregation
+Q92823,Q92823,NRCAM,NRCAM,trans,curated,yes,1527169,Nr-CAM transfectants and Nr-CAM beads aggregate homophilically
+O94856,O94856,NFASC,NFASC,trans,curated,yes,21047790;15579173,neurofascin Ig1-4 dimer in trans adhesion mode validated by mutagenesis; homophilic trans binding drives neurite induction
+P20916,P20916,MAG,MAG,trans,curated,no,27922006;8570640,MAG homodimerizes in cis; across the contact it binds gangliosides
+Q7Z5N4,Q7Z5N4,SDK1,SDK1,trans,curated,yes,27644106;12230981,sidekick-1 homodimer structure whose interface drives cell aggregation in trans; sidekicks mediate homophilic adhesion
+Q9UPX0,Q9UPX0,IGSF9B,IGSF9B,trans,curated,yes,23751499,IgSF9b ectodomain binds only IgSF9b-expressing cells and accumulates at their contacts; single study
+Q8NFP4,Q8NFP4,MDGA1,MDGA1,trans,curated,no,23248271;28817804,no homophilic binding shown; MDGA1 binds neuroligin-2 in cis
+Q9NQS3,Q9NQS3,NECTIN3,NECTIN3,trans,curated,yes,10744716;22902367,"nectin-3 shows trans homophilic adhesion, but its homodimer is very weak (hundreds of uM); nectin-1, nectin-2 and PVR are its main partners"
+Q96J84,Q96J84,KIRREL1,KIRREL1,trans,curated,yes,21306299;12660326,Neph1 alone induces cell adhesion and homodimerizes; contested: 12646566 found no homophilic interaction; nephrin is its main partner
+Q6UWL6,Q6UWL6,KIRREL2,KIRREL2,trans,curated,yes,21306299;34731636,Neph3 alone induces cell adhesion; Kirrel2 trans homodimer structure and cell aggregation abolished by interface mutants
+Q8IZU9,Q8IZU9,KIRREL3,KIRREL3,trans,curated,yes,34731636;32503885,Kirrel3 trans homodimer structure and cell aggregation; synapse formation through homophilic transcellular binding
+O60500,O60500,NPHS1,NPHS1,trans,curated,yes,14633607;12660326,nephrin ectodomain binds itself by SPR and nephrin cells aggregate; contested: alone it did not induce adhesion in fibroblasts (21306299)
+Q9P232,Q9P232,CNTN3,CNTN3,trans,curated,no,27539848;23055510,no homophilic binding shown; CNTN3 binds PTPRG across cells
+Q8IWV2,Q8IWV2,CNTN4,CNTN4,trans,curated,no,18272596;27539848,no homophilic binding shown; CNTN4 binds APP and PTPRG
+O94779,O94779,CNTN5,CNTN5,trans,curated,yes,28781169,"Cntn5 mediates weak homophilic aggregation, enhanced by Caspr4"
+Q13449,Q13449,LSAMP,LSAMP,trans,curated,yes,7743928;30956130,purified LAMP aggregates beads homophilically; IgLONs are Ig1 homodimers that bind across cells; contested: 15265982 finds LAMP heterophilic only
+Q7Z3B1,Q7Z3B1,NEGR1,NEGR1,trans,curated,yes,30956130;32710982,NEGR1 homodimerizes in trans in cell aggregation; homodimer structure through Ig1
+Q9P121,Q9P121,NTM,NTM,trans,curated,yes,30956130;32710982;9801370,neurotrimin homodimerizes in trans in cell aggregation; homodimer structure; homophilic adhesion of transfected cells
+Q14982,Q14982,OPCML,OPCML,trans,curated,no,30956130;15265982,"homodimer only in an ELISA screen, with no cell or bead aggregation; 15265982 finds OBCAM heterophilic only"
+O95832,O95832,CLDN1,CLDN1,trans,curated,yes,9786950;21533891,"claudin-1 concentrates at contacts in fibroblasts through a homophilic interaction; classic claudins 1, 3 and 5 show homophilic trans interaction"
+O15551,O15551,CLDN3,CLDN3,trans,curated,yes,21533891,claudin-3 homophilic trans interaction in reconstituted strands
+O00501,O00501,CLDN5,CLDN5,trans,curated,yes,17761522;21533891,claudin-5 ECL2 trans homodimer drives strand formation; the strongest classic claudin trans pair
+Q9NT68,Q9NT68,TENM2,TENM2,trans,curated,yes,12361962;41991904,teneurin-2 promotes homophilic cell adhesion; Ten2-Ten2 dimer structure whose mutation disrupts aggregation; contested: 24273166 finds homophilic binding does not support stable adhesion
+P16070,P16070,CD44,CD44,trans,curated,yes,30361447;31969394,homophilic CD44 interactions aggregate tumour cells; extracellular domains I and II mediate trans-homophilic dimerization
+P25063,Q96LC7,CD24,SIGLEC10,trans,curated,yes,31367043,CD24 on tumour cells signals through Siglec-10 on macrophages

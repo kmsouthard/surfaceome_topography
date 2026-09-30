@@ -1,0 +1,17 @@
+pair,species,uniprot_1,uniprot_2,pdb,chains_1,chains_2,method,resolution,released,pmid,title
+CD47–SIRPA,human,Q08722,P78324,2JJS,"C,D","A,B",X-RAY DIFFRACTION,1.85,2008-08-05,18657508.0,Structure of human CD47 in complex with human signal regulatory protein (SIRP) alpha
+CD47–SIRPA,human,Q08722,P78324,4CMM,B,A,X-RAY DIFFRACTION,1.92,2014-02-26,24550402.0,Structure of human CD47 in complex with human Signal Regulatory Protein (SIRP) alpha v1
+CD47–SIRPA,human,Q08722,P78324,2JJT,"C,D","A,B",X-RAY DIFFRACTION,2.3,2008-08-05,18657508.0,Structure of human CD47 in complex with human signal regulatory protein (SIRP) alpha
+CD47–SIRPA,human,Q08722,P78324,7YGG,"C,D","A,B",X-RAY DIFFRACTION,2.76,2022-10-19,36080360.0,Crystal structure of human CD47 in complex with engineered SIRPa.D1(N80A)
+CLEC2D–KLRB1,human,Q9UHP7,Q12918,5MGT,"A,B","C,D,E,F",X-RAY DIFFRACTION,1.9,2018-06-06,36028489.0,Complex of human NKR-P1 and LLT1 in deglycosylated forms
+F11R–F11R,human,Q9Y624,Q9Y624,3TSZ,B,B,X-RAY DIFFRACTION,2.502,2011-10-12,22030391.0,crystal structure of PDZ3-SH3-GUK core module from human ZO-1 in complex with 12mer peptide from human JAM-A cytoplasmic tail
+F11R–F11R,human,Q9Y624,Q9Y624,1NBQ,"A,B","A,B",X-RAY DIFFRACTION,2.9,2003-04-01,12697893.0,Crystal Structure of Human Junctional Adhesion Molecule Type 1
+F11R–F11R,human,Q9Y624,Q9Y624,4ODB,"D,E,F","D,E,F",X-RAY DIFFRACTION,3.2,2015-04-01,,Crystal structure of the T1L reovirus attachment protein sigma1 in complex with Junctional Adhesion Molecule-A
+F11R–F11R,human,Q9Y624,Q9Y624,3EOY,"G,H,I,J,K,L","G,H,I,J,K,L",X-RAY DIFFRACTION,3.4,2008-11-04,19079583.0,Structure of Reovirus sigma1 in Complex with Its Receptor Junctional Adhesion Molecule-A
+HLA-E–KLRD1,human,P13747,Q13241,3CDG,"A,C","E,J",X-RAY DIFFRACTION,3.4,2008-04-22,18332182.0,Human CD94/NKG2A in complex with HLA-E
+HLA-E–KLRD1,human,P13747,Q13241,3CII,"A,D","G,I",X-RAY DIFFRACTION,4.41,2008-05-13,18448674.0,Structure of NKG2A/CD94 bound to HLA-E
+ICAM1–ITGAL,human,P05362,P20701,1MQ8,"A,C","B,D",X-RAY DIFFRACTION,3.3,2003-01-14,12526797.0,Crystal structure of alphaL I domain in complex with ICAM-1
+ICAM1–ITGAL,human,P05362,P20701,3TCX,"A,C,E,G,I,K,M,O,Q,S,U,W,Y,a","B,D,F,H,J,L,N,P,R,T,V,X,Z,b",X-RAY DIFFRACTION,3.6,2011-08-31,,Structure of Engineered Single Domain ICAM-1 D1 with High-Affinity aL Integrin I Domain of Native C-Terminal Helix Conformation
+PDCD1–CD274,human,Q15116,Q9NZQ7,4ZQK,B,A,X-RAY DIFFRACTION,2.45,2015-11-04,26602187.0,Structure of the complex of human programmed death-1 (PD-1) and its ligand PD-L1.
+PDCD1–CD274,human,Q15116,Q9NZQ7,5IUS,"A,B","C,D",X-RAY DIFFRACTION,2.889,2016-09-28,27618663.0,Crystal structure of human PD-L1 in complex with high affinity PD-1 mutant
+PLXNB1–SEMA4D,human,O43157,Q92854,3OL2,B,A,X-RAY DIFFRACTION,2.99,2010-10-13,20877282.0,Receptor-ligand structure of Human Semaphorin 4D with Plexin B1.

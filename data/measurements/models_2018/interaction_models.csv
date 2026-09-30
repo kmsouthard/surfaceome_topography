@@ -1,0 +1,27 @@
+model,mouse_partners,human_partners,human_genes,template_pdb,stored_2018_A,source
+HA10_KLRA3,Klra3;H2-Q10,,,5J6G,129.6,ligand receptor models/Ligand_Receptor_PDBs/HA10_KLRA3.pdb
+HA10_KLRD1,Klrd1;H2-Q10,Q13241;P04439,KLRD1;HLA-A,3CDG,108.78,ligand receptor models/Ligand_Receptor_PDBs/HA10_KLRD1.pdb
+Integrin_ICAM1,Itgb2;Icam1,P05107;P05362,ITGB2;ICAM1,3FCS;3FCU;2P26;2P28;3TCX;1MQ8,345.58,ligand receptor models/Ligand_Receptor_PDBs/Integrin_ICAM1.pdb
+JAM1_IGSF5,F11r;Igsf5,Q9Y624;Q9NSI5,F11R;IGSF5,1NBQ,,ligand receptor models/Ligand_Receptor_PDBs/JAM1_IGSF5.pdb
+JAM1_JAM1,F11r;F11r,Q9Y624;Q9Y624,F11R;F11R,1NBQ,,ligand receptor models/Ligand_Receptor_PDBs/JAM1_JAM1.pdb
+JAM1_JAM2,F11r;Jam2,Q9Y624;P57087,F11R;JAM2,1NBQ,143.17,ligand receptor models/Ligand_Receptor_PDBs/JAM1_JAM2.pdb
+JAM1_JAM3,F11r;Jam3,Q9Y624;Q9BX67,F11R;JAM3,1NBQ,,ligand receptor models/Ligand_Receptor_PDBs/JAM1_JAM3.pdb
+SEM4D_PLXB1,Sema4d;Plxnb1,Q92854;O43157,SEMA4D;PLXNB1,3AL8,,ligand receptor models/Ligand_Receptor_PDBs/SEM4D_PLXB1.pdb
+SEM4D_PLXB2,Sema4d;Plxnb2,Q92854;O15031,SEMA4D;PLXNB2,3AL8,,ligand receptor models/Ligand_Receptor_PDBs/SEM4D_PLXB2.pdb
+SEM4D_PLXB3,Sema4d;Plxnb3,Q92854;Q9ULL4,SEMA4D;PLXNB3,3AL8,,ligand receptor models/Ligand_Receptor_PDBs/SEM4D_PLXB3.pdb
+SIRPa_CD47,Sirpa;Cd47,P78324;Q08722,SIRPA;CD47,2JJS,135.5,ligand receptor models/Ligand_Receptor_PDBs/SIRPa_CD47.pdb
+cd274_Pdcd1,Cd274;Pdcd1,Q9NZQ7;Q15116,CD274;PDCD1,4ZQK;5IUS,103.52,ligand receptor models/Ligand_Receptor_PDBs/cd274_Pdcd1.pdb
+klrb1b_clec2,Klrb1b;Clec2d,Q12918;Q9UHP7,KLRB1;CLEC2D,5MGT,70.84,ligand receptor models/Ligand_Receptor_PDBs/klrb1b_clec2.pdb
+integrin_extended_open,Itgal;Itgb2,,,3FCS;3FCU;2P26;2P28,,"ligand receptor models/integrin_alpha_beta_extended_open.pse, objects obj01, obj03, obj04, obj05"
+integrin_extended_open_collagen,Itgb1;Col13a1,P05556;Q5TAT6,ITGB1;COL13A1,3FCS;3FCU;2P26;2P28;1DZI,219.18,"ligand receptor models/integrin_alpha_beta_extended_open_collegen.pse, objects obj01, obj03, obj04, obj05, 1DZI"
+integrin_extended_open_icam2,Itgb2;Icam2,P05107;P13598,ITGB2;ICAM2,3FCS;3FCU;2P26;2P28;3TCX;1ZXQ,253.92,"ligand receptor models/integrin_alpha_beta_extended_open_icam2.pse, objects obj01, obj03, obj04, obj05, ICAM2"
+Klrd1_H2-K1,Klrd1;H2-K1,Q13241;P13747,KLRD1;HLA-E,3CDG,108.37,"ligand receptor models/Klrd1_H2-K1.pse, objects klrd1_copy, H2-K1"
+Kir3dl2_H2-Q10,Kir3dl2;H2-Q10,P43630;P04439,KIR3DL2;HLA-A,3CDG,132.46,"ligand receptor models/Kir3dl2_H2-Q10.pse, objects H2-Q10, c3vh8H_"
+Kir3dl2_H2-K1,Kir3dl2;H2-K1,P43630;P13747,KIR3DL2;HLA-E,3CDG,133.65,"ligand receptor models/Kir3dl2_H2-K1.pse, objects c3vh8H_, H2-K1"
+Klra1_H2-K1,Klra1;H2-K1,,,3CDG,73.75,"ligand receptor models/Klra1_H2-K1.pse, objects H2-K1, Klra1_mouse"
+Klra3_H2-K1,Klra3;H2-K1,,,5J6G,130.53,"ligand receptor models/Klra3_H2-K1_intenstive.pse, objects H2-K1, Klra3_mouse_intensive"
+Klrc2_H2-Q10,Klrc2;H2-Q10,P26717;P04439,KLRC2;HLA-A,3CDG,105.92,"ligand receptor models/Klrc2_H2Q10.pse, objects H2-Q10, klrc2_mouse"
+ICAM1_ICAM2,Icam1;Icam2,P05362;P13598,ICAM1;ICAM2,1ZXQ,214.7,"ligand receptor models/ICAM1_ICAM2.pse, objects ICAM1, ICAM2"
+cd28_cd86,Cd28;Cd86,P10747;P42081,CD28;CD86,1I85,111.15,"ligand receptor models/cd28_cd80_cd86.pse, objects cd28, cd86_mouse_intensive"
+cd80_cd274,Cd80;Cd274,P33681;Q9NZQ7,CD80;CD274,4ZQK;5IUS,122.57,"ligand receptor models/cd80_cd274.pse, objects cd274, cd80"
+cdh2_cdh8,Cdh2;Cdh8,P19022;P55286,CDH2;CDH8,3Q2W,367.73,"ligand receptor models/cdh2_cdh7_cdh8.pse, objects cdh2, cdh8_mouse_2ndbest"

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "surfaceome-topography"
+version = "0.2.0"
+description = "Modeling cell surface topography from structural models of extracellular domains"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Kaden Southard" }]
+dependencies = [
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "seaborn",
+    "scipy",
+    "plotly",
+    "statsmodels",
+    "biopython",
+    "matplotlib-venn",
+    "requests",
+    "openpyxl",
+]
+
+[project.optional-dependencies]
+notebooks = ["jupyterlab", "nbconvert", "ipykernel"]
+
+[project.urls]
+Repository = "https://github.com/kmsouthard/surfaceome_topography"
+
+[tool.setuptools]
+package-dir = { "" = "code" }
+py-modules = ["surfaceome_config"]
+
+[tool.setuptools.packages.find]
+where = ["code"]
+include = ["surfaceomeTopography*"]
