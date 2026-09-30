@@ -9,3 +9,17 @@ authors:
     given-names: Kaden
 license: MIT
 repository-code: "https://github.com/kmsouthard/surfaceome_topography"
+references:
+  - type: article
+    title: "CellScape: Protein structure visualization with vector graphics cartoons"
+    authors:
+      - family-names: Silvestre-Ryan
+        given-names: Jordi
+      - family-names: Fletcher
+        given-names: Daniel A.
+      - family-names: Holmes
+        given-names: Ian
+    journal: bioRxiv
+    year: 2022
+    doi: 10.1101/2022.06.14.495869
+    url: "https://github.com/jordisr/cellscape"

@@ -11,16 +11,23 @@ Two images, each in a light and a dark version, under ``docs/img/``:
   its height marked;
 * ``monocyte_surface_{light,dark}.svg``: twenty surface proteins sampled from a classical
   monocyte's proteome by abundance, among those with an AlphaFold model, each drawn to scale.
+* ``contact_{light,dark}.svg``: a monocyte against a HER2-positive breast cancer cell with an
+  anti-HER2 antibody (the Figure 6 panel ``monocyte_aHER2``): for each gap band of the bullseye,
+  the pair of single proteins holding most of that band among pairs whose height is the sum of
+  their partners', the monocyte's partner hanging from its membrane, the gap between the
+  membranes the pair's height;
+* ``bullseye_{light,dark}.svg``: that contact's bullseye, drawn by the pipeline's own
+  ``surfaceomeTopography.interface.plot_contact_bullseye`` from the panel's pairs table.
 
-Every protein is drawn the way the pipeline measures it. The span of its AlphaFold v6 model the
-height uses is outlined with CellScape (Silvestre-Ryan et al.,
-https://github.com/jordisr/cellscape) and turned so that its longest inertia axis, the axis
-its height is measured along, is vertical. Whatever height the protein takes from disorder, Pfam
-domains or sequence is a plain grey capsule on the side of the structure where those residues
-lie, and each capsule's length is that height, so every protein stands at its height in the
-height table. The membrane side of an ectodomain is taken from its neighbouring transmembrane
-segment in the UniProt GFF (the C-terminal end when the segment follows it, as for a type I
-protein or a GPI anchor).
+Each protein is the span of its AlphaFold v6 model the height uses, outlined with CellScape
+(Silvestre-Ryan et al., https://github.com/jordisr/cellscape) and oriented as CellScape orients a
+membrane protein, by its topology: the N-to-C vector vertical and the membrane-side terminus at
+the membrane. That side comes from the neighbouring transmembrane segment in the UniProt GFF (the
+C-terminal end when the segment follows the ectodomain, as for a type I protein or a GPI anchor).
+Whatever height a protein takes from disorder, Pfam domains or sequence is a plain grey capsule
+of that length on the side of the structure where those residues lie. Everything is drawn to one
+scale, but a structure's drawn extent is its extent along the N-to-C axis, not the dimension the
+height table measures, so drawn heights are illustrative; the numbers printed are the table's.
 
 ``RUN_DIR`` is a run's output (``python code/run_notebooks.py RUN_DIR``); ``--alphafold`` holds
 the ``AF-<accession>-F1-model_v6.pdb`` files (``code/database/inputs/download_alphafold.py``).
@@ -30,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import importlib.util
 import re
 from pathlib import Path
 
@@ -42,7 +50,7 @@ import cellscape
 from cellscape.cartoon import plot_polygon, shade_from_color
 from cellscape.scene import Membrane
 from shapely.geometry import LineString
-from shapely.affinity import translate
+from shapely.affinity import scale, translate
 
 REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data"
@@ -52,6 +60,9 @@ OUT = REPO / "docs" / "img"
 #: a protein's colour steps with its height. Capsules are neutral grey, as in CellScape.
 RAMP = ["#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281"]
 CAPSULE = "#e4e3de"
+#: Which cell a protein is on, in the contact figure: the first two categorical slots.
+IMMUNE_COLOR, CANCER_COLOR = "#2a78d6", "#eb6834"
+PANEL = "monocyte_aHER2"
 THEMES = {"light": {"text": "#0b0b0b", "text2": "#52514e", "rule": "#8a8984"},
           "dark": {"text": "#ffffff", "text2": "#c3c2b7", "rule": "#8f8e87"}}
 NM = 10.0                      # angstroms per nm; CellScape works in angstroms
@@ -59,6 +70,7 @@ CAPSULE_RADIUS = 12.0          # half-width of a capsule, angstroms
 SEQ_RATE = 0.04                # nm per residue nothing else covers (METHODS.md §2)
 
 plt.rcParams["svg.fonttype"] = "none"   # keep text as text in the SVG
+plt.rcParams["svg.hashsalt"] = "surfaceome"  # stable element ids, so a redraw diffs only if the picture moved
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["font.sans-serif"] = ["Helvetica", "Arial", "DejaVu Sans"]
 
@@ -160,16 +172,9 @@ def build(item: dict, alphafold: Path, color: str) -> dict:
     s, e, h = item["af"]
     mol = cellscape.Structure(str(alphafold / f"AF-{item['acc']}-F1-model_v6.pdb"), name=item["acc"],
                               view=False, res_start=s, res_end=e)
-    X = mol.coord - mol.coord.mean(0)
-    _, vec = np.linalg.eigh(np.cov(X.T))
-    y = vec[:, 2]                                # longest inertia axis: the measured height
-    n = max(1, len(X) // 20)
-    membrane_first = X[-n:] if item["side"] == "C" else X[:n]
-    other = X[:n] if item["side"] == "C" else X[-n:]
-    if (membrane_first @ y).mean() > (other @ y).mean():
-        y = -y                                   # the membrane end goes down
-    x = vec[:, 1]
-    mol.set_view_matrix(np.column_stack([x, y, np.cross(x, y)]))
+    # CellScape's orientation from topology: the N-to-C vector vertical, the membrane-side
+    # terminus down (flip=True puts the N terminus up, for a C-terminal membrane anchor)
+    mol.auto_view(flip=item["side"] == "C")
     cart = mol.outline("all", depth="contours", depth_contour_interval=10, back_outline=True)
     cart.plot(do_show=False, colors=[color], depth_shading=True, line_width=0.4)
     plt.close("all")
@@ -244,7 +249,7 @@ def cd45_figure(item: dict, obj: dict, row: pd.Series, parts: pd.DataFrame, out:
         ax.set_aspect("equal")
         ax.axis("off")
         path = out / f"cd45_{mode}.svg"
-        fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05)
+        fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05, metadata={"Date": None})
         plt.close(fig)
         print(f"  wrote {path.relative_to(REPO)}")
 
@@ -252,20 +257,117 @@ def cd45_figure(item: dict, obj: dict, row: pd.Series, parts: pd.DataFrame, out:
 def scene_figure(objs: list[tuple[str, dict]], out: Path, padding: float = 14.0):
     width = sum(o["width"] for _, o in objs) + padding * (len(objs) + 1)
     top = max(o["height"] for _, o in objs)
+    fontsize = 11                                # pt; about 14 px at the README's width
+    pt_per_a = 12 * 72 / width                   # the figure is 12 in wide
+    label_a = max(len(g) for g, _ in objs) * 0.62 * fontsize / pt_per_a
+    bottom = -58 - label_a - 10                  # room under the membrane for the longest label
     for mode, t in THEMES.items():
-        fig, ax = plt.subplots(figsize=(12, 12 * (top + 140) / width))
+        fig, ax = plt.subplots(figsize=(12, 12 * (top - bottom + 10) / width))
         membrane(ax, width)
         x = padding
         for gene, o in objs:
             draw(ax, o, x)
-            ax.text(x + o["width"] / 2, -58, gene, color=t["text2"], fontsize=7, rotation=90, ha="center", va="top")
+            ax.text(x + o["width"] / 2, -58, gene, color=t["text2"], fontsize=fontsize, rotation=90,
+                    ha="center", va="top")
             x += o["width"] + padding
         ax.set_xlim(0, width)
-        ax.set_ylim(-130, top + 10)
+        ax.set_ylim(bottom, top + 10)
         ax.set_aspect("equal")
         ax.axis("off")
         path = out / f"monocyte_surface_{mode}.svg"
-        fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05)
+        fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05, metadata={"Date": None})
+        plt.close(fig)
+        print(f"  wrote {path.relative_to(REPO)}")
+
+
+def bilayer(ax, x0: float, x1: float, top: float, thickness: float = 40.0, r: float = 4.0):
+    """A lipid bilayer from x0 to x1 whose outer surface is at y = top (CellScape's colours)."""
+    ax.fill_between([x0, x1], top - r, top - thickness + r, color="#C4E7EF", zorder=1.6, lw=0)
+    for x in np.arange(x0 + r, x1 - r + 1e-6, 2 * r):
+        for y in (top - r, top - thickness + r):
+            ax.add_patch(plt.Circle((x, y), r, facecolor="#D6D1EF", ec="k", lw=0.3, zorder=2))
+
+
+def flipped(obj: dict, gap: float) -> dict:
+    """The object hanging from a membrane at y = gap instead of standing on one at y = 0."""
+    out = dict(obj)
+    out["polygons"] = [dict(p, polygon=translate(scale(p["polygon"], yfact=-1, origin=(0, 0)), 0, gap))
+                       for p in obj["polygons"]]
+    return out
+
+
+def contact_pairs(run: Path, heights: pd.DataFrame, parts: pd.DataFrame, alphafold: Path) -> pd.DataFrame:
+    """Per gap band, the single-protein pair holding most of it, among pairs whose height is the
+    sum of their partners' and whose partners both have AlphaFold models."""
+    pairs = pd.read_csv(run / "tables" / f"F6_{PANEL}" / f"{PANEL}_pairs.csv")
+    pairs["share"] = pairs["interface_shared"] / pairs["interface_shared"].sum()
+    single = pairs["complex_name_immune"].isna() & pairs["complex_name_cancer"].isna()
+    additive = (pairs["interaction_dim"] - pairs["total_height_prot1"] - pairs["total_height_prot2"]).abs() < 0.01
+    has_model = set(parts.loc[parts["methods"] == "alphafold", "ID"])
+    ecd = heights.set_index("ID link_first")["ID"]
+    modelled = lambda acc: ecd.get(acc) in has_model and (alphafold / f"AF-{acc}-F1-model_v6.pdb").is_file()
+    ok = pairs[single & additive
+               & pairs["Entry_immune"].map(modelled) & pairs["Entry_cancer"].map(modelled)].copy()
+    edges = [0, 10, 20, 30, 40, 50, np.inf]
+    ok["band"] = pd.cut(ok["interaction_dim"], edges, right=False)
+    best = ok.sort_values("share", ascending=False).groupby("band", observed=True).head(1)
+    return best.sort_values("interaction_dim")
+
+
+def contact_figure(chosen: pd.DataFrame, heights: pd.DataFrame, parts: pd.DataFrame, gff: pd.DataFrame,
+                   alphafold: Path, out: Path, padding: float = 40.0, margin: float = 230.0):
+    row = lambda acc: heights[heights["ID link_first"] == acc].iloc[0]
+    built = []
+    for _, r in chosen.iterrows():
+        gap = float(r["interaction_dim"]) * NM
+        im = build(layout(row(r["Entry_immune"]), parts, gff), alphafold, IMMUNE_COLOR)
+        ca = build(layout(row(r["Entry_cancer"]), parts, gff), alphafold, CANCER_COLOR)
+        drawn = im["height"] + ca["height"]              # the partners meet; the label gives the table's height
+        built.append((r, drawn, flipped(im, drawn), ca))
+    top = max(g for _, g, _, _ in built)
+    width = margin + sum(max(i["width"], c["width"]) + padding for _, _, i, c in built)
+    for mode, t in THEMES.items():
+        fig, ax = plt.subplots(figsize=(7, 7 * (top + 260) / width))
+        x = margin
+        for r, gap, im, ca in built:
+            w = max(im["width"], ca["width"])
+            bilayer(ax, x - padding / 2, x + w + padding / 2, gap + 40)          # the monocyte's
+            draw(ax, im, x + (w - im["width"]) / 2)
+            draw(ax, ca, x + (w - ca["width"]) / 2)
+            ax.text(x + w / 2, gap + 58, r["Gene Name_immune"], color=t["text"], fontsize=9,
+                    ha="center", va="bottom")
+            ax.text(x + w / 2, -58, r["Gene Name_cancer"], color=t["text"], fontsize=9, ha="center", va="top")
+            ax.text(x + w / 2, -84, f"{r['interaction_dim']:.0f} nm", color=t["text2"], fontsize=8.5,
+                    ha="center", va="top")
+            x += w + padding
+        bilayer(ax, margin - padding / 2, x - padding / 2, 0)                    # the cancer cell's
+        ax.text(margin - padding, built[0][1] + 20, "monocyte", color=t["text"], fontsize=10,
+                fontweight="bold", ha="right", va="center")
+        ax.text(margin - padding, -20, "HER2+ breast\ncancer cell", color=t["text"], fontsize=10,
+                fontweight="bold", ha="right", va="center")
+        ax.set_xlim(0, x)
+        ax.set_ylim(-130, top + 110)
+        ax.set_aspect("equal")
+        ax.axis("off")
+        path = out / f"contact_{mode}.svg"
+        fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05, metadata={"Date": None})
+        plt.close(fig)
+        print(f"  wrote {path.relative_to(REPO)}")
+
+
+def bullseye_figure(run: Path, out: Path):
+    """The pipeline's own bullseye for the panel; only its text colour changes between modes."""
+    spec = importlib.util.spec_from_file_location("sT_interface", REPO / "code/surfaceomeTopography/interface.py")
+    interface = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(interface)
+    pairs = pd.read_csv(run / "tables" / f"F6_{PANEL}" / f"{PANEL}_pairs.csv")
+    for mode, t in THEMES.items():
+        fig = interface.plot_contact_bullseye(pairs)
+        for text in fig.axes[0].get_legend().get_texts():
+            text.set_color(t["text"])
+            text.set_fontsize(10)
+        path = out / f"bullseye_{mode}.svg"
+        fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05, metadata={"Date": None})
         plt.close(fig)
         print(f"  wrote {path.relative_to(REPO)}")
 
@@ -310,6 +412,10 @@ def main() -> int:
             cache[acc] = build(it, a.alphafold, color_for(it["total"], lo, hi))
         objs.append((str(r["Gene names  (primary )"]).split(";")[0], cache[acc]))
     scene_figure(objs, OUT)
+
+    # a monocyte against a HER2+ cancer cell with anti-HER2: the pairs, and the bullseye
+    contact_figure(contact_pairs(a.run_dir, heights, parts, a.alphafold), heights, parts, gff, a.alphafold, OUT)
+    bullseye_figure(a.run_dir, OUT)
     return 0
 
 

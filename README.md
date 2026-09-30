@@ -12,8 +12,9 @@ the gaps between two cells in contact.
   </picture>
   <br>
   <sub>Twenty proteins sampled by abundance from a classical monocyte's surface (Ravenhill et al.
-  2020), among those with an AlphaFold model, each at its estimated height. Structures are
-  outlined with CellScape; grey capsules are height from disordered regions or domains.</sub>
+  2020), among those with an AlphaFold model, drawn to scale with
+  <a href="https://github.com/jordisr/cellscape">CellScape</a> by Jordi Silvestre-Ryan and oriented
+  by their topology; grey capsules are disordered regions or domains.</sub>
 </p>
 
 > **Status.** Analysis code for a manuscript in preparation. Result tables and figures will be
@@ -68,6 +69,26 @@ height is the sum of its partners' heights, unless a recorded rule gives another
 model of the complex, or partners that bind side by side). For an immune cell facing a cancer
 cell, the pairs both can form give the distribution of gaps between the membranes.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/contact_dark.svg">
+    <img src="docs/img/contact_light.svg" width="440"
+         alt="Protein pairs spanning the gap between a monocyte membrane above and a HER2-positive breast cancer cell membrane below, one pair per band of gap heights">
+  </picture>
+  <br>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/bullseye_dark.svg">
+    <img src="docs/img/bullseye_light.svg" width="640"
+         alt="Bullseye of the same contact: nested rings for gaps of 10-20, 20-30, 30-40, 40-50 and over 50 nm, sized by their share of the contact">
+  </picture>
+  <br>
+  <sub>A monocyte against a HER2-positive breast cancer cell, with an anti-HER2 antibody. Top: in
+  each band of gap heights, the pair that holds most of it among pairs of two single proteins
+  whose height is the sum of the partners' (monocyte partner blue, cancer-cell partner orange),
+  labelled with its height; drawn heights are illustrative. Bottom: the whole contact (Figure 6),
+  one ring per band, each ring's area its share of the contact.</sub>
+</p>
+
 [`docs/METHODS.md`](docs/METHODS.md) gives each rule, its parameters and its basis.
 
 ## The code
@@ -96,9 +117,9 @@ The figures are drawn by one notebook each in `code/figures/notebooks/`:
 | `S2_methods_vs_structures` | S2: predicted heights against solved structures |
 
 [`code/figures/figure_map.csv`](code/figures/figure_map.csv) maps each output file to its
-manuscript panel. The illustrations in this README are drawn from a run's output by
-`code/figures/cellscape/readme_images.py`, in its own environment
-(`code/figures/cellscape/environment.yml`).
+manuscript panel. The illustrations in this README are drawn from a run's output with
+[CellScape](https://github.com/jordisr/cellscape) by `code/figures/cellscape/readme_images.py`,
+in its own environment (`code/figures/cellscape/environment.yml`).
 
 ## Using the heights for your own cells
 
@@ -182,5 +203,12 @@ change grouping defaults in ways that alter results without an error.
 Code: MIT ([`LICENSE`](LICENSE)). Data made for this work (`data/curated/`,
 `data/measurements/`): CC BY 4.0 ([`data/LICENSE`](data/LICENSE)).
 
-Protein illustrations use [CellScape](https://github.com/jordisr/cellscape) (Silvestre-Ryan,
-Fletcher and Holmes 2022, [doi:10.1101/2022.06.14.495869](https://doi.org/10.1101/2022.06.14.495869)).
+## Acknowledgements
+
+The protein illustrations, here and in the manuscript, are drawn with
+[CellScape](https://github.com/jordisr/cellscape), Jordi Silvestre-Ryan's tool for turning
+protein structures into vector cartoons and composing them into cell-surface scenes:
+
+> Silvestre-Ryan J, Fletcher DA, Holmes I. CellScape: Protein structure visualization with
+> vector graphics cartoons. *bioRxiv* 2022.
+> [doi:10.1101/2022.06.14.495869](https://doi.org/10.1101/2022.06.14.495869)
