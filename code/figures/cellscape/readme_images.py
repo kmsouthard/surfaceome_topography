@@ -10,14 +10,22 @@ Two images, each in a light and a dark version, under ``docs/img/``:
 * ``cd45_{light,dark}.svg``: CD45's ectodomain standing on the membrane, with each piece of
   its height marked;
 * ``monocyte_surface_{light,dark}.svg``: twenty surface proteins sampled from a classical
-  monocyte's proteome by abundance, among those with an AlphaFold model, each drawn to scale.
-* ``contact_{light,dark}.svg``: a monocyte against a HER2-positive breast cancer cell with an
-  anti-HER2 antibody (the Figure 6 panel ``monocyte_aHER2``): for each gap band of the bullseye,
-  the pair of single proteins holding most of that band among pairs whose height is the sum of
-  their partners', the monocyte's partner hanging from its membrane, the gap between the
-  membranes the pair's height;
-* ``bullseye_{light,dark}.svg``: that contact's bullseye, drawn by the pipeline's own
-  ``surfaceomeTopography.interface.plot_contact_bullseye`` from the panel's pairs table.
+  monocyte's proteome by abundance, each drawn to scale; a protein with no AlphaFold model (LRP1's
+  ectodomain is too long to predict) is a capsule of its whole height.
+* ``contact_{light,dark}.svg``: an NK cell against a HER2-positive breast cancer cell with an
+  anti-HER2 antibody (the Figure 6 panel ``nk_aHER2``): for each gap band of the bullseye, the
+  pair of single proteins holding most of that band among pairs whose height is the sum of their
+  partners' (less the pairs in ``LEFT_OUT_OF_CONTACT``), the NK cell's partner hanging from its
+  membrane;
+* ``bridge_{light,dark}.svg``: that contact's antibody bridge, drawn the way
+  ``surfaceomeTopography.interface.antibody_bridge_heights`` models it: HER2 on the cancer cell,
+  trastuzumab lying across HER2's membrane-proximal epitope (an intact human IgG1, PDB 1HZH, its
+  thinnest axis vertical, Fab towards HER2, Fc away), and the Fc receptor holding most of the
+  contact's bridges hanging from the NK cell onto the Fc; the numbers printed are the table's;
+* ``bullseye_{light,dark}.svg``: that contact in section and in plan: the plan is the pipeline's
+  own bullseye (``surfaceomeTopography.interface.plot_contact_bullseye``, from the panel's pairs
+  table, in the README's blue ramp); the section cuts through it, each ring at the share-weighted
+  mean gap of the pairs holding it.
 
 Each protein is the span of its AlphaFold v6 model the height uses, outlined with CellScape
 (Silvestre-Ryan et al., https://github.com/jordisr/cellscape) and oriented as CellScape orients a
@@ -43,6 +51,7 @@ from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
+import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -62,9 +71,22 @@ RAMP = ["#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5c
 CAPSULE = "#e4e3de"
 #: Which cell a protein is on, in the contact figure: the first two categorical slots.
 IMMUNE_COLOR, CANCER_COLOR = "#2a78d6", "#eb6834"
-PANEL = "monocyte_aHER2"
-THEMES = {"light": {"text": "#0b0b0b", "text2": "#52514e", "rule": "#8a8984"},
-          "dark": {"text": "#ffffff", "text2": "#c3c2b7", "rule": "#8f8e87"}}
+ANTIBODY_COLOR = "#1baf7a"     # the third categorical slot
+IGG_PDB = "https://files.rcsb.org/download/1HZH.pdb"     # intact human IgG1 (Saphire et al. 2001)
+#: The Figure 6 contact the README shows, and what to call its two cells.
+PANEL = "nk_aHER2"
+#: Pairs the pipeline keeps that the contact illustration leaves out, with why. CD44-CD44 stays in
+#: every contact as curated, but its binding across cells has been shown only between tumour cells
+#: (Liu et al. 2019; Kawaguchi et al. 2020), so it is not the example a reader should take away.
+LEFT_OUT_OF_CONTACT = {("P16070", "P16070"): "CD44-CD44: trans binding shown only between tumour cells"}
+IMMUNE_CELL, CANCER_CELL = "NK cell", "HER2+ breast\ncancer cell"
+THEMES = {"light": {"text": "#0b0b0b", "text2": "#52514e", "rule": "#8a8984", "surface": "#ffffff"},
+          "dark": {"text": "#ffffff", "text2": "#c3c2b7", "rule": "#8f8e87", "surface": "#0d1117"}}
+#: The bullseye's rings, 50+ nm outermost to 10-20 nm, as an ordinal step of the same blue ramp:
+#: darker is taller. Light mode starts no lighter than step 250 and dark mode goes no darker than
+#: step 600, so every ring clears 2:1 against its page; the centre (under 10 nm) is the page.
+BULLSEYE_RINGS = {"light": ["#104281", "#1c5cab", "#2a78d6", "#5598e7", "#86b6ef"],
+                  "dark": ["#184f95", "#256abf", "#3987e5", "#6da7ec", "#9ec5f4"]}
 NM = 10.0                      # angstroms per nm; CellScape works in angstroms
 CAPSULE_RADIUS = 12.0          # half-width of a capsule, angstroms
 SEQ_RATE = 0.04                # nm per residue nothing else covers (METHODS.md §2)
@@ -153,6 +175,14 @@ def layout(row: pd.Series, parts: pd.DataFrame, gff: pd.DataFrame) -> dict:
 
 
 # ---- drawing -------------------------------------------------------------------------------
+
+def protein(acc: str, heights: pd.DataFrame, parts: pd.DataFrame, gff: pd.DataFrame, alphafold: Path) -> dict:
+    """A protein's layout; with no AlphaFold file at hand its whole height is one capsule."""
+    item = layout(heights[heights["ID link_first"] == acc].iloc[0], parts, gff)
+    if item["af"] is not None and not (alphafold / f"AF-{acc}-F1-model_v6.pdb").is_file():
+        item.update(af=None, before=0.0, after=item["total"])
+    return item
+
 
 def capsule(x: float, y0: float, length: float):
     """A rounded bar from y0 to y0 + length (angstroms), centred on x."""
@@ -254,9 +284,25 @@ def cd45_figure(item: dict, obj: dict, row: pd.Series, parts: pd.DataFrame, out:
         print(f"  wrote {path.relative_to(REPO)}")
 
 
+def broken(obj: dict, limit: float) -> dict:
+    """A protein taller than ``limit`` cut off there, its drawn part ending in a break."""
+    from shapely.geometry import box
+    keep = box(-1e4, -1e4, 1e4, limit)
+    out = dict(obj, height=limit, true_height=obj["height"])
+    out["polygons"] = [dict(p, polygon=p["polygon"].intersection(keep)) for p in obj["polygons"]
+                       if not p["polygon"].intersection(keep).is_empty]
+    return out
+
+
 def scene_figure(objs: list[tuple[str, dict]], out: Path, padding: float = 14.0):
+    # a protein more than twice as tall as the next tallest is broken just above it, so the rest
+    # stay legible; its true height is printed over the break
+    tallest = sorted({o["height"] for _, o in objs}, reverse=True)
+    if len(tallest) > 1 and tallest[0] > 2 * tallest[1]:
+        limit = tallest[1] + 140
+        objs = [(g, broken(o, limit) if o["height"] > 2 * tallest[1] else o) for g, o in objs]
     width = sum(o["width"] for _, o in objs) + padding * (len(objs) + 1)
-    top = max(o["height"] for _, o in objs)
+    top = max(o["height"] for _, o in objs) + 40
     fontsize = 11                                # pt; about 14 px at the README's width
     pt_per_a = 12 * 72 / width                   # the figure is 12 in wide
     label_a = max(len(g) for g, _ in objs) * 0.62 * fontsize / pt_per_a
@@ -267,6 +313,14 @@ def scene_figure(objs: list[tuple[str, dict]], out: Path, padding: float = 14.0)
         x = padding
         for gene, o in objs:
             draw(ax, o, x)
+            if "true_height" in o:                           # the break, and the true height
+                cx, yb = x + o["width"] / 2, o["height"] - 70
+                for dy in (0, 22):
+                    ax.plot([cx - 22, cx + 22], [yb + dy - 8, yb + dy + 8], color="black", lw=0.8, zorder=5)
+                ax.fill([cx - 22, cx + 22, cx + 22, cx - 22], [yb - 8, yb + 8, yb + 30, yb + 14],
+                        color=t["surface"], zorder=4, lw=0)
+                ax.text(cx, o["height"] + 12, f"{o['true_height'] / NM:.0f} nm", color=t["text"],
+                        fontsize=10, fontweight="bold", ha="center", va="bottom")
             ax.text(x + o["width"] / 2, -58, gene, color=t["text2"], fontsize=fontsize, rotation=90,
                     ha="center", va="top")
             x += o["width"] + padding
@@ -298,16 +352,14 @@ def flipped(obj: dict, gap: float) -> dict:
 
 def contact_pairs(run: Path, heights: pd.DataFrame, parts: pd.DataFrame, alphafold: Path) -> pd.DataFrame:
     """Per gap band, the single-protein pair holding most of it, among pairs whose height is the
-    sum of their partners' and whose partners both have AlphaFold models."""
+    sum of their partners'."""
     pairs = pd.read_csv(run / "tables" / f"F6_{PANEL}" / f"{PANEL}_pairs.csv")
     pairs["share"] = pairs["interface_shared"] / pairs["interface_shared"].sum()
     single = pairs["complex_name_immune"].isna() & pairs["complex_name_cancer"].isna()
     additive = (pairs["interaction_dim"] - pairs["total_height_prot1"] - pairs["total_height_prot2"]).abs() < 0.01
-    has_model = set(parts.loc[parts["methods"] == "alphafold", "ID"])
-    ecd = heights.set_index("ID link_first")["ID"]
-    modelled = lambda acc: ecd.get(acc) in has_model and (alphafold / f"AF-{acc}-F1-model_v6.pdb").is_file()
-    ok = pairs[single & additive
-               & pairs["Entry_immune"].map(modelled) & pairs["Entry_cancer"].map(modelled)].copy()
+    left_out = pd.Series([(i, c) in LEFT_OUT_OF_CONTACT for i, c in zip(pairs["Entry_immune"], pairs["Entry_cancer"])],
+                         index=pairs.index)
+    ok = pairs[single & additive & ~left_out].copy()
     edges = [0, 10, 20, 30, 40, 50, np.inf]
     ok["band"] = pd.cut(ok["interaction_dim"], edges, right=False)
     best = ok.sort_values("share", ascending=False).groupby("band", observed=True).head(1)
@@ -316,24 +368,45 @@ def contact_pairs(run: Path, heights: pd.DataFrame, parts: pd.DataFrame, alphafo
 
 def contact_figure(chosen: pd.DataFrame, heights: pd.DataFrame, parts: pd.DataFrame, gff: pd.DataFrame,
                    alphafold: Path, out: Path, padding: float = 40.0, margin: float = 230.0):
-    row = lambda acc: heights[heights["ID link_first"] == acc].iloc[0]
     built = []
     for _, r in chosen.iterrows():
-        gap = float(r["interaction_dim"]) * NM
-        im = build(layout(row(r["Entry_immune"]), parts, gff), alphafold, IMMUNE_COLOR)
-        ca = build(layout(row(r["Entry_cancer"]), parts, gff), alphafold, CANCER_COLOR)
+        im = build(protein(r["Entry_immune"], heights, parts, gff, alphafold), alphafold, IMMUNE_COLOR)
+        ca = build(protein(r["Entry_cancer"], heights, parts, gff, alphafold), alphafold, CANCER_COLOR)
         drawn = im["height"] + ca["height"]              # the partners meet; the label gives the table's height
         built.append((r, drawn, flipped(im, drawn), ca))
+    # a pair more than twice as tall as the next is shortened through its middle, with a break
+    gaps = sorted((g for _, g, _, _ in built), reverse=True)
+    breaks = {}
+    if len(gaps) > 1 and gaps[0] > 2 * gaps[1]:
+        limit = gaps[1] + 250
+        from shapely.geometry import box
+        for k, (r, g, im, ca) in enumerate(built):
+            if g > 2 * gaps[1]:
+                cut = limit / 2
+                low, high = box(-1e4, -1e4, 1e4, cut), box(-1e4, cut, 1e4, 1e4)
+                im = dict(im, polygons=[dict(q, polygon=translate(q["polygon"], 0, limit - g).intersection(high))
+                                        for q in im["polygons"]])
+                ca = dict(ca, polygons=[dict(q, polygon=q["polygon"].intersection(low)) for q in ca["polygons"]])
+                im["polygons"] = [q for q in im["polygons"] if not q["polygon"].is_empty]
+                ca["polygons"] = [q for q in ca["polygons"] if not q["polygon"].is_empty]
+                built[k] = (r, limit, im, ca)
+                breaks[k] = cut
     top = max(g for _, g, _, _ in built)
     width = margin + sum(max(i["width"], c["width"]) + padding for _, _, i, c in built)
     for mode, t in THEMES.items():
         fig, ax = plt.subplots(figsize=(7, 7 * (top + 260) / width))
         x = margin
-        for r, gap, im, ca in built:
+        for k, (r, gap, im, ca) in enumerate(built):
             w = max(im["width"], ca["width"])
-            bilayer(ax, x - padding / 2, x + w + padding / 2, gap + 40)          # the monocyte's
+            bilayer(ax, x - padding / 2, x + w + padding / 2, gap + 40)          # the immune cell's
             draw(ax, im, x + (w - im["width"]) / 2)
             draw(ax, ca, x + (w - ca["width"]) / 2)
+            if k in breaks:
+                cx, yb = x + w / 2, breaks[k] - 11
+                ax.fill([cx - 22, cx + 22, cx + 22, cx - 22], [yb - 8, yb + 8, yb + 30, yb + 14],
+                        color=t["surface"], zorder=4, lw=0)
+                for dy in (0, 22):
+                    ax.plot([cx - 22, cx + 22], [yb + dy - 8, yb + dy + 8], color="black", lw=0.8, zorder=5)
             ax.text(x + w / 2, gap + 58, r["Gene Name_immune"], color=t["text"], fontsize=9,
                     ha="center", va="bottom")
             ax.text(x + w / 2, -58, r["Gene Name_cancer"], color=t["text"], fontsize=9, ha="center", va="top")
@@ -341,9 +414,9 @@ def contact_figure(chosen: pd.DataFrame, heights: pd.DataFrame, parts: pd.DataFr
                     ha="center", va="top")
             x += w + padding
         bilayer(ax, margin - padding / 2, x - padding / 2, 0)                    # the cancer cell's
-        ax.text(margin - padding, built[0][1] + 20, "monocyte", color=t["text"], fontsize=10,
+        ax.text(margin - padding, built[0][1] + 20, IMMUNE_CELL, color=t["text"], fontsize=10,
                 fontweight="bold", ha="right", va="center")
-        ax.text(margin - padding, -20, "HER2+ breast\ncancer cell", color=t["text"], fontsize=10,
+        ax.text(margin - padding, -20, CANCER_CELL, color=t["text"], fontsize=10,
                 fontweight="bold", ha="right", va="center")
         ax.set_xlim(0, x)
         ax.set_ylim(-130, top + 110)
@@ -355,17 +428,164 @@ def contact_figure(chosen: pd.DataFrame, heights: pd.DataFrame, parts: pd.DataFr
         print(f"  wrote {path.relative_to(REPO)}")
 
 
+def antibody(pdb: Path, color: str) -> dict:
+    """An intact IgG lying flat: Fab-to-Fc along x, its thinnest axis vertical, Fab end at x = 0."""
+    mol = cellscape.Structure(str(pdb), name="IgG", view=False)
+    X = mol.coord - mol.coord.mean(0)
+    heavy_fc = np.zeros(len(X), bool)                    # Fc: the heavy chains from residue 240
+    for chain in "HK":
+        for res_id, res in mol.residues.get(chain, {}).items():
+            if res_id >= 240:
+                heavy_fc[slice(*res["coord"])] = True
+    u = X[heavy_fc].mean(0) - X[~heavy_fc].mean(0)
+    u /= np.linalg.norm(u)                               # Fab -> Fc
+    rest = X - np.outer(X @ u, u)
+    _, vec = np.linalg.eigh(np.cov(rest.T))
+    v = vec[:, 0] - (vec[:, 0] @ u) * u                  # thinnest direction across the Fab-Fc axis
+    v /= np.linalg.norm(v)
+    mol.set_view_matrix(np.column_stack([u, v, np.cross(u, v)]))
+    cart = mol.outline("all", depth="contours", depth_contour_interval=10, back_outline=True)
+    cart.plot(do_show=False, colors=[color], depth_shading=True, line_width=0.4)
+    plt.close("all")
+    polys = [{"polygon": p["polygon"].simplify(0.4), "facecolor": p["facecolor"], "edgecolor": p["edgecolor"],
+              "linewidth": p["linewidth"], "zorder": 1} for p in cart._styled_polygons]
+    minx = min(p["polygon"].bounds[0] for p in polys)
+    miny = min(p["polygon"].bounds[1] for p in polys)
+    for p in polys:
+        p["polygon"] = translate(p["polygon"], -minx, -miny)
+    return {"polygons": polys, "width": max(p["polygon"].bounds[2] for p in polys),
+            "height": max(p["polygon"].bounds[3] for p in polys)}
+
+
+def bridge_figure(run: Path, heights: pd.DataFrame, parts: pd.DataFrame, gff: pd.DataFrame,
+                  alphafold: Path, igg: Path, out: Path, margin: float = 230.0):
+    pairs = pd.read_csv(run / "tables" / f"F6_{PANEL}" / f"{PANEL}_pairs.csv")
+    bridges = pairs[pairs["_merge"] == "FcR"].sort_values("interface_shared", ascending=False)
+    br = bridges.iloc[0]                                  # the bridge holding most of the contact
+    receptor_acc, antigen_acc = br["Entry_immune"], br["Entry_cancer"]
+    receptor_h, antigen_h = float(br["total_height_prot2"]), float(br["total_height_prot1"])
+    gap = float(br["interaction_dim"])
+    antigen = build(protein(antigen_acc, heights, parts, gff, alphafold), alphafold, CANCER_COLOR)
+    receptor = build(protein(receptor_acc, heights, parts, gff, alphafold), alphafold, IMMUNE_COLOR)
+    ab = antibody(igg, ANTIBODY_COLOR)
+    x_ab = margin + antigen["width"] - 6                  # Fab against the antigen's base
+    x_fc = x_ab + ab["width"] - receptor["width"] / 2 - 25    # receptor over the Fc
+    top = max(ab["height"] + receptor["height"], antigen["height"] + 5)   # receptor meets the Fc
+    right = max(x_ab + ab["width"], x_fc + receptor["width"]) + 40
+    names = {"antigen": f"{br['Gene Name_cancer']}", "receptor": f"{br['Gene Name_immune']}"}
+    for mode, t in THEMES.items():
+        fig, ax = plt.subplots(figsize=(7, 7 * (top + 260) / (right + 330)))
+        bilayer(ax, margin - 30, right, 0)
+        bilayer(ax, margin - 30, right, top + 40)
+        draw(ax, antigen, margin)
+        draw(ax, ab, x_ab)
+        draw(ax, flipped(receptor, top), x_fc)
+        ax.text(margin + antigen["width"] / 2, -58, names["antigen"], color=t["text"], fontsize=9,
+                ha="center", va="top")
+        ax.text(x_fc + receptor["width"] / 2, top + 58, names["receptor"], color=t["text"], fontsize=9,
+                ha="center", va="bottom")
+        ax.text(x_ab + ab["width"] / 2, -58, "anti-HER2 IgG", color=t["text2"], fontsize=9, ha="center", va="top")
+        bx = right + 20
+        ax.plot([bx, bx + 8, bx + 8, bx], [3, 3, top - 3, top - 3], color=t["rule"], lw=1)
+        ax.text(bx + 22, top / 2 + 12, f"{gap:.1f} nm", color=t["text"], fontsize=11, fontweight="bold", va="bottom")
+        ax.text(bx + 22, top / 2 + 4,
+                f"{names['receptor']} {receptor_h:.1f} nm\n+ antibody {gap - receptor_h:.2f} nm,\n"
+                f"epitope at the membrane\n({names['antigen']} {antigen_h:.1f} nm fits beneath)",
+                color=t["text2"], fontsize=8.5, va="top", linespacing=1.4)
+        ax.text(margin - 40, top + 20, IMMUNE_CELL, color=t["text"], fontsize=10, fontweight="bold",
+                ha="right", va="center")
+        ax.text(margin - 40, -20, CANCER_CELL, color=t["text"], fontsize=10,
+                fontweight="bold", ha="right", va="center")
+        ax.set_xlim(0, bx + 330)
+        ax.set_ylim(-110, top + 110)
+        ax.set_aspect("equal")
+        ax.axis("off")
+        path = out / f"bridge_{mode}.svg"
+        fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05, metadata={"Date": None})
+        plt.close(fig)
+        print(f"  wrote {path.relative_to(REPO)}")
+
+
 def bullseye_figure(run: Path, out: Path):
-    """The pipeline's own bullseye for the panel; only its text colour changes between modes."""
+    """The contact in section and in plan: a cut through it above, the pipeline's bullseye below.
+
+    The plan is the pipeline's own ``plot_contact_bullseye``: each circle's area is the share of the
+    contact held at gaps below a band's upper edge. The section cuts through its centre, so each
+    ring keeps its radius, and the monocyte's membrane stands above each ring at the mean gap of
+    the pairs holding it, weighted by their shares. Radius is share of the contact, not distance.
+    """
     spec = importlib.util.spec_from_file_location("sT_interface", REPO / "code/surfaceomeTopography/interface.py")
     interface = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(interface)
     pairs = pd.read_csv(run / "tables" / f"F6_{PANEL}" / f"{PANEL}_pairs.csv")
+    gap, weight = pairs["interaction_dim"], pairs["interface_shared"]
+    edges = [0, *sorted(interface.BULLSEYE_BANDS), np.inf]
     for mode, t in THEMES.items():
-        fig = interface.plot_contact_bullseye(pairs)
-        for text in fig.axes[0].get_legend().get_texts():
-            text.set_color(t["text"])
-            text.set_fontsize(10)
+        colors = [*BULLSEYE_RINGS[mode], t["surface"]]
+        plan = interface.plot_contact_bullseye(pairs, colors=colors)
+        circles = [c for c in plan.axes[0].get_children() if isinstance(c, matplotlib.patches.Circle)]
+        legend = [x.get_text() for x in plan.axes[0].get_legend().get_texts()]
+        plt.close(plan)
+        radius = np.array([c.get_radius() for c in circles]) / circles[0].get_radius()   # outside in
+        # the rings from the centre out: radius, colour, and the mean gap of the pairs holding them
+        uppers = [np.inf, *sorted(interface.BULLSEYE_BANDS, reverse=True)]   # circle i holds gaps < uppers[i]
+        rings = []
+        for lo, hi in zip(edges[:-1], edges[1:]):
+            i = uppers.index(hi)
+            band = (gap >= lo) & (gap < hi)
+            if weight[band].sum() > 0:
+                rings.append((radius[i], colors[i], float(np.average(gap[band], weights=weight[band])), lo, hi))
+        top = max(g for *_, g, _, _ in rings)
+
+        fig = plt.figure(figsize=(7.2, 7.6))
+        side = fig.add_axes([0.20, 0.56, 0.44, 0.38])
+        plan_ax = fig.add_axes([0.20, 0.06, 0.44, 0.44 * 7.2 / 7.6])
+        # section: the gap above each ring, between the two membranes
+        r_in = 0.0
+        for r_out, color, g, lo, hi in rings:
+            for sgn in (-1, 1):
+                x0, x1 = sorted((sgn * r_in, sgn * r_out))
+                side.fill_between([x0, x1], 0, g, color=color, lw=0)
+                side.fill_between([x0, x1], g, g + 4, color="#C4E7EF", lw=0)
+                side.plot([x0, x1], [g, g], color="#9C97C9", lw=1.2)
+                side.plot([x0, x1], [g + 4, g + 4], color="#9C97C9", lw=1.2)
+            if r_out - r_in > 0.07:
+                side.text((r_in + r_out) / 2, g + 7, f"{g:.0f} nm", color=t["text2"], fontsize=8.5,
+                          ha="center", va="bottom")
+            r_in = r_out
+        side.fill_between([-1, 1], -4, 0, color="#C4E7EF", lw=0)
+        side.plot([-1, 1], [0, 0], color="#9C97C9", lw=1.2)
+        side.plot([-1, 1], [-4, -4], color="#9C97C9", lw=1.2)
+        side.text(-1.04, top / 2, IMMUNE_CELL, color=t["text"], fontsize=10, fontweight="bold", ha="right", va="center")
+        side.text(-1.04, -2, CANCER_CELL, color=t["text"], fontsize=10, fontweight="bold",
+                  ha="right", va="center")
+        side.set_xlim(-1, 1)
+        side.set_ylim(-6, top + 16)
+        for sp in ("top", "right", "bottom"):
+            side.spines[sp].set_visible(False)
+        side.spines["left"].set_color(t["rule"])
+        side.spines["left"].set_position(("axes", 1.03))
+        side.yaxis.tick_right()
+        side.yaxis.set_label_position("right")
+        side.tick_params(axis="y", colors=t["text2"], labelsize=8.5)
+        side.set_ylabel("gap between the membranes, nm", color=t["text2"], fontsize=9)
+        side.set_xticks([])
+        side.patch.set_alpha(0)
+        # plan: the pipeline's circles, redrawn at the section's scale
+        for c, color in zip(circles, colors):
+            plan_ax.add_patch(plt.Circle((0, 0), c.get_radius() / circles[0].get_radius(), facecolor=color,
+                                         edgecolor=t["surface"], lw=1.5))
+        plan_ax.set_xlim(-1, 1)
+        plan_ax.set_ylim(-1, 1)
+        plan_ax.set_aspect("equal")
+        plan_ax.axis("off")
+        handles = [matplotlib.patches.Patch(facecolor=col) for col in colors[:len(legend)]]
+        leg = plan_ax.legend(handles, legend, loc="center left", bbox_to_anchor=(1.08, 0.5), frameon=False,
+                             fontsize=8.5, handlelength=1.2, labelspacing=0.8)
+        for x in leg.get_texts():
+            x.set_color(t["text"])
+        fig.text(0.42, 0.955, "section through the contact", color=t["text2"], fontsize=9, ha="center")
+        fig.text(0.42, 0.515, "the contact seen from above", color=t["text2"], fontsize=9, ha="center")
         path = out / f"bullseye_{mode}.svg"
         fig.savefig(path, transparent=True, bbox_inches="tight", pad_inches=0.05, metadata={"Date": None})
         plt.close(fig)
@@ -378,6 +598,8 @@ def main() -> int:
     ap.add_argument("--alphafold", type=Path, required=True, help="directory of AF-<acc>-F1-model_v6.pdb files")
     ap.add_argument("--n", type=int, default=20, help="proteins in the monocyte scene")
     ap.add_argument("--seed", type=int, default=3, help="random seed for sampling the scene")
+    ap.add_argument("--igg", type=Path, default=REPO / "downloads" / "pdb" / "1HZH.pdb",
+                    help=f"an intact IgG structure (downloaded from {IGG_PDB} if absent)")
     a = ap.parse_args()
 
     heights, parts = load_run(a.run_dir)
@@ -396,10 +618,6 @@ def main() -> int:
     mono["abundance"] = mono[cols].mean(axis=1)
     mono = mono[mono["abundance"] > 0].merge(heights[["ID link_first", "ID", "total_height", "Entry name_first"]],
                                              left_on="ID link", right_on="ID link_first", suffixes=("_m", ""))
-    # a protein with no AlphaFold model (too long to predict, e.g. LRP1) would be a bare capsule
-    has_model = set(parts.loc[parts["methods"] == "alphafold", "ID"])
-    mono = mono[mono["ID"].isin(has_model)
-                & mono["ID link"].map(lambda acc: (a.alphafold / f"AF-{acc}-F1-model_v6.pdb").is_file())]
     rng = np.random.default_rng(a.seed)
     picks = rng.choice(len(mono), size=a.n, replace=True, p=(mono["abundance"] / mono["abundance"].sum()).to_numpy())
     objs, cache = [], {}
@@ -407,14 +625,18 @@ def main() -> int:
         r = mono.iloc[i]
         acc = r["ID link"]
         if acc not in cache:
-            hr = heights[heights["ID link_first"] == acc].iloc[0]
-            it = layout(hr, parts, gff)
+            it = protein(acc, heights, parts, gff, a.alphafold)
             cache[acc] = build(it, a.alphafold, color_for(it["total"], lo, hi))
         objs.append((str(r["Gene names  (primary )"]).split(";")[0], cache[acc]))
     scene_figure(objs, OUT)
 
     # a monocyte against a HER2+ cancer cell with anti-HER2: the pairs, and the bullseye
     contact_figure(contact_pairs(a.run_dir, heights, parts, a.alphafold), heights, parts, gff, a.alphafold, OUT)
+    if not a.igg.is_file():
+        import urllib.request
+        a.igg.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(IGG_PDB, a.igg)
+    bridge_figure(a.run_dir, heights, parts, gff, a.alphafold, a.igg, OUT)
     bullseye_figure(a.run_dir, OUT)
     return 0
 

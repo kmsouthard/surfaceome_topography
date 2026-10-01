@@ -8,13 +8,14 @@ the gaps between two cells in contact.
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/monocyte_surface_dark.svg">
     <img src="docs/img/monocyte_surface_light.svg" width="100%"
-         alt="Twenty surface proteins of a classical monocyte drawn to scale on a membrane, from AlphaFold structures, with grey capsules for disordered regions">
+         alt="Twenty surface proteins of a classical monocyte drawn to scale on a membrane, from AlphaFold structures, with grey capsules for regions without a structure">
   </picture>
   <br>
   <sub>Twenty proteins sampled by abundance from a classical monocyte's surface (Ravenhill et al.
-  2020), among those with an AlphaFold model, drawn to scale with
-  <a href="https://github.com/jordisr/cellscape">CellScape</a> by Jordi Silvestre-Ryan and oriented
-  by their topology; grey capsules are disordered regions or domains.</sub>
+  2020), drawn to scale with <a href="https://github.com/jordisr/cellscape">CellScape</a> by Jordi
+  Silvestre-Ryan and oriented by their topology. Grey capsules are height without a structure:
+  disordered regions, domains, or a whole protein with no AlphaFold model, like LRP1, which is
+  shortened at the break.</sub>
 </p>
 
 > **Status.** Analysis code for a manuscript in preparation. Result tables and figures will be
@@ -72,21 +73,39 @@ cell, the pairs both can form give the distribution of gaps between the membrane
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/contact_dark.svg">
-    <img src="docs/img/contact_light.svg" width="440"
-         alt="Protein pairs spanning the gap between a monocyte membrane above and a HER2-positive breast cancer cell membrane below, one pair per band of gap heights">
+    <img src="docs/img/contact_light.svg" width="520"
+         alt="Protein pairs spanning the gap between an NK cell membrane above and a HER2-positive breast cancer cell membrane below, one pair per band of gap heights">
   </picture>
   <br>
+  <sub>An NK cell against a HER2-positive breast cancer cell treated with trastuzumab (anti-HER2).
+  In each band of gap heights, the pair holding most of it among pairs of two single proteins whose
+  height is the sum of the partners' (NK-cell partner blue, cancer-cell partner orange), labelled
+  with its height; drawn heights are illustrative.</sub>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/img/bridge_dark.svg">
+    <img src="docs/img/bridge_light.svg" width="560"
+         alt="An antibody bridge: HER2 on the cancer cell, trastuzumab lying across its membrane-proximal epitope, and the Fc receptor CD16 hanging from the NK cell onto the antibody's Fc">
+  </picture>
+  <br>
+  <sub>The same contact's antibody bridge, as the pipeline models it: trastuzumab binds HER2 next to
+  the membrane, so the gap is the Fc receptor (CD16, FCGR3A) plus the antibody's 3.24 nm, and HER2
+  must fit beneath. The antibody is an intact human IgG1 (PDB 1HZH).</sub>
+</p>
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/bullseye_dark.svg">
-    <img src="docs/img/bullseye_light.svg" width="640"
-         alt="Bullseye of the same contact: nested rings for gaps of 10-20, 20-30, 30-40, 40-50 and over 50 nm, sized by their share of the contact">
+    <img src="docs/img/bullseye_light.svg" width="620"
+         alt="The same contact in section and from above: the membranes step apart from about 8 nm at the centre to about 106 nm at the rim, and a bullseye of nested rings for the gap bands, sized by their share of the contact">
   </picture>
   <br>
-  <sub>A monocyte against a HER2-positive breast cancer cell, with an anti-HER2 antibody. Top: in
-  each band of gap heights, the pair that holds most of it among pairs of two single proteins
-  whose height is the sum of the partners' (monocyte partner blue, cancer-cell partner orange),
-  labelled with its height; drawn heights are illustrative. Bottom: the whole contact (Figure 6),
-  one ring per band, each ring's area its share of the contact.</sub>
+  <sub>The whole contact (Figure 6). Below, the bullseye: one ring per band of gap heights, each
+  ring's area its share of the contact. Above, a section through its centre: over each ring, the
+  membranes stand at the mean gap of the pairs holding it. Radius is share of the contact, not
+  distance.</sub>
 </p>
 
 [`docs/METHODS.md`](docs/METHODS.md) gives each rule, its parameters and its basis.

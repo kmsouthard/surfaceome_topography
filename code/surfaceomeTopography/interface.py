@@ -357,14 +357,14 @@ BULLSEYE_COLORS = ("#8C7976", "#D8CECD", "#8CA592", "#CDD9D3", "#698C79", "#FFFF
 
 
 def plot_contact_bullseye(pairs: pd.DataFrame, weight: str = "interface_shared",
-                          bands=BULLSEYE_BANDS, names=("immune", "cancer")):
+                          bands=BULLSEYE_BANDS, names=("immune", "cancer"), colors=BULLSEYE_COLORS):
     """The contact as nested circles, one ring per band of gap heights.
 
     Each circle's area is the share of the contact held at gaps below a band's upper edge, so the
     outer circle is the whole contact and each ring is one band: 50 nm and over, 40-50, ..., 10-20,
     with the contact under 10 nm left white at the centre. The legend names each ring by the pair
     holding most of it, with the ring's share of the contact and that pair's share of the ring.
-    Returns the figure.
+    ``colors`` gives the rings from the outside in, then the centre. Returns the figure.
     """
     import matplotlib.pyplot as plt
 
@@ -375,7 +375,7 @@ def plot_contact_bullseye(pairs: pd.DataFrame, weight: str = "interface_shared",
     edges = [np.inf, *sorted(bands, reverse=True)]
     fig, ax = plt.subplots(figsize=(5, 5))
     handles, legend = [], []
-    for i, (upper, color) in enumerate(zip(edges, BULLSEYE_COLORS)):
+    for i, (upper, color) in enumerate(zip(edges, colors)):
         circle = plt.Circle((0.5, 0.5), np.sqrt(share[gap < upper].sum() / np.pi), color=color)
         ax.add_artist(circle)
         if i + 1 < len(edges):
