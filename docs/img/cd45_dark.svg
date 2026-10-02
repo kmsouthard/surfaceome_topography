@@ -1404,7 +1404,8 @@ L 52.237445 24.956734
    </g>
    <g id="text_4">
     <text style="fill: #c3c2b7; font: 9.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(118.96676 86.607424)">residues 26–225, 9 glycosylation sites;</text>
-    <text style="fill: #c3c2b7; font: 9.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(118.96676 98.385049)">a worm-like chain, stiffened by its glycans</text>
+    <text style="fill: #c3c2b7; font: 9.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(118.96676 98.281142)">a worm-like chain, persistence length</text>
+    <text style="fill: #c3c2b7; font: 9.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(118.96676 109.954861)">set by its glycan density</text>
    </g>
    <g id="text_5">
     <text style="fill: #ffffff; font: 700 13px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start" x="237.954276" y="22.1627" transform="rotate(-0 237.954276 22.1627)">41.1 nm</text>

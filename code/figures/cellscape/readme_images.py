@@ -261,7 +261,7 @@ def cd45_figure(item: dict, obj: dict, row: pd.Series, parts: pd.DataFrame, out:
         bx = x0 * 2 + obj["width"] + 12
         labels = {"structure": (f"Folded region · {h:.1f} nm", f"AlphaFold model, residues {s}–{e}"),
                   "after": (f"Disordered region · {item['after']:.1f} nm",
-                            f"residues {ds}–{de}, {glycans} glycosylation sites;\na worm-like chain, stiffened by its glycans")}
+                            f"residues {ds}–{de}, {glycans} glycosylation sites;\na worm-like chain, persistence length\nset by its glycan density")}
         for name, y0, y1 in obj["segments"]:
             if y1 - y0 <= 0 or name not in labels:
                 continue

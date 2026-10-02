@@ -2,6 +2,9 @@
 
 A pipeline to estimate the heights of human cell-surface proteins
 
+This work was done by Kaden Southard in [Daniel Fletcher's lab](https://fletchlab.berkeley.edu/),
+Department of Bioengineering, University of California, Berkeley.
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/monocyte_surface_dark.svg">
@@ -30,7 +33,7 @@ python code/run_notebooks.py out
 `fetch_restricted_inputs.py` downloads three inputs that are not included in the repository
 (about 45 MB).
 
-writes tables to `out/database/` and
+The run writes tables to `out/database/` and
 `out/tables/`, figures to `out/figures/`, and the executed notebooks to `out/notebooks/`.
 
 ## The method
@@ -43,7 +46,7 @@ assigned to one source, in this order of preference:
 | source | height it contributes |
 |---|---|
 | AlphaFold v6 model, trimmed to its confident span | longest dimension of the model's inertia-axis bounding box |
-| disordered segment (MobiDB, and low-confidence AlphaFold stretches) | end-to-end distance of a worm-like chain, stiffer with more glycosylation |
+| disordered segment (MobiDB, and low-confidence AlphaFold stretches) | end-to-end distance of a worm-like chain whose persistence length is set by its glycan density |
 | Pfam domain not covered by a model | the family's height, measured on solved structures as how far one domain advances its chain |
 | any residue left | 0.04 nm |
 
@@ -99,7 +102,7 @@ model of the complex, or partners that bind side by side).
   <br>
   <sub>The whole contact (Figure 6). Below, the bullseye: one ring per band of gap heights, each
   ring's area its share of the contact. Above, a section through its centre: over each ring, the
-  membranes stand at the mean gap of the pairs holding it. Radius is and estimated share of the contact.</sub>
+  membranes stand at the mean gap of the pairs holding it. Radius is an estimated share of the contact.</sub>
 </p>
 
 [`docs/METHODS.md`](docs/METHODS.md) gives each rule, its parameters and its basis.
@@ -216,6 +219,9 @@ Code: MIT ([`LICENSE`](LICENSE)). Data made for this work (`data/curated/`,
 `data/measurements/`): CC BY 4.0 ([`data/LICENSE`](data/LICENSE)).
 
 ## Acknowledgements
+
+This work was done in the lab of Daniel A. Fletcher in the Department of Bioengineering at the
+University of California, Berkeley ([fletchlab.berkeley.edu](https://fletchlab.berkeley.edu/)).
 
 The protein illustrations, here and in the manuscript, are drawn with
 [CellScape](https://github.com/jordisr/cellscape), Jordi Silvestre-Ryan's tool for turning
