@@ -1,8 +1,6 @@
 # The cell surface topography
 
-This repository estimates how far each of the 3,146 human cell-surface proteins extends from
-the membrane, and uses those heights to describe the surfaces of immune and cancer cells and
-the gaps between two cells in contact.
+A pipeline to estimate the heights of human cell-surface proteins
 
 <p align="center">
   <picture>
@@ -18,9 +16,7 @@ the gaps between two cells in contact.
   shortened at the break.</sub>
 </p>
 
-> **Status.** Analysis code for a manuscript in preparation. Result tables and figures will be
-> posted when it is published; until then, the pipeline regenerates them in about two minutes.
-> Figure numbers follow the draft and may change.
+> **Status.** Analysis code for a manuscript in preparation. Result tables and figures to follow.
 
 ## Quick start
 
@@ -32,9 +28,9 @@ python code/run_notebooks.py out
 ```
 
 `fetch_restricted_inputs.py` downloads three inputs that are not included in the repository
-(about 45 MB) and checks each against the file the analysis was run on.
+(about 45 MB).
 
-The run takes about two minutes on a laptop and writes tables to `out/database/` and
+writes tables to `out/database/` and
 `out/tables/`, figures to `out/figures/`, and the executed notebooks to `out/notebooks/`.
 
 ## The method
@@ -65,10 +61,9 @@ domain or a GPI anchor (`out/database/height_estimates.csv`).
 **2. Cell surfaces.** A cell type's surface is the surfaceome proteins detected in its
 proteome, each weighted by its share of total abundance.
 
-**3. Contacts.** Pairs that bind across two cells come from STRING and CellphoneDB. A pair's
+**3. Contacts.** Pairs that bind across two cells come from manual annotations of the STRING database and CellphoneDB. A pair's
 height is the sum of its partners' heights, unless a recorded rule gives another (a measured
-model of the complex, or partners that bind side by side). For an immune cell facing a cancer
-cell, the pairs both can form give the distribution of gaps between the membranes.
+model of the complex, or partners that bind side by side).
 
 <p align="center">
   <picture>
@@ -104,8 +99,7 @@ cell, the pairs both can form give the distribution of gaps between the membrane
   <br>
   <sub>The whole contact (Figure 6). Below, the bullseye: one ring per band of gap heights, each
   ring's area its share of the contact. Above, a section through its centre: over each ring, the
-  membranes stand at the mean gap of the pairs holding it. Radius is share of the contact, not
-  distance.</sub>
+  membranes stand at the mean gap of the pairs holding it. Radius is and estimated share of the contact.</sub>
 </p>
 
 [`docs/METHODS.md`](docs/METHODS.md) gives each rule, its parameters and its basis.
@@ -163,7 +157,7 @@ code/
   surfaceome_config.py      locates inputs under data/ and outputs under the run directory
   surfaceomeTopography/     the Python library the notebooks use
   database/notebooks/       the method
-  database/inputs/          rebuild the inputs from their public sources (build_inputs.py runs them)
+  database/inputs/          rebuild the inputs from their public sources (build_inputs.py)
   figures/notebooks/        the manuscript figures
   figures/validation/       solved structures and complex models, for checking the heights
   figures/cellscape/        the README illustrations
@@ -196,17 +190,16 @@ docs/img/                   the README illustrations
 | checking the heights | [SIFTS](https://www.ebi.ac.uk/pdbe/docs/sifts/) and the [PDB](https://www.rcsb.org) | 2026-09-08 |
 
 `python code/database/build_inputs.py --list` shows how each input is rebuilt from its source.
-That needs HMMER, PyMOL and about 5 GB of AlphaFold models; running the analysis does not.
+That needs HMMER, PyMOL and about 5 GB of AlphaFold models.
 
 ## Limitations
 
 - **Heights are upper bounds.** They assume each ectodomain is fully extended, so the gaps
   between cells in contact are upper bounds too.
-- **Disordered, heavily glycosylated regions**, such as mucin stalks, rely on a polymer model
-  with few measurements to test it against.
+- **Disordered, heavily glycosylated regions**, such as mucin stalks, rely on a polymer propagation model.
 - **Solved structures are used only to check heights**, and cover a minority of ectodomains.
 - **The surfaceome is inclusive**: it includes some proteins annotated only to intracellular
-  membranes. Each protein carries a location and surface-evidence classification for filtering.
+  membranes. Each protein has location and surface-evidence classification available for filtering if desired.
 - **Contacts assume every pair binds equally well**, since binding strengths are unknown for
   most pairs.
 - **Antibody bridges assume the antibody binds next to the membrane**, as trastuzumab does on
