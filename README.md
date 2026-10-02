@@ -218,6 +218,21 @@ change grouping defaults in ways that alter results without an error.
 Code: MIT ([`LICENSE`](LICENSE)). Data made for this work (`data/curated/`,
 `data/measurements/`): CC BY 4.0 ([`data/LICENSE`](data/LICENSE)).
 
+## References
+
+The databases the height estimates rest on, by what each contributes:
+
+- Proteome, topology and experimental glycosites: UniProt Consortium. UniProt: the Universal Protein Knowledgebase in 2023. *Nucleic Acids Res* 2023;51:D523–D531. [doi:10.1093/nar/gkac1052](https://doi.org/10.1093/nar/gkac1052)
+- Structure prediction: Jumper J, Evans R, Pritzel A, et al. Highly accurate protein structure prediction with AlphaFold. *Nature* 2021;596:583–589. [doi:10.1038/s41586-021-03819-2](https://doi.org/10.1038/s41586-021-03819-2)
+- Structural models: Varadi M, Bertoni D, Magana P, et al. AlphaFold Protein Structure Database in 2024: providing structure coverage for over 214 million protein sequences. *Nucleic Acids Res* 2024;52:D368–D375. [doi:10.1093/nar/gkad1011](https://doi.org/10.1093/nar/gkad1011)
+- Domain families: Mistry J, Chuguransky S, Williams L, et al. Pfam: The protein families database in 2021. *Nucleic Acids Res* 2021;49:D412–D419. [doi:10.1093/nar/gkaa913](https://doi.org/10.1093/nar/gkaa913)
+- The domain search: Eddy SR. Accelerated Profile HMM Searches. *PLoS Comput Biol* 2011;7:e1002195. [doi:10.1371/journal.pcbi.1002195](https://doi.org/10.1371/journal.pcbi.1002195)
+- Solved structures, for the domain heights: Berman HM, Westbrook J, Feng Z, et al. The Protein Data Bank. *Nucleic Acids Res* 2000;28:235–242. [doi:10.1093/nar/28.1.235](https://doi.org/10.1093/nar/28.1.235)
+- Residue mapping between UniProt and the PDB: Dana JM, Gutmanas A, Tyagi N, et al. SIFTS: updated Structure Integration with Function, Taxonomy and Sequences resource allows 40-fold increase in coverage of structure-based annotations for proteins. *Nucleic Acids Res* 2019;47:D482–D489. [doi:10.1093/nar/gky1114](https://doi.org/10.1093/nar/gky1114)
+- Disordered regions: Piovesan D, Del Conte A, Clementel D, et al. MobiDB: 10 years of intrinsically disordered proteins. *Nucleic Acids Res* 2023;51:D438–D444. [doi:10.1093/nar/gkac1065](https://doi.org/10.1093/nar/gkac1065)
+- Experimental glycosites: York WS, Mazumder R, Ranzinger R, et al. GlyGen: Computational and Informatics Resources for Glycoscience. *Glycobiology* 2020;30:72–73. [doi:10.1093/glycob/cwz080](https://doi.org/10.1093/glycob/cwz080)
+- Predicted glycosites: Li F, Li C, Wang M, et al. GlycoMine: a machine learning-based approach for predicting N-, C- and O-linked glycosylation in the human proteome. *Bioinformatics* 2015;31:1411–1419. [doi:10.1093/bioinformatics/btu852](https://doi.org/10.1093/bioinformatics/btu852)
+
 ## Acknowledgements
 
 This work was done in the lab of Daniel A. Fletcher in the Department of Bioengineering at the
