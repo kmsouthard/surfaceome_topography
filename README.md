@@ -2,9 +2,6 @@
 
 A pipeline to estimate the heights of human cell-surface proteins
 
-This work was done by Kaden Southard in [Daniel Fletcher's lab](https://fletchlab.berkeley.edu/),
-Department of Bioengineering, University of California, Berkeley.
-
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/img/monocyte_surface_dark.svg">
