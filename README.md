@@ -220,8 +220,6 @@ Code: MIT ([`LICENSE`](LICENSE)). Data made for this work (`data/curated/`,
 
 ## References
 
-The databases the height estimates rest on, by what each contributes:
-
 - Proteome, topology and experimental glycosites: UniProt Consortium. UniProt: the Universal Protein Knowledgebase in 2023. *Nucleic Acids Res* 2023;51:D523–D531. [doi:10.1093/nar/gkac1052](https://doi.org/10.1093/nar/gkac1052)
 - Structure prediction: Jumper J, Evans R, Pritzel A, et al. Highly accurate protein structure prediction with AlphaFold. *Nature* 2021;596:583–589. [doi:10.1038/s41586-021-03819-2](https://doi.org/10.1038/s41586-021-03819-2)
 - Structural models: Varadi M, Bertoni D, Magana P, et al. AlphaFold Protein Structure Database in 2024: providing structure coverage for over 214 million protein sequences. *Nucleic Acids Res* 2024;52:D368–D375. [doi:10.1093/nar/gkad1011](https://doi.org/10.1093/nar/gkad1011)
