@@ -10,8 +10,7 @@
 <header class="top">
   <div class="wrap">
     <h1>Cell surface topography</h1>
-    <p class="lede">Estimated heights of human cell-surface proteins, the surfaces they make on a cell,
-      and the gaps they hold where two cells meet.</p>
+    <p class="lede">Heights of human cell-surface proteins, cell surfaces, and the gaps between cells.</p>
     <nav class="tabs" role="tablist">
       <button role="tab" data-view="protein" aria-selected="true">Protein</button>
       <button role="tab" data-view="epitope" aria-selected="false">Epitope</button>
@@ -22,7 +21,7 @@
 </header>
 
 <main class="wrap">
-  <p id="loading" class="muted">Loading the tables…</p>
+  <p id="loading" class="muted">Loading…</p>
 
   <section id="view-protein" class="view" hidden>
     <div class="controls">
@@ -52,19 +51,18 @@
     <div class="controls">
       <label>Cell type <select id="surface-a"></select></label>
       <label>Compare with <select id="surface-b"></select></label>
-      <label class="file">Your own cells
+      <label class="file">Upload your own
         <input id="surface-file" type="file" accept=".csv,.tsv,.txt">
       </label>
     </div>
-    <p class="muted small">Your file stays in your browser. It needs a UniProt accession or gene name in the first
-      column and an abundance in the second.</p>
+    <p class="muted small">First column: UniProt accession or gene name. Second column: abundance. The file stays in your browser.</p>
     <div id="surface-body"></div>
   </section>
 
   <section id="view-contact" class="view" hidden>
     <div class="controls">
-      <label>Cell <select id="contact-a"></select></label>
-      <label>Against <select id="contact-b"></select></label>
+      <label>Cell 1 <select id="contact-a"></select></label>
+      <label>Cell 2 <select id="contact-b"></select></label>
       <label>Antibody <select id="contact-ab"></select></label>
       <label id="contact-epitope-label" hidden>Epitope residues
         <input id="contact-epitope" placeholder="e.g. 579-625" autocomplete="off">
@@ -75,40 +73,37 @@
 </main>
 
 <footer class="wrap foot">
-  <p><strong>Read the heights as upper bounds.</strong> Each assumes its ectodomain is fully extended along the
-    membrane normal, so gaps and exclusion are overstated for proteins that bend or tilt. Contacts assume every
-    pair binds equally well.</p>
+  <p><strong>Heights are upper bounds.</strong> Each ectodomain is assumed fully extended. All pairs are assumed to bind equally well.</p>
   <details class="sources">
     <summary>Sources and attribution</summary>
     <dl>
       <dt>Heights</dt>
-      <dd>Estimated by this work from <a href="https://www.uniprot.org">UniProt</a> sequences and topology,
+      <dd><a href="https://www.uniprot.org">UniProt</a> sequences and topology,
         <a href="https://alphafold.ebi.ac.uk">AlphaFold DB</a> models (Jumper et al. 2021; Varadi et al. 2024),
-        <a href="https://www.ebi.ac.uk/interpro/entry/pfam/">Pfam</a> domains, <a href="https://mobidb.org">MobiDB</a> disorder and
-        glycosites from UniProt, <a href="https://www.glygen.org">GlyGen</a> and GlycoMine.</dd>
+        <a href="https://www.ebi.ac.uk/interpro/entry/pfam/">Pfam</a> domains, <a href="https://mobidb.org">MobiDB</a> disorder,
+        and glycosites from UniProt, <a href="https://www.glygen.org">GlyGen</a> and GlycoMine.</dd>
       <dt>Protein annotations</dt>
-      <dd>Location and transmembrane count: UniProt. Surface call: SURFY
-        (Bausch-Fluck et al. 2018, <a href="https://pubmed.ncbi.nlm.nih.gov/30373828/">PMID 30373828</a>). Functional class (receptor, transporter, enzyme,
-        miscellaneous): Almén et al. 2009 (<a href="https://pubmed.ncbi.nlm.nih.gov/19678920/">PMID 19678920</a>), as carried in the SURFY table. CD numbers: the SURFY table.</dd>
+      <dd>Location and transmembrane count: UniProt. Surface call and CD numbers: SURFY
+        (Bausch-Fluck et al. 2018, <a href="https://pubmed.ncbi.nlm.nih.gov/30373828/">PMID 30373828</a>).
+        Functional class: Almén et al. 2009 (<a href="https://pubmed.ncbi.nlm.nih.gov/19678920/">PMID 19678920</a>).</dd>
       <dt>Protein drawings</dt>
-      <dd>AlphaFold models outlined with <a href="https://github.com/jordisr/cellscape">CellScape</a>
+      <dd><a href="https://github.com/jordisr/cellscape">CellScape</a>
         (Silvestre-Ryan, Fletcher and Holmes 2022, <a href="https://doi.org/10.1101/2022.06.14.495869">bioRxiv</a>).</dd>
       <dt>Cell surfaces</dt>
-      <dd>Protein abundances from <a href="https://www.ebi.ac.uk/gxa/home">Expression Atlas</a> E-PROT-1
-        (Kim et al. 2014, <a href="https://pubmed.ncbi.nlm.nih.gov/24870542/">PMID 24870542</a>) and E-PROT-27, and monocyte subsets from
-        Ravenhill et al. 2020 (<a href="https://pubmed.ncbi.nlm.nih.gov/32165698/">PMID 32165698</a>).</dd>
+      <dd><a href="https://www.ebi.ac.uk/gxa/home">Expression Atlas</a> E-PROT-1
+        (Kim et al. 2014, <a href="https://pubmed.ncbi.nlm.nih.gov/24870542/">PMID 24870542</a>) and E-PROT-27.
+        Monocyte subsets: Ravenhill et al. 2020 (<a href="https://pubmed.ncbi.nlm.nih.gov/32165698/">PMID 32165698</a>).</dd>
       <dt>Interactions</dt>
-      <dd>Candidate pairs from <a href="https://string-db.org">STRING</a> and <a href="https://www.cellphonedb.org">CellphoneDB</a>;
-        which bind across two cells is annotated by this work, each call with its citation in the repository.</dd>
+      <dd><a href="https://string-db.org">STRING</a> and <a href="https://www.cellphonedb.org">CellphoneDB</a> pairs, annotated here as cis or trans.</dd>
       <dt>Antibody epitopes</dt>
-      <dd>Read from structures in the <a href="https://www.rcsb.org">PDB</a>, or from the mapping paper cited beside each antibody.</dd>
+      <dd><a href="https://www.rcsb.org">PDB</a> structures, or the paper cited beside each antibody.</dd>
       <dt>Rules</dt>
-      <dd>Exclusion of a protein about 5 nm taller than a gap: Schmid et al. 2016 (<a href="https://pubmed.ncbi.nlm.nih.gov/27980602/">PMID 27980602</a>).
-        The 10 nm phagocytosis range: Bakalar et al. 2018 (<a href="https://pubmed.ncbi.nlm.nih.gov/29958103/">PMID 29958103</a>).
-        Kinetic segregation of CD45 and CD148: Davis and van der Merwe 2006 (<a href="https://pubmed.ncbi.nlm.nih.gov/16855606/">PMID 16855606</a>);
+      <dd>Exclusion at 5 nm taller than the gap: Schmid et al. 2016 (<a href="https://pubmed.ncbi.nlm.nih.gov/27980602/">PMID 27980602</a>).
+        10 nm phagocytosis range: Bakalar et al. 2018 (<a href="https://pubmed.ncbi.nlm.nih.gov/29958103/">PMID 29958103</a>).
+        Kinetic segregation: Davis and van der Merwe 2006 (<a href="https://pubmed.ncbi.nlm.nih.gov/16855606/">PMID 16855606</a>);
         Cordoba et al. 2013 (<a href="https://pubmed.ncbi.nlm.nih.gov/23580664/">PMID 23580664</a>).</dd>
       <dt>This work</dt>
-      <dd>The Fletcher Lab, Department of Bioengineering, University of California, Berkeley
+      <dd>Fletcher Lab, Department of Bioengineering, UC Berkeley
         (<a href="https://fletchlab.berkeley.edu/">fletchlab.berkeley.edu</a>).</dd>
     </dl>
   </details>

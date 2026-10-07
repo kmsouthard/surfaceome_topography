@@ -59,6 +59,12 @@ const status = (f) => `<span class="status ${f}">${FIT[f]}</span>`;
 
 /* ---------- small pieces ---------- */
 
+// The pipeline's notes on a protein, in plain words.
+const NOTES = [[/mid-box/, "Orientation on the membrane is uncertain."], [/^loop: membrane/, "Extracellular loop. Heights within it are approximate."],
+  [/^no model/, "No AlphaFold model. Residues placed by sequence position."], [/^loop outside/, "Loop residues outside the model are not placed."]];
+const plainNote = (n) => (NOTES.find(([re]) => re.test(n)) || [0, n[0].toUpperCase() + n.slice(1) + "."])[1];
+const noteList = (text) => [...new Set(String(text || "").split("; ").filter(Boolean).map(plainNote))];
+
 function tile(label, value, sub = "", hero = false) {
   return `<div class="tile"><div class="label">${esc(label)}</div><div class="value${hero ? " hero" : ""}">${value}</div>` +
     (sub ? `<div class="sub">${sub}</div>` : "") + "</div>";
@@ -195,7 +201,7 @@ function bullseye(rows) {
     cum -= b.share;
   }
   const legend = bands.map((b, i) => `<span><span class="swatch${i ? "" : " open"}" style="background:var(--band-${i})"></span><strong>${b.label}</strong> · ` +
-    `${pct(b.share * 100)} of the contact${b.top ? ` · ${esc(b.top.name)} (${pct(b.topShare * 100)})` : ""}</span>`).reverse().join("");
+    `${pct(b.share * 100)}${b.top ? ` · ${esc(b.top.name)} (${pct(b.topShare * 100)})` : ""}</span>`).reverse().join("");
   return `<div class="grid" style="margin-top:0;grid-template-columns:minmax(200px,260px) 1fr;align-items:center">` +
     `<svg viewBox="0 0 260 260" style="max-width:260px;margin:0 auto" role="img" aria-label="Share of the contact by gap height">${g}</svg>` +
     `<div class="legend column">${legend}</div></div>`;
@@ -277,9 +283,9 @@ function cartoonFigure(p, c) {
     `<rect x="16" y="${base + 2}" width="${W - 32}" height="14" rx="3" fill="var(--grid)"/>` + sh.svg(x, base, k) +
     `<line x1="20" x2="${20 + bar * 10 * k}" y1="${H - 8}" y2="${H - 8}" stroke="var(--ink-2)" stroke-width="2" stroke-linecap="round"/>` +
     `<text x="${26 + bar * 10 * k}" y="${H - 4}">${bar} nm</text></svg>` +
-    `<p class="muted small" style="margin:8px 0 0">${c ? "Its AlphaFold model outlined with CellScape and oriented by its topology" +
-      (c.before + c.after > 0 ? "; grey capsules are height without a structure" : "") + ". The drawn extent is illustrative: the height is the number above."
-      : "No AlphaFold model covers this ectodomain, so its whole height is drawn as a capsule."}</p>`;
+    `<p class="muted small" style="margin:8px 0 0">${c ? "AlphaFold model outlined with CellScape." +
+      (c.before + c.after > 0 ? " Grey capsules are height without a structure." : "") + " Drawn height is illustrative."
+      : "No AlphaFold model. Height drawn as a capsule."}</p>`;
 }
 
 // How a scene's proteins are coloured: each its own hue, by functional class, or by height on one ramp.
@@ -326,7 +332,7 @@ async function sceneFigure(items, seed, mode) {
     `<text x="${VW - bar * 10 * k - 10}" y="12" text-anchor="end">${bar} nm</text>`;
   const legend = mode === "class" ? `<div class="legend">${CLASSES.filter(([name]) => picks.some((q) => classOf(q) === name))
       .map(([name, c]) => `<span><span class="swatch" style="background:var(${c})"></span>${name}</span>`).join("")}` +
-      `<span class="muted">Functional class from Almén et al. 2009, as carried in the SURFY table</span></div>`
+      `<span class="muted">Class: Almén et al. 2009</span></div>`
     : mode === "height" ? `<div class="legend"><span>shorter</span><span>${RAMP.map((c) => `<span class="swatch" style="background:${c};margin-right:1px"></span>`).join("")}</span><span>taller (2 to 60 nm)</span></div>` : "";
   return `<div class="scroll"><svg viewBox="0 0 ${VW} ${H}" style="min-width:560px" role="img" aria-label="Proteins sampled from the surface by abundance, drawn to scale">${g}</svg></div>${legend}`;
 }
@@ -354,7 +360,7 @@ function bridgeTable(p, epitope) {
 
 async function renderProtein(p) {
   const body = $("protein-body");
-  if (!p) { body.innerHTML = `<p class="muted">No protein of the height table matches.</p>`; return; }
+  if (!p) { body.innerHTML = `<p class="muted">No match.</p>`; return; }
   $("protein-search").value = p.gene;
   const cartoon = await cartoonOf(p.acc);
   const curated = S.meta.antibodies.find((a) => a.acc === p.acc);
@@ -363,7 +369,7 @@ async function renderProtein(p) {
     .map((x) => ({ acc: x[0] === p.acc ? x[1] : x[0], gap: x[4], source: x[5] })).sort((a, b) => a.gap - b.gap);
   const methods = (p.methods || "").split(",").map((m) => ({ alphafold: "AlphaFold model", disorder: "disorder model",
     domain: "domain counting", sequence: "sequence length" }[m] || m)).join(", ");
-  const held = { first: "anchored at its C-terminal end", last: "anchored at its N-terminal end", loop: "a loop anchored at both ends" }[p.anchor] || "";
+  const held = { first: "C-terminal anchor", last: "N-terminal anchor", loop: "loop" }[p.anchor] || "";
 
   body.innerHTML =
     `<div class="title-row"><h2>${esc(p.gene)}</h2><span class="ink-2">${esc((p.name || "").split(" (")[0])}</span>` +
@@ -371,24 +377,24 @@ async function renderProtein(p) {
     `<div class="chips">${[p.location, p.tm != null ? `${p.tm} transmembrane segment${p.tm === 1 ? "" : "s"}` : null, p.cd,
       p.surfy ? `SURFY: ${p.surfy}` : null, p.family && p.family !== "Unclassified" ? p.family : null]
       .filter(Boolean).map((c) => `<span class="chip">${esc(c)}</span>`).join("")}</div>` +
-    `<p class="muted small" style="margin:6px 0 0">Location and topology from UniProt; surface call from SURFY (Bausch-Fluck et al. 2018); functional class from Almén et al. 2009.</p>` +
-    `<div class="tiles">${tile("Height", fmt(p.height, 1) + " nm", "an upper bound: fully extended", true)}` +
-    tile("Percentile", `taller than ${pct(taller)}`, `of ${S.proteins.length.toLocaleString()} surfaceome proteins`) +
+    `<p class="muted small" style="margin:6px 0 0">Location and topology: UniProt. Surface call: SURFY. Class: Almén et al. 2009.</p>` +
+    `<div class="tiles">${tile("Height", fmt(p.height, 1) + " nm", "upper bound", true)}` +
+    tile("Percentile", `taller than ${pct(taller)}`, `of ${S.proteins.length.toLocaleString()} proteins`) +
     tile("Ectodomain", `${p.ecd[0]}–${p.ecd[1]}`, `${p.ecd[1] - p.ecd[0]} residues${held ? ", " + held : ""}`) +
     tile("Method", `<span style="font-size:16px">${esc(methods || "–")}</span>`) + `</div>` +
-    p.notes.map((n) => `<p class="note">${esc(n[0].toUpperCase() + n.slice(1))}.</p>`).join("") +
-    `<div class="grid"><div class="card"><h3>${esc(p.gene)} on the membrane</h3>${cartoonFigure(p, cartoon)}</div>` +
+    noteList(p.notes.join("; ")).map((n) => `<p class="note">${esc(n)}</p>`).join("") +
+    `<div class="grid"><div class="card"><h3>Structure</h3>${cartoonFigure(p, cartoon)}</div>` +
     `<div class="card"><h3>Height by segment</h3>${stackFigure(p, null)}${stackLegend(p)}` +
-    `<p class="small" style="margin:10px 0 0"><a href="#epitope/${esc(p.gene)}">Predict an antibody epitope on ${esc(p.gene)}</a>` +
-    (curated ? ` <span class="muted">(${esc(curated.antibody.split(" (")[0])} targets it)</span>` : "") + `</p></div></div>` +
-    `<div class="card"><h3>Height relative to the surfaceome</h3>` +
+    `<p class="small" style="margin:10px 0 0"><a href="#epitope/${esc(p.gene)}">Antibody epitope on ${esc(p.gene)}</a>` +
+    (curated ? ` <span class="muted">(${esc(curated.antibody.split(" (")[0])})</span>` : "") + `</p></div></div>` +
+    `<div class="card"><h3>Height among surface proteins</h3>` +
     histogram([{ name: "Surfaceome proteins", color: "--series-1", items: S.proteins.map((q) => [q.height, 1]) }],
       { ylabel: "proteins", unit: "", marker: { value: p.height, label: `${p.gene} ${fmt(p.height, 1)} nm` } }) + `</div>` +
     `<div class="card"><h3>Trans binding partners (${partners.length})</h3>` + (partners.length
       ? `<div class="scroll"><table><thead><tr><th>Partner</th><th class="num">partner height, nm</th><th class="num">gap, nm</th><th>source</th></tr></thead><tbody>` +
         partners.map((x) => { const q = S.byAcc[x.acc]; return `<tr><td>${q ? `<a href="#protein/${esc(q.gene)}">${esc(q.gene)}</a>` : esc(x.acc)}</td>` +
           `<td class="num">${q ? fmt(q.height, 1) : "–"}</td><td class="num">${fmt(x.gap, 1)}</td><td>${esc(x.source)}</td></tr>`; }).join("") + `</tbody></table></div>`
-      : `<p class="muted small">No trans interaction is recorded for this protein.</p>`) + `</div>`;
+      : `<p class="muted small">None recorded.</p>`) + `</div>`;
 }
 
 function stackLegend(p) {
@@ -403,10 +409,10 @@ const pubmed = (pmid) => `<a href="https://pubmed.ncbi.nlm.nih.gov/${esc(pmid)}/
 // Where a curated epitope comes from, as a sentence: a structure, peptide mapping, or a domain.
 function epitopeSource(ab) {
   const drug = esc(ab.antibody.split(" (")[0]), gene = esc(ab.gene);
-  if (ab.basis === "structure") return `<span class="tag">curated · structure</span> Residues within 4 Å of ${drug} in its structure with ${gene} (PDB ${esc(ab.pdb)}, ${pubmed(ab.pmid)}).`;
-  if (ab.basis === "peptide mapping") return `<span class="tag">curated · peptide mapping</span> The ${gene} peptides ${drug} binds (${pubmed(ab.pmid)}). No structure shows the contact residues, so the epitope is no finer than the peptides.`;
-  if (ab.basis === "domain") return `<span class="tag">curated · domain</span> The ${gene} domain ${drug} is reported to bind (${pubmed(ab.pmid)}). The whole domain stands in for the epitope, so its height is the domain's middle.`;
-  return `<span class="tag warn">no epitope known</span> Nothing shows where ${drug} binds ${gene}. The pipeline places its epitope at the membrane, the smallest gap its bridge can hold.`;
+  if (ab.basis === "structure") return `<span class="tag">curated · structure</span> ${gene} residues within 4 Å of ${drug} (PDB ${esc(ab.pdb)}, ${pubmed(ab.pmid)}).`;
+  if (ab.basis === "peptide mapping") return `<span class="tag">curated · peptide mapping</span> ${gene} peptides bound by ${drug} (${pubmed(ab.pmid)}). Coarser than a structure.`;
+  if (ab.basis === "domain") return `<span class="tag">curated · domain</span> ${gene} domain bound by ${drug} (${pubmed(ab.pmid)}). Coarser than a structure.`;
+  return `<span class="tag warn">no epitope known</span> No epitope known for ${drug}. Placed at the membrane.`;
 }
 
 // The curated antibodies at a glance: where each binds, and the gap its bridge to CD16 would hold.
@@ -429,7 +435,7 @@ function antibodyTable(current) {
 
 async function renderEpitope(p, residuesText) {
   const body = $("epitope-body");
-  if (!p) { body.innerHTML = `<p class="muted">No protein of the height table matches.</p>`; return; }
+  if (!p) { body.innerHTML = `<p class="muted">No match.</p>`; return; }
   const ab = S.meta.antibodies.find((a) => a.acc === p.acc);
   const text = (residuesText ?? ab?.residues ?? "").replace(/\s/g, "");
   $("epitope-antigen").value = p.gene;
@@ -442,30 +448,28 @@ async function renderEpitope(p, residuesText) {
 
   let source = "", result = "";
   if (isCurated) source = epitopeSource(ab);
-  else if (text) source = `<span class="tag warn">uncurated</span> Residues as entered. Nothing checks that an antibody binds them.`;
-  else if (ab) source = epitopeSource(ab) + " Enter residues to test another position.";
+  else if (text) source = `<span class="tag warn">uncurated</span> Residues as entered. Not checked against any antibody.`;
+  else if (ab) source = epitopeSource(ab);
 
-  if (!text) result = `<p class="muted">Enter the residues an antibody binds on ${esc(p.gene)} (its ectodomain is ${p.ecd[0]}–${p.ecd[1]}) to predict the epitope's height, ` +
-    `the membrane gap of the antibody bridge to each Fc receptor, and whether the phosphatases are excluded from that gap.</p>`;
-  else if (!residues) result = `<p class="note">Write residues as ranges and single positions, like 579-625,630.</p>`;
-  else if (!epitope) result = `<p class="note">None of those residues lies in the ectodomain of ${esc(p.gene)} (${p.ecd[0]}–${p.ecd[1]}).</p>`;
+  if (!text) result = `<p class="muted">Enter the residues an antibody binds on ${esc(p.gene)} (ectodomain ${p.ecd[0]}–${p.ecd[1]}).</p>`;
+  else if (!residues) result = `<p class="note">Use ranges and single positions, e.g. 579-625,630.</p>`;
+  else if (!epitope) result = `<p class="note">No residues in the ectodomain (${p.ecd[0]}–${p.ecd[1]}).</p>`;
   else {
     const within = epitope.height <= S.meta.phagocytosis_range;
-    result = `<div class="tiles">${tile("Epitope height", fmt(epitope.height, 1) + " nm", `its residues span ${fmt(epitope.lowest, 1)}–${fmt(epitope.highest, 1)} nm`, true)}` +
-      tile("Antigen height", fmt(p.height, 1) + " nm", `<a href="#protein/${esc(p.gene)}">${esc(p.gene)}</a>, fully extended`) +
-      tile("Distance from the target membrane", within ? "within 10 nm" : "beyond 10 nm", "phagocytosis falls beyond 10 nm (Bakalar et al. 2018)") + `</div>` +
-      (epitope.outside ? `<p class="note">${epitope.outside} of the residues lie outside the ectodomain and were left out.</p>` : "") +
-      p.notes.map((n) => `<p class="note">${esc(n[0].toUpperCase() + n.slice(1))}.</p>`).join("") +
+    result = `<div class="tiles">${tile("Epitope height", fmt(epitope.height, 1) + " nm", `residues span ${fmt(epitope.lowest, 1)}–${fmt(epitope.highest, 1)} nm`, true)}` +
+      tile("Antigen height", fmt(p.height, 1) + " nm", `<a href="#protein/${esc(p.gene)}">${esc(p.gene)}</a>`) +
+      tile("Phagocytosis range", within ? "within 10 nm" : "beyond 10 nm", "Bakalar et al. 2018") + `</div>` +
+      (epitope.outside ? `<p class="note">${epitope.outside} residues outside the ectodomain were left out.</p>` : "") +
+      noteList(p.notes.join("; ")).map((n) => `<p class="note">${esc(n)}</p>`).join("") +
       `<div class="grid" style="grid-template-columns:minmax(240px,320px) minmax(300px,1fr)"><div class="card"><h3>Position on ${esc(p.gene)}</h3>${stackFigure(p, epitope)}${stackLegend(p)}` +
-      `<p class="muted small" style="margin:8px 0 0">The line marks the epitope's mean height; the bar beside it, the span of its residues.</p></div>` +
-      `<div class="card"><h3>Predicted gap of the antibody bridge, by Fc receptor</h3>` + bridgeTable(p, epitope) +
-      `<p class="muted small">Gap = the taller of (epitope height + Fc receptor + ${S.meta.antibody_length} nm of antibody) and the antigen itself, which must fit beneath. ` +
-      `A phosphatase fits when no taller than the gap and is excluded when ${S.meta.exclusion_margin} nm or more taller. The range is the gap at the epitope's lowest and highest residue.</p></div></div>`;
+      `<p class="muted small" style="margin:8px 0 0">Line: mean height. Bar: span of the residues.</p></div>` +
+      `<div class="card"><h3>Gap by Fc receptor</h3>` + bridgeTable(p, epitope) +
+      `<p class="muted small">Gap = larger of (epitope height + Fc receptor + ${S.meta.antibody_length} nm antibody) and antigen height. ` +
+      `Excluded = ${S.meta.exclusion_margin} nm or more taller than the gap. Range = gap at the lowest and highest epitope residue.</p></div></div>`;
   }
   body.innerHTML = (source ? `<p class="small ink-2" style="margin:10px 0 0">${source}</p>` : "") + result +
     `<div class="card"><h3>Curated antibody epitopes</h3>${antibodyTable(p.acc)}` +
-    `<p class="muted small" style="margin:8px 0 0">Ten epitopes are read from a structure of the antibody on its antigen. Catumaxomab's is from peptide mapping and elotuzumab's is the domain it is reported to bind, ` +
-    `so both are coarser. Tafasitamab and olaratumab have no epitope recorded; the pipeline places them at the membrane, the smallest gap their bridge can hold.</p></div>`;
+    `<p class="muted small" style="margin:8px 0 0">10 from structures, 2 from mapping studies. Tafasitamab and olaratumab have no known epitope and are placed at the membrane.</p></div>`;
 }
 
 /* ---------- cell surface ---------- */
@@ -502,8 +506,8 @@ function renderSurface() {
   if (!sets.length) { $("surface-body").innerHTML = ""; return; }
   const first = sets[0];
   const tiles = sets.length === 1
-    ? tile("Abundance-weighted mean height", fmt(first.stats.mean, 1) + " nm", esc(first.name), true) +
-      tile("Surface proteins detected", first.stats.n.toLocaleString(), "with a height estimate") +
+    ? tile("Mean height", fmt(first.stats.mean, 1) + " nm", "weighted by abundance", true) +
+      tile("Surface proteins detected", first.stats.n.toLocaleString()) +
       tile("Abundance at 30 nm or taller", pct(first.stats.tall))
     : sets.map((s) => tile("Mean height, " + s.name, fmt(s.stats.mean, 1) + " nm",
         `${s.stats.n} proteins · ${pct(s.stats.tall)} of abundance at 30 nm or taller`)).join("");
@@ -511,16 +515,16 @@ function renderSurface() {
   let cum = 0;
   const draw = ++S.draw;
   $("surface-body").innerHTML = `<div class="tiles">${tiles}</div>` +
-    `<div class="card"><div class="title-row" style="margin:0 0 8px"><h3 style="margin:0">The ${esc(first.name)} surface, to scale</h3>` +
+    `<div class="card"><div class="title-row" style="margin:0 0 8px"><h3 style="margin:0">Surface to scale, ${esc(first.name)}</h3>` +
     `<span class="segmented" role="group" aria-label="Colour">${[["varied", "Colourful"], ["class", "By class"], ["height", "By height"]]
       .map(([m, t]) => `<button data-mode="${m}" aria-pressed="${S.sceneMode === m}">${t}</button>`).join("")}</span>` +
     `<button id="resample" class="quiet">Resample</button></div><div id="scene"><p class="muted small">Drawing…</p></div>` +
-    `<p class="muted small" style="margin:8px 0 0">24 proteins sampled in proportion to abundance, so an abundant protein appears more than once. ` +
-    `Structures are AlphaFold models outlined with CellScape; grey capsules are height with no structure. A protein more than twice as tall as the next is cut off, with its height printed.</p></div>` +
+    `<p class="muted small" style="margin:8px 0 0">24 proteins sampled by abundance. AlphaFold models outlined with CellScape. ` +
+    `Grey capsules have no structure. A protein over twice the next tallest is cut off.</p></div>` +
     `<div class="card"><h3>Height distribution, weighted by abundance</h3>` +
     histogram(sets.map((s) => ({ name: s.name, color: s.color, items: s.items.map(([p, w]) => [p.height, w / s.stats.total * 100]) })),
       { ylabel: "% of abundance" }) + `</div>` +
-    `<div class="card"><h3>Most abundant surface proteins, ${esc(first.name)}</h3><div class="scroll"><table><thead><tr><th>Protein</th>` +
+    `<div class="card"><h3>Most abundant proteins, ${esc(first.name)}</h3><div class="scroll"><table><thead><tr><th>Protein</th>` +
     `<th class="num">height, nm</th><th class="num">share of abundance</th><th class="num">cumulative</th></tr></thead><tbody>` +
     top.map(([p, w]) => { const s = w / first.stats.total * 100; cum += s; return `<tr><td><a href="#protein/${esc(p.gene)}">${esc(p.gene)}</a></td>` +
       `<td class="num">${fmt(p.height, 1)}</td><td class="num">${pct(s)}</td><td class="num">${pct(cum)}</td></tr>`; }).join("") +
@@ -559,13 +563,12 @@ async function renderContact() {
     const text = input.value.trim(), residues = text ? parseResidues(text) : null;
     if (ab.residues && text.replace(/\s/g, "") === ab.residues) {
       epitope = ab.height;
-      source = epitopeSource(ab) + ` The epitope stands at ${fmt(epitope, 1)} nm.` + (ab.notes ? ` ${esc(ab.notes[0].toUpperCase() + ab.notes.slice(1))}.` : "");
+      source = epitopeSource(ab) + ` Epitope at ${fmt(epitope, 1)} nm.` + noteList(ab.notes).map((n) => " " + esc(n)).join("");
     } else if (residues && (await epitopeOn(antigen, residues))) {
       epitope = (await epitopeOn(antigen, residues)).height;
-      source = `<span class="tag warn">uncurated</span> Residues as typed, standing at ${fmt(epitope, 1)} nm on ${esc(ab.gene)}; nothing checks that an antibody binds them.`;
+      source = `<span class="tag warn">uncurated</span> Residues as entered, at ${fmt(epitope, 1)} nm. Not checked against any antibody.`;
     } else {
-      source = `<span class="tag warn">at the membrane</span> ` + (text ? "Those residues are not in the ectodomain; " : `Nothing shows where ${esc(ab.antibody)} binds; `) +
-        `the epitope is taken at the membrane, the least gap the bridge can hold.`;
+      source = `<span class="tag warn">at the membrane</span> ` + (text ? "No residues in the ectodomain. " : `No epitope known for ${esc(ab.antibody)}. `) + `Placed at the membrane.`;
     }
   }
   const rows = c.variants[antigen].map(([ia, ib, g, share, bridge, antigenH]) => ({
@@ -588,33 +591,32 @@ async function renderContact() {
 
   $("contact-body").innerHTML =
     (source ? `<p class="small ink-2" style="margin:10px 0 0">${source}</p>` : "") +
-    `<div class="tiles">${tile("Mean membrane gap", fmt(mean, 1) + " nm", "weighted by each interaction's share of the contact", true)}` +
-    tile("Trans interactions", rows.length, antigen ? `${rows.filter((r) => r.bridge).length} through the antibody` : "no antibody") +
-    tile("Contact with a gap under 20 nm", pct(close)) + tile("CD45RO excluded from", pct(roOut), "of the contact, by size") + `</div>` +
-    `<div class="card"><h3>Membrane gap across the contact</h3>${bullseye(rows)}` +
-    `<p class="muted small">Ring area is the share of the contact at that gap height. Each band lists its dominant interaction and that interaction's share of the band.</p></div>` +
-    `<div class="card"><h3>Size-based exclusion from the contact</h3>` +
-    `<p class="small ink-2" style="margin:0 0 10px;max-width:78ch">A protein taller than the local gap is pushed out of it; this is how kinetic segregation clears the phosphatases CD45 and CD148 ` +
-    `from close contacts. Each bar divides the contact area by whether a protein of that height fits beneath the gap there, is within ${S.meta.exclusion_margin} nm of fitting, or is excluded.</p>` +
+    `<div class="tiles">${tile("Mean gap", fmt(mean, 1) + " nm", "weighted by share of the contact", true)}` +
+    tile("Trans interactions", rows.length, antigen ? `${rows.filter((r) => r.bridge).length} antibody bridge${rows.filter((r) => r.bridge).length === 1 ? "" : "s"}` : "") +
+    tile("Contact under 20 nm", pct(close)) + tile("CD45RO excluded from", pct(roOut), "of the contact") + `</div>` +
+    `<div class="card"><h3>Gap heights</h3>${bullseye(rows)}` +
+    `<p class="muted small">Ring area = share of the contact. Each band names its top interaction.</p></div>` +
+    `<div class="card"><h3>Size exclusion</h3>` +
+    `<p class="small ink-2" style="margin:0 0 10px;max-width:78ch">A protein taller than the gap is excluded from it. ` +
+    `Bars show the share of the contact where each protein fits, is within ${S.meta.exclusion_margin} nm, or is excluded.</p>` +
     `<div class="scroll"><table><thead><tr><th>Protein</th><th>Contact area</th>` +
     `<th class="num">fits</th><th class="num">partly</th><th class="num">excluded</th></tr></thead><tbody>` +
     [...S.meta.probes, ...S.extra].map((q) => placedBar(q.name, q.height, rows)).join("") + `</tbody></table></div>` +
-    `<div class="legend"><span><span class="swatch" style="background:var(--good)"></span>fits: no taller than the gap</span>` +
+    `<div class="legend"><span><span class="swatch" style="background:var(--good)"></span>fits</span>` +
     `<span><span class="swatch" style="background:var(--warning)"></span>partly excluded: up to ${S.meta.exclusion_margin} nm taller</span>` +
     `<span><span class="swatch" style="background:var(--critical)"></span>excluded: ${S.meta.exclusion_margin} nm or more taller</span></div>` +
-    `<div class="inline-form" style="margin-top:12px"><label>Test another protein, or a height in nm` +
+    `<div class="inline-form" style="margin-top:12px"><label>Add a protein or a height (nm)` +
     `<input id="probe-input" list="protein-list" placeholder="e.g. SPN or 25" autocomplete="off"></label>` +
-    (S.extra.length ? `<button id="probe-clear" class="quiet">Clear added</button>` : "") + `</div>` +
-    `<p class="muted small" style="margin:8px 0 0">Heights are the extended estimates, applied whether or not the cell expresses the protein. CD45 is its longest isoform (RABC) and CD45RO its shortest. ` +
-    `The ${S.meta.exclusion_margin} nm margin is from Schmid et al. 2016.</p></div>` +
-    `<div class="card"><h3>Trans interactions, ranked by share of the contact</h3><div class="scroll"><table><thead><tr><th>${esc(labels[a])}</th><th>${esc(labels[b])}</th>` +
+    (S.extra.length ? `<button id="probe-clear" class="quiet">Clear</button>` : "") + `</div>` +
+    `<p class="muted small" style="margin:8px 0 0">CD45 is the longest isoform, CD45RO the shortest. ${S.meta.exclusion_margin} nm margin: Schmid et al. 2016.</p></div>` +
+    `<div class="card"><h3>Trans interactions</h3><div class="scroll"><table><thead><tr><th>${esc(labels[a])}</th><th>${esc(labels[b])}</th>` +
     `<th class="num">gap, nm</th><th class="num">share of the contact</th><th></th></tr></thead><tbody>` +
     rows.slice(0, 20).map((r) => `<tr><td>${esc(r.a[0].replace(/_/g, " "))}</td><td>${esc(r.b[0].replace(/_/g, " "))}</td><td class="num">${fmt(r.gap, 1)}</td>` +
       `<td class="num">${pct(r.share / total * 100)}</td><td>${r.bridge ? `<span class="tag">antibody bridge</span>` : ""}</td></tr>`).join("") +
     `</tbody></table></div></div>` +
-    `<div class="grid"><div class="card"><h3>Exclusion of ${esc(labels[a])} surface proteins</h3>${unitTable(c.a, "most abundant first")}</div>` +
-    `<div class="card"><h3>Exclusion of ${esc(labels[b])} surface proteins</h3>${unitTable(c.b, "most abundant first")}</div></div>` +
-    `<p class="muted small" style="margin:8px 0 0">"Fits in" and "excluded from" are shares of the contact area, by each protein's height.</p>`;
+    `<div class="grid"><div class="card"><h3>Surface proteins, ${esc(labels[a])}</h3>${unitTable(c.a, "protein")}</div>` +
+    `<div class="card"><h3>Surface proteins, ${esc(labels[b])}</h3>${unitTable(c.b, "protein")}</div></div>` +
+    `<p class="muted small" style="margin:8px 0 0">Fits in, excluded from: share of the contact.</p>`;
 
   $("probe-input").addEventListener("change", (e) => {
     const text = e.target.value.trim(), height = Number(text), found = findProtein(text);
@@ -669,7 +671,7 @@ async function start() {
   const options = Object.entries(groups).map(([d, list]) => `<optgroup label="${esc(d)}">` +
     list.map((s) => `<option value="${s.id}">${esc(s.label)}</option>`).join("") + "</optgroup>").join("");
   $("surface-a").innerHTML = options;
-  $("surface-b").innerHTML = `<option value="">nothing</option>` + options;
+  $("surface-b").innerHTML = `<option value="">none</option>` + options;
   $("surface-a").value = "adult--monocyte";
   const label = Object.fromEntries(S.meta.surfaces.map((s) => [s.id, s.label]));
   const sideA = [...new Set(S.meta.contacts.map((c) => c.a))], sideB = [...new Set(S.meta.contacts.map((c) => c.b))];
@@ -685,7 +687,7 @@ async function start() {
       : `contact/${$("contact-a").value}/${$("contact-b").value}/${$("contact-ab").value}`;
   });
   $("protein-search").addEventListener("change", (e) => { const p = findProtein(e.target.value); if (p) location.hash = `protein/${p.gene}`; else renderProtein(null); });
-  $("epitope-antibody").innerHTML = `<option value="">none chosen</option>` + S.meta.antibodies.map((a) =>
+  $("epitope-antibody").innerHTML = `<option value="">none</option>` + S.meta.antibodies.map((a) =>
     `<option value="${a.acc}">${esc(a.antibody.split(" (")[0])} (${esc(a.gene)})${a.residues ? "" : ", no epitope known"}</option>`).join("");
   $("epitope-antigen").addEventListener("change", (e) => { const q = findProtein(e.target.value); if (q) location.hash = `epitope/${q.gene}`; else renderEpitope(null); });
   $("epitope-antibody").addEventListener("change", (e) => { if (e.target.value) location.hash = `epitope/${S.byAcc[e.target.value].gene}`; });
@@ -701,7 +703,7 @@ async function start() {
     const file = e.target.files[0];
     if (!file) return;
     const items = parseUpload(await file.text());
-    if (!items.length) { $("surface-body").innerHTML = `<p class="note">No row of that file names a protein of the height table with an abundance.</p>`; return; }
+    if (!items.length) { $("surface-body").innerHTML = `<p class="note">No proteins recognised in that file.</p>`; return; }
     S.upload = { name: file.name, items };
     for (const id of ["surface-a", "surface-b"]) { $(id).querySelector('option[value="upload"]')?.remove(); $(id).insertAdjacentHTML("beforeend", `<option value="upload">${esc(file.name)}</option>`); }
     $("surface-a").value = "upload";
@@ -714,8 +716,8 @@ async function start() {
 
   const d = S.meta.databases;
   $("vintage").innerHTML = `UniProt ${esc(d.uniprot)}, AlphaFold ${esc(d.alphafold)}, Pfam ${esc(d.pfam)}, STRING ${esc((d.string || "").split(" ")[0])}, ` +
-    `CellphoneDB ${esc((d.cellphonedb || "").split(" ")[0])}. Built from pipeline commit ${esc(S.meta.built_from)}. ` +
-    `Code and methods: <a href="https://github.com/kmsouthard/surfaceome_topography">github.com/kmsouthard/surfaceome_topography</a>.`;
+    `CellphoneDB ${esc((d.cellphonedb || "").split(" ")[0])}. Commit ${esc(S.meta.built_from)}. ` +
+    `Code: <a href="https://github.com/kmsouthard/surfaceome_topography">github.com/kmsouthard/surfaceome_topography</a>.`;
   $("loading").hidden = true;
   window.addEventListener("hashchange", route);
   await route();
