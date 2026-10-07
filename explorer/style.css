@@ -37,7 +37,7 @@ a { color: var(--accent); }
 .top { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 0 0; }
 .lede { margin: 4px 0 14px; color: var(--ink-2); max-width: 64ch; }
 .tabs { display: flex; gap: 4px; }
-.tabs button { font: inherit; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--ink-2);
+.tabs button { white-space: nowrap; font: inherit; background: none; border: 0; border-bottom: 2px solid transparent; color: var(--ink-2);
   padding: 8px 12px; cursor: pointer; }
 .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
 .tabs button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -130,6 +130,9 @@ button.quiet:hover { color: var(--ink); border-color: var(--ink-2); }
 @media (max-width: 520px) {
   h1 { font-size: 22px; }
   .tile .value.hero { font-size: 34px; }
+  .tabs { gap: 0; }
+  .tabs button { padding: 8px 9px; }
+  th, td { padding-right: 8px; }
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .controls select, .controls input { max-width: calc(100vw - 32px); }
 }

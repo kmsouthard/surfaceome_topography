@@ -136,7 +136,7 @@ function histogram(series, { ylabel, marker, unit = "%" }) {
       `<text class="strong" x="${mx + dx}" y="${T - 4}" text-anchor="${anchor}">${esc(marker.label)}</text>`;
   }
   const legend = n > 1 ? `<div class="legend">${series.map((s) => `<span><span class="swatch" style="background:var(${s.color})"></span>${esc(s.name)}</span>`).join("")}</div>` : "";
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(ylabel)} by height">${g}</svg>${legend}`;
+  return `<div class="scroll"><svg viewBox="0 0 ${W} ${H}" style="min-width:460px" role="img" aria-label="${esc(ylabel)} by height">${g}</svg></div>${legend}`;
 }
 
 // A protein's ectodomain drawn to scale on the membrane, its segments stacked as the pipeline stacks them.
@@ -218,7 +218,7 @@ function placedBar(name, height, rows) {
     x += w;
   }
   return `<tr><td><strong>${esc(name)}</strong><br><span class="muted">${fmt(height, 1)} nm</span></td>` +
-    `<td style="min-width:140px"><svg viewBox="0 0 ${W} 16" preserveAspectRatio="none" style="width:100%;height:16px" role="img" ` +
+    `<td style="min-width:96px"><svg viewBox="0 0 ${W} 16" preserveAspectRatio="none" style="width:100%;height:16px" role="img" ` +
     `aria-label="${esc(name)}: fits ${pct(p.fits)}, partly excluded ${pct(p.partly)}, excluded ${pct(p.excluded)}">${g}</svg></td>` +
     `<td class="num">${pct(p.fits)}</td><td class="num">${pct(p.partly)}</td><td class="num">${pct(p.excluded)}</td></tr>`;
 }
@@ -309,7 +309,7 @@ async function sceneFigure(items, seed, mode) {
   const pad = 3, VW = 900, slot = (o, k) => Math.max(o.w, 13 / k);
   let k = VW / (objs.reduce((n, o) => n + o.w, 0) + pad * (objs.length + 1));
   for (let i = 0; i < 4; i++) k = VW / (objs.reduce((n, o) => n + slot(o, k), 0) + pad * (objs.length + 1));
-  const base = Math.min(tallest[0], limit) * k + 24, label = Math.max(...picks.map((q) => q.gene.length)) * 6.6 + 10;
+  const base = Math.min(tallest[0], limit) * k + 24, label = Math.max(...picks.map((q) => q.gene.length)) * 7.6 + 14;
   const H = base + 40 * k + label + 4;
   let g = `<rect x="0" y="${base}" width="${VW}" height="${40 * k}" rx="4" fill="var(--grid)"/>`, x = pad;
   objs.forEach((o, i) => {
@@ -596,8 +596,8 @@ async function renderContact() {
     `<div class="card"><h3>Size-based exclusion from the contact</h3>` +
     `<p class="small ink-2" style="margin:0 0 10px;max-width:78ch">A protein taller than the local gap is pushed out of it; this is how kinetic segregation clears the phosphatases CD45 and CD148 ` +
     `from close contacts. Each bar divides the contact area by whether a protein of that height fits beneath the gap there, is within ${S.meta.exclusion_margin} nm of fitting, or is excluded.</p>` +
-    `<div class="scroll"><table><thead><tr><th>Protein</th><th>Share of the contact area</th>` +
-    `<th class="num">fits</th><th class="num">partly excluded</th><th class="num">excluded</th></tr></thead><tbody>` +
+    `<div class="scroll"><table><thead><tr><th>Protein</th><th>Contact area</th>` +
+    `<th class="num">fits</th><th class="num">partly</th><th class="num">excluded</th></tr></thead><tbody>` +
     [...S.meta.probes, ...S.extra].map((q) => placedBar(q.name, q.height, rows)).join("") + `</tbody></table></div>` +
     `<div class="legend"><span><span class="swatch" style="background:var(--good)"></span>fits: no taller than the gap</span>` +
     `<span><span class="swatch" style="background:var(--warning)"></span>partly excluded: up to ${S.meta.exclusion_margin} nm taller</span>` +
