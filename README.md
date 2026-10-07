@@ -16,7 +16,9 @@ A pipeline to estimate the heights of human cell-surface proteins
   shortened at the break.</sub>
 </p>
 
-> **Status.** Analysis code for a manuscript in preparation. Result tables and figures to follow.
+> **Status.** Analysis code for a manuscript in preparation. The heights, cell surfaces and
+> contacts can be browsed in the [explorer](https://kmsouthard.github.io/surfaceome_topography/);
+> the result tables and figures will follow with the paper.
 
 ## Quick start
 
