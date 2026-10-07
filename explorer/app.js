@@ -197,7 +197,7 @@ function bullseye(rows) {
   const legend = bands.map((b, i) => `<span><span class="swatch${i ? "" : " open"}" style="background:var(--band-${i})"></span><strong>${b.label}</strong> · ` +
     `${pct(b.share * 100)} of the contact${b.top ? ` · ${esc(b.top.name)} (${pct(b.topShare * 100)})` : ""}</span>`).reverse().join("");
   return `<div class="grid" style="margin-top:0;grid-template-columns:minmax(200px,260px) 1fr;align-items:center">` +
-    `<svg viewBox="0 0 260 260" role="img" aria-label="Share of the contact by gap height">${g}</svg>` +
+    `<svg viewBox="0 0 260 260" style="max-width:260px;margin:0 auto" role="img" aria-label="Share of the contact by gap height">${g}</svg>` +
     `<div class="legend column">${legend}</div></div>`;
 }
 
