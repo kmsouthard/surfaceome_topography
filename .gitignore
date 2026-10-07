@@ -2,6 +2,7 @@
 
 # Large artefacts
 *.html
+!/explorer/index.html
 transVsProteins.html
 
 # Python

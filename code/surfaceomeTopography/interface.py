@@ -162,7 +162,7 @@ def pair_interactions(cell_a: pd.DataFrame, cell_b: pd.DataFrame, interactions: 
     return pairs.loc[sorted(keep)]
 
 
-def antibody_bridge_heights(pairs: pd.DataFrame, epitope_height: float = 0.0) -> pd.DataFrame:
+def antibody_bridge_heights(pairs: pd.DataFrame, epitope_height=0.0) -> pd.DataFrame:
     """The gap an antibody bridge holds: the Fc receptor, the antibody, and where the epitope is.
 
     A bridge's height in the interaction table is antigen + Fc receptor + 3.24 nm, the antibody's
@@ -172,18 +172,21 @@ def antibody_bridge_heights(pairs: pd.DataFrame, epitope_height: float = 0.0) ->
 
         gap = max(epitope_height + receptor + 3.24 nm, antigen height)
 
-    ``epitope_height`` defaults to 0, a membrane-proximal epitope: trastuzumab binds HER2's
-    domain IV. That is the 2020 rule, which subtracted HER2's height at the time (10.2798 nm) and
-    floored at it; the constant had since been frozen at 10.3 while HER2's height moved. **Any other
-    antibody needs its own epitope height.** For trastuzumab the gap is 11.6-13.7 nm across the
-    Fc receptors, close to the measured bridge (trastuzumab on HER2 7.9 nm plus FcgR 6.2 nm, Son et
-    al. 2020) and to Bakalar et al. 2018's epitope height + 11.5 nm.
+    ``epitope_height`` is one height for every bridge, or a mapping from the antigen's accession
+    (``Human ID link_prot1``) to its antibody's, as ``antibody_epitope_heights.csv`` records them
+    (`epitope.curated_epitope_heights`); an antigen the mapping lacks is taken at 0, a
+    membrane-proximal epitope, which was the 2020 rule for every bridge. Trastuzumab binds HER2's
+    domain IV, 1.6 nm up, and its gap is 11.6-15.3 nm across the Fc receptors, near the measured
+    bridge (trastuzumab on HER2 7.9 nm plus FcgR 6.2 nm, Son et al. 2020) and Bakalar et al.
+    2018's epitope height + 11.5 nm.
     """
     if "total_height_prot1" not in pairs:
         raise KeyError("antibody_bridge_heights needs the antigen's height, total_height_prot1, "
                        "from the interaction table; keep that column when loading it")
     bridge = pairs["_merge"] == "FcR"
     antigen = pairs["total_height_prot1"]        # on bridge rows prot1 is the antigen, prot2 the receptor
+    if not np.isscalar(epitope_height):
+        epitope_height = pairs["Human ID link_prot1"].map(epitope_height).fillna(0.0)
     held = pairs["interaction_dim"] - antigen + epitope_height
     return pairs.assign(interaction_dim=np.where(bridge, np.maximum(held, antigen), pairs["interaction_dim"]))
 

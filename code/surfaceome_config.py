@@ -122,6 +122,7 @@ GENERATED = frozenset({
     # 03_interaction_heights, read by the Figure 5 and Figure 6 notebooks
     "database/interaction_heights.csv",
     "database/interaction_heights_trans_all.csv",
+    "database/antibody_epitope_heights.csv",
     # figure-stage tables the database ships
     "database/david_interaction_clustering_long.csv",
     "database/surfaceome_pdbs.csv",

@@ -29,17 +29,18 @@ SUMMARY = ["interface_shared", "interface_prob", "combined_expression", "interac
 
 
 def contact_pairs(immune: pd.DataFrame, cancer: pd.DataFrame, interactions: pd.DataFrame,
-                  antibody_target: str | None = None) -> pd.DataFrame:
+                  antibody_target: str | None = None, epitope_heights=0.0) -> pd.DataFrame:
     """Every trans pair that can form between two surfaces, with its gap and its share of the contact.
 
     ``interactions`` is the interaction table; ``antibody_target`` keeps the antibody bridges to
     that antigen (an entry-name substring, ``'ERBB2'`` for trastuzumab) and ``None`` drops every
-    bridge. The bridges' gaps are set from the epitope (`antibody_bridge_heights`), which leaves
-    a table without bridges unchanged, and each pair's share of the contact follows from the two
-    cells' abundances by mass action (`interface_weights`).
+    bridge. The bridges' gaps are set from each antibody's epitope (`antibody_bridge_heights`,
+    with ``epitope_heights`` by antigen accession), which leaves a table without bridges
+    unchanged, and each pair's share of the contact follows from the two cells' abundances by
+    mass action (`interface_weights`).
     """
     pairs = pair_interactions(immune, cancer, select_interactions(interactions, antibody_target))
-    return interface_weights(antibody_bridge_heights(pairs))
+    return interface_weights(antibody_bridge_heights(pairs, epitope_heights))
 
 
 def contact_layout(pairs: pd.DataFrame, immune: pd.DataFrame, min_share: float = 0.1,

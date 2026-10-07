@@ -465,6 +465,8 @@ def bridge_figure(run: Path, heights: pd.DataFrame, parts: pd.DataFrame, gff: pd
     receptor_acc, antigen_acc = br["Entry_immune"], br["Entry_cancer"]
     receptor_h, antigen_h = float(br["total_height_prot2"]), float(br["total_height_prot1"])
     gap = float(br["interaction_dim"])
+    epitopes = pd.read_csv(run / "database" / "antibody_epitope_heights.csv").set_index("accession")
+    epitope_h = float(epitopes.loc[antigen_acc, "epitope_height"])
     antigen = build(protein(antigen_acc, heights, parts, gff, alphafold), alphafold, CANCER_COLOR)
     receptor = build(protein(receptor_acc, heights, parts, gff, alphafold), alphafold, IMMUNE_COLOR)
     ab = antibody(igg, ANTIBODY_COLOR)
@@ -489,8 +491,8 @@ def bridge_figure(run: Path, heights: pd.DataFrame, parts: pd.DataFrame, gff: pd
         ax.plot([bx, bx + 8, bx + 8, bx], [3, 3, top - 3, top - 3], color=t["rule"], lw=1)
         ax.text(bx + 22, top / 2 + 12, f"{gap:.1f} nm", color=t["text"], fontsize=11, fontweight="bold", va="bottom")
         ax.text(bx + 22, top / 2 + 4,
-                f"{names['receptor']} {receptor_h:.1f} nm\n+ antibody {gap - receptor_h:.2f} nm,\n"
-                f"epitope at the membrane\n({names['antigen']} {antigen_h:.1f} nm fits beneath)",
+                f"{names['receptor']} {receptor_h:.1f} nm\n+ antibody {gap - receptor_h - epitope_h:.2f} nm,\n"
+                f"epitope {epitope_h:.1f} nm above the membrane\n({names['antigen']} {antigen_h:.1f} nm fits beneath)",
                 color=t["text2"], fontsize=8.5, va="top", linespacing=1.4)
         ax.text(margin - 40, top + 20, IMMUNE_CELL, color=t["text"], fontsize=10, fontweight="bold",
                 ha="right", va="center")

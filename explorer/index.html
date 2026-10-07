@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cell surface topography explorer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Cell surface topography</h1>
+    <p class="lede">Estimated heights of human cell-surface proteins, the surfaces they make on a cell,
+      and the gaps they hold where two cells meet.</p>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-view="protein" aria-selected="true">Protein</button>
+      <button role="tab" data-view="epitope" aria-selected="false">Epitope</button>
+      <button role="tab" data-view="surface" aria-selected="false">Cell surface</button>
+      <button role="tab" data-view="contact" aria-selected="false">Contact</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p id="loading" class="muted">Loading the tables…</p>
+
+  <section id="view-protein" class="view" hidden>
+    <div class="controls">
+      <label>Protein
+        <input id="protein-search" list="protein-list" placeholder="Gene, UniProt accession or entry name" autocomplete="off">
+      </label>
+      <datalist id="protein-list"></datalist>
+      <span class="muted" id="protein-count"></span>
+    </div>
+    <div id="protein-body"></div>
+  </section>
+
+  <section id="view-epitope" class="view" hidden>
+    <div class="controls">
+      <label>Antigen
+        <input id="epitope-antigen" list="protein-list" placeholder="Gene or UniProt accession" autocomplete="off">
+      </label>
+      <label>Curated antibody <select id="epitope-antibody"></select></label>
+      <label>Epitope residues (UniProt numbering)
+        <input id="epitope-residues" autocomplete="off">
+      </label>
+    </div>
+    <div id="epitope-body"></div>
+  </section>
+
+  <section id="view-surface" class="view" hidden>
+    <div class="controls">
+      <label>Cell type <select id="surface-a"></select></label>
+      <label>Compare with <select id="surface-b"></select></label>
+      <label class="file">Your own cells
+        <input id="surface-file" type="file" accept=".csv,.tsv,.txt">
+      </label>
+    </div>
+    <p class="muted small">Your file stays in your browser. It needs a UniProt accession or gene name in the first
+      column and an abundance in the second.</p>
+    <div id="surface-body"></div>
+  </section>
+
+  <section id="view-contact" class="view" hidden>
+    <div class="controls">
+      <label>Cell <select id="contact-a"></select></label>
+      <label>Against <select id="contact-b"></select></label>
+      <label>Antibody <select id="contact-ab"></select></label>
+      <label id="contact-epitope-label" hidden>Epitope residues
+        <input id="contact-epitope" placeholder="e.g. 579-625" autocomplete="off">
+      </label>
+    </div>
+    <div id="contact-body"></div>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p><strong>Read the heights as upper bounds.</strong> Each assumes its ectodomain is fully extended along the
+    membrane normal, so gaps and exclusion are overstated for proteins that bend or tilt. Contacts assume every
+    pair binds equally well.</p>
+  <details class="sources">
+    <summary>Sources and attribution</summary>
+    <dl>
+      <dt>Heights</dt>
+      <dd>Estimated by this work from <a href="https://www.uniprot.org">UniProt</a> sequences and topology,
+        <a href="https://alphafold.ebi.ac.uk">AlphaFold DB</a> models (Jumper et al. 2021; Varadi et al. 2024),
+        <a href="https://www.ebi.ac.uk/interpro/entry/pfam/">Pfam</a> domains, <a href="https://mobidb.org">MobiDB</a> disorder and
+        glycosites from UniProt, <a href="https://www.glygen.org">GlyGen</a> and GlycoMine.</dd>
+      <dt>Protein annotations</dt>
+      <dd>Location and transmembrane count: UniProt. Surface call: SURFY
+        (Bausch-Fluck et al. 2018, <a href="https://pubmed.ncbi.nlm.nih.gov/30373828/">PMID 30373828</a>). Functional class (receptor, transporter, enzyme,
+        miscellaneous): Almén et al. 2009 (<a href="https://pubmed.ncbi.nlm.nih.gov/19678920/">PMID 19678920</a>), as carried in the SURFY table. CD numbers: the SURFY table.</dd>
+      <dt>Protein drawings</dt>
+      <dd>AlphaFold models outlined with <a href="https://github.com/jordisr/cellscape">CellScape</a>
+        (Silvestre-Ryan, Fletcher and Holmes 2022, <a href="https://doi.org/10.1101/2022.06.14.495869">bioRxiv</a>).</dd>
+      <dt>Cell surfaces</dt>
+      <dd>Protein abundances from <a href="https://www.ebi.ac.uk/gxa/home">Expression Atlas</a> E-PROT-1
+        (Kim et al. 2014, <a href="https://pubmed.ncbi.nlm.nih.gov/24870542/">PMID 24870542</a>) and E-PROT-27, and monocyte subsets from
+        Ravenhill et al. 2020 (<a href="https://pubmed.ncbi.nlm.nih.gov/32165698/">PMID 32165698</a>).</dd>
+      <dt>Interactions</dt>
+      <dd>Candidate pairs from <a href="https://string-db.org">STRING</a> and <a href="https://www.cellphonedb.org">CellphoneDB</a>;
+        which bind across two cells is annotated by this work, each call with its citation in the repository.</dd>
+      <dt>Antibody epitopes</dt>
+      <dd>Read from structures in the <a href="https://www.rcsb.org">PDB</a>, or from the mapping paper cited beside each antibody.</dd>
+      <dt>Rules</dt>
+      <dd>Exclusion of a protein about 5 nm taller than a gap: Schmid et al. 2016 (<a href="https://pubmed.ncbi.nlm.nih.gov/27980602/">PMID 27980602</a>).
+        The 10 nm phagocytosis range: Bakalar et al. 2018 (<a href="https://pubmed.ncbi.nlm.nih.gov/29958103/">PMID 29958103</a>).
+        Kinetic segregation of CD45 and CD148: Davis and van der Merwe 2006 (<a href="https://pubmed.ncbi.nlm.nih.gov/16855606/">PMID 16855606</a>);
+        Cordoba et al. 2013 (<a href="https://pubmed.ncbi.nlm.nih.gov/23580664/">PMID 23580664</a>).</dd>
+      <dt>This work</dt>
+      <dd>The Fletcher Lab, Department of Bioengineering, University of California, Berkeley
+        (<a href="https://fletchlab.berkeley.edu/">fletchlab.berkeley.edu</a>).</dd>
+    </dl>
+  </details>
+  <p id="vintage" class="muted small"></p>
+</footer>
+
+<div id="tip" role="tooltip" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+name,gene,accession,isoform,disorder_residues,glycosites,included,pmids,evidence
+CD45,PTPRC,P08575,,,,yes,16855606;23580664,the kinetic-segregation model: large phosphatases are excluded by size from close contacts; the large ectodomain of CD45 regulates its segregation from the ligated T-cell receptor
+CD45RO,PTPRC,P08575,P08575-4,38,4,yes,1378817;26998761,"the short isoform, without residues 34-194 of the canonical sequence (UniProt P08575-4): 38 disordered residues with 4 predicted glycosites stand on the same folded region; about 22 nm by electron microscopy"
+CD148,PTPRJ,Q12913,,,,yes,23580664,the large ectodomain of CD148 regulates its segregation from the ligated T-cell receptor

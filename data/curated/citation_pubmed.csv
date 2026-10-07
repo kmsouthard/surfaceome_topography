@@ -32,6 +32,7 @@ pmid,first_author,year,journal,title
 9842885,Fanger NA,1998,Eur J Immunol,The MHC class I binding proteins LIR-1 and LIR-2 inhibit Fc receptor-mediated signaling in monocytes.
 9933109,Navarro F,1999,Eur J Immunol,The ILT2(LIR1) and CD94/NKG2A NK cell receptors respectively recognize HLA-G1 and HLA-E molecules co-expressed on target cells.
 10207020,Shimoyama Y,1999,J Biol Chem,"Biochemical characterization and functional analysis of two type II classic cadherins, cadherin-6 and -14, and comparison with E-cadherin."
+10366506,James LC,1999,J Mol Biol,1.9 A structure of the therapeutic antibody CAMPATH-1H fab in complex with a synthetic peptide antigen.
 10531052,Vassar R,1999,Science,Beta-secretase cleavage of Alzheimer's amyloid precursor protein by the transmembrane aspartic protease BACE.
 10591185,Chapman TL,1999,Immunity,The inhibitory receptor LIR-1 uses a common binding interaction to recognize class I MHC molecules and the viral homolog UL18.
 10744716,Satoh-Horikawa K,2000,J Biol Chem,"Nectin-3, a new member of immunoglobulin-like cell adhesion molecules that shows homophilic and heterophilic cell-cell adhesion activities."
@@ -53,6 +54,7 @@ pmid,first_author,year,journal,title
 12361962,Rubin BP,2002,Development,Teneurin 2 is expressed by the neurons of the thalamofugal visual system in situ and promotes homophilic cell-cell adhesion in vitro.
 12515826,Ehehalt R,2003,J Cell Biol,Amyloidogenic processing of the Alzheimer beta-amyloid precursor protein depends on lipid rafts.
 12526797,Shimaoka M,2003,Cell,Structures of the alpha L I domain and its complex with ICAM-1 reveal a shape-shifting pathway for integrin regulation.
+12610629,Cho HS,2003,Nature,Structure of the extracellular region of HER2 alone and in complex with the Herceptin Fab.
 12634428,Kang JS,2003,Proc Natl Acad Sci U S A,Promyogenic members of the Ig and cadherin families associate to positively regulate differentiation.
 12660326,Gerke P,2003,J Am Soc Nephrol,Homodimerization and heterodimerization of the glomerular podocyte proteins nephrin and NEPH1.
 12697893,Prota AE,2003,Proc Natl Acad Sci U S A,Crystal structure of human junctional adhesion molecule 1: implications for reovirus binding.
@@ -76,11 +78,13 @@ pmid,first_author,year,journal,title
 15322084,Vetrivel KS,2004,J Biol Chem,Association of gamma-secretase with lipid rafts in post-Golgi and endosome membranes.
 15579173,Pruss T,2004,Eur J Neurosci,Homophilic interactions of chick neurofascin in trans are important for neurite induction.
 15811952,Boles KS,2005,Blood,The tumor suppressor TSLC1/NECL-2 triggers NK-cell and CD8+ T-cell responses through the cell-surface receptor CRTAM.
+15837620,Li S,2005,Cancer Cell,Structural basis for inhibition of the epidermal growth factor receptor by cetuximab.
 15982853,Singh AB,2005,Cell Signal,"Autocrine, paracrine and juxtacrine signaling by EGFR ligands."
 16091383,Arase N,2005,Int Immunol,Heterotypic interaction of CRTAM with Necl2 induces cell adhesion on activated NK cells and CD8+ T cells.
 16096062,Shah S,2005,Cell,Nicastrin functions as a gamma-secretase-substrate receptor.
 16129398,Taveggia C,2005,Neuron,Neuregulin-1 type III determines the ensheathment fate of axons.
 16675463,Shiroishi M,2006,J Biol Chem,"Crystal structure of the human monocyte-activating receptor, ""Group 2"" leukocyte Ig-like receptor A5 (LILRA5/LIR9/ILT11)."
+16855606,Davis SJ,2006,Nat Immunol,The kinetic-segregation model: TCR triggering and beyond.
 16990514,Willem M,2006,Science,Control of peripheral nerve myelination by the beta-secretase BACE1.
 17028145,Ainavarapu SR,2007,Biophys J,Contour length and refolding rate of a small protein controlled by engineered disulfide bonds.
 17045822,Nishida N,2006,Immunity,Activation of leukocyte beta2 integrins by conversion from bent to extended conformations.
@@ -89,6 +93,7 @@ pmid,first_author,year,journal,title
 17107962,Dyczynska E,2007,J Biol Chem,Proteolytic processing of delta-like 1 by ADAM proteases.
 17169360,Sahin U,2007,FEBS Lett,Ectodomain shedding of the EGF-receptor ligand epigen is mediated by ADAM17.
 17558405,Spiegel I,2007,Nat Neurosci,A central role for Necl4 (SynCAM4) in Schwann cell-axon interaction and myelination.
+17622246,Ruf P,2007,Br J Cancer,Characterisation of the new EpCAM-specific antibody HO-3: implications for trifunctional antibody immunotherapy of cancer.
 17629517,Butte MJ,2007,Immunity,Programmed death-1 ligand 1 interacts specifically with the B7-1 costimulatory molecule to inhibit T cell responses.
 17673459,Shi M,2007,J Biol Chem,A structural hypothesis for the transition between bent and extended conformations of the leukocyte beta2 integrins.
 17703228,Roopenian DC,2007,Nat Rev Immunol,FcRn: the neonatal Fc receptor comes of age.
@@ -126,6 +131,7 @@ pmid,first_author,year,journal,title
 21306299,Heikkilä E,2011,Biochem J,Trans-interaction of nephrin and Neph1/Neph3 induces cell adhesion that associates with decreased tyrosine phosphorylation of nephrin.
 21533891,Piontek J,2011,Cell Mol Life Sci,Elucidating the principles of the molecular organization of heteropolymeric tight junction strands.
 21576249,Luo X,2011,J Biol Chem,Cleavage of neuregulin-1 by BACE1 or ADAM10 protein produces differential effects on myelination.
+21827946,Franklin MC,2011,Structure,The structural basis for the function of two anti-VEGF receptor 2 antibodies.
 22039361,Eddy SR,2011,PLoS Comput Biol,Accelerated Profile HMM Searches.
 22421438,Stengel KF,2012,Proc Natl Acad Sci U S A,Structure of TIGIT immunoreceptor bound to poliovirus receptor reveals a cell-cell adhesion and signaling mechanism that requires cis-trans receptor clustering.
 22431638,Yin Y,2012,Proc Natl Acad Sci U S A,"Crystal structure of a complete ternary complex of T-cell receptor, peptide-MHC, and CD4."
@@ -138,6 +144,7 @@ pmid,first_author,year,journal,title
 23091066,Dornier E,2012,J Cell Biol,TspanC8 tetraspanins regulate ADAM10/Kuzbanian trafficking and promote Notch activation in flies and mammals.
 23135401,Sotomayor M,2012,Nature,Structure of a force-conveying cadherin bond essential for inner-ear mechanotransduction.
 23248271,Lee K,2013,Proc Natl Acad Sci U S A,MDGAs interact selectively with neuroligin-2 but not other neuroligins to regulate inhibitory synapse development.
+23580664,Cordoba SP,2013,Blood,The large ectodomains of CD45 and CD148 regulate their segregation from and inhibition of ligated T-cell receptor.
 23637177,Fleck D,2013,J Neurosci,Dual cleavage of neuregulin 1 type III by BACE1 and ADAM17 liberates its EGF-like domain and allows paracrine signaling.
 23704575,Wang X,2013,Science,Defining single molecular forces required to activate integrin and notch signaling.
 23751499,Woo J,2013,J Cell Biol,The adhesion protein IgSF9b is coupled to neuroligin 2 via S-SCAM to promote inhibitory synapse development.
@@ -165,11 +172,14 @@ pmid,first_author,year,journal,title
 27385590,Sullivan LC,2016,J Biol Chem,Recognition of the Major Histocompatibility Complex (MHC) Class Ib Molecule H2-Q10 by the Natural Killer Cell Receptor Ly49C.
 27539848,Nikolaienko RM,2016,J Biol Chem,Structural Basis for Interactions Between Contactin Family Members and Protein-tyrosine Phosphatase Receptor Type G in Neural Tissues.
 27572839,Hirayasu K,2016,Nat Microbiol,Microbially cleaved immunoglobulins are sensed by the innate immune receptor LILRA2.
+27573173,Liu K,2017,Cell Res,Structural basis of anti-PD-L1 monoclonal antibody avelumab for tumor therapy.
 27592805,Kaufman HL,2016,Lancet Oncol,"Avelumab in patients with chemotherapy-refractory metastatic Merkel cell carcinoma: a multicentre, single-group, open-label, phase 2 trial."
 27618663,Pascolutti R,2016,Structure,Structure and Dynamics of PD-L1 and an Ultra-High-Affinity PD-1 Receptor Mutant.
 27644106,Goodman KM,2016,Elife,Molecular basis of sidekick-mediated cell-cell adhesion and specificity.
 27922006,Pronker MF,2016,Nat Commun,Structural basis of myelin-associated glycoprotein adhesion and signalling.
 27980602,Schmid EM,2016,Nat Phys,Size-dependent protein segregation at membrane interfaces.
+28165004,Tan S,2017,Nat Commun,An unexpected N-terminal loop in PD-1 dominates binding by nivolumab.
+28484017,Ramagopal UA,2017,Proc Natl Acad Sci U S A,Structural basis for cancer immunotherapy by the first-in-class checkpoint inhibitor ipilimumab.
 28781169,Peng YR,2017,Neuron,Satb1 Regulates Contactin 5 to Pattern Dendrites of a Mammalian Retinal Ganglion Cell.
 28817804,Elegheert J,2017,Neuron,Structural Mechanism for Modulation of Synaptic Neuroligin-Neurexin Signaling by MDGA Proteins.
 28876235,Trewhella J,2017,Acta Crystallogr D Struct Biol,2017 publication guidelines for structural modelling of small-angle scattering data from biomolecules in solution: an update.
@@ -177,6 +187,7 @@ pmid,first_author,year,journal,title
 29224781,Seegar TCM,2017,Cell,Structural Basis for Regulated Proteolysis by the α-Secretase ADAM10.
 29444440,Moore TI,2018,Cell Rep,Measuring Integrin Conformational Change on the Cell Surface with Super-Resolution Microscopy.
 29519914,Braunger K,2018,Science,Structural basis for coupling protein transport and N-glycosylation at the mammalian endoplasmic reticulum.
+29531651,Taniwaki M,2018,Mediterr J Hematol Infect Dis,"Elotuzumab for the Treatment of Relapsed or Refractory Multiple Myeloma, with Special Reference to its Modes of Action and SLAMF7 Signaling."
 29742438,Brasch J,2018,Cell Rep,Homophilic and Heterophilic Interactions of Type II Cadherins Identify Specificity Groups Underlying Cell-Adhesive Behavior.
 29871885,Chaudhri A,2018,Cancer Immunol Res,PD-L1 Binds to B7-1 Only In Cis on the Same Cell Surface.
 29958103,Bakalar MH,2018,Cell,Size-Dependent Segregation Controls Macrophage Phagocytosis of Antibody-Opsonized Targets.
@@ -195,6 +206,7 @@ pmid,first_author,year,journal,title
 31729176,Singaraju GS,2019,FEBS J,Structural basis of the strong cell-cell junction formed by cadherin-23.
 31757674,Zhao Y,2019,Immunity,PD-L1:CD80 Cis-Heterodimer Triggers the Co-stimulatory Receptor CD28 While Repressing the Inhibitory PD-1 and CTLA-4 Pathways.
 31969394,Kawaguchi M,2020,J Biol Chem,Extracellular Domains I and II of cell-surface glycoprotein CD44 mediate its trans-homophilic dimerization and tumor cluster aggregation.
+32079680,Rougé L,2020,Science,Structure of CD20 in complex with the therapeutic monoclonal antibody rituximab.
 32103204,Efremova M,2020,Nat Protoc,CellPhoneDB: inferring cell-cell communication from combined expression of multi-subunit ligand-receptor complexes.
 32165698,Ravenhill BJ,2020,Sci Rep,"Comprehensive cell surface proteomics defines markers of classical, intermediate and non-classical monocytes."
 32503885,Taylor MR,2020,J Neurosci,Kirrel3-Mediated Synapse Formation Is Attenuated by Disease-Associated Missense Variants.
@@ -203,6 +215,7 @@ pmid,first_author,year,journal,title
 32589946,Verschueren E,2020,Cell,The Immunoglobulin Superfamily Receptome Defines Cancer-Relevant Networks Associated with Clinical Outcome.
 32710982,Venkannagari H,2020,J Mol Biol,Highly Conserved Molecular Features in IgLONs Contrast Their Distinct Structural and Biological Outcomes.
 33125078,Mistry J,2021,Nucleic Acids Res,Pfam: The protein families database in 2021.
+33360095,Lee HT,2021,Biochem Biophys Res Commun,"Crystal structure of CD38 in complex with daratumumab, a first-in-class anti-CD38 antibody drug for treating multiple myeloma."
 33397712,Sukhanov N,2021,J Neurosci,Differential Contribution of Cadm1-Cadm3 Cell Adhesion Molecules to Peripheral Myelinated Axons.
 34265844,Jumper J,2021,Nature,Highly accurate protein structure prediction with AlphaFold.
 34293799,Tunyasuvunakool K,2021,Nature,Highly accurate protein structure prediction for the human proteome.

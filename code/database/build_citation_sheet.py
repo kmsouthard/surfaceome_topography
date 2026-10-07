@@ -65,6 +65,19 @@ def decisions() -> pd.DataFrame:
         "subject": [g + (f" ({a})" if a else "") for g, a in zip(t.gene, t.antibody)], "included": t.included,
         "assertion": t.evidence, "pmids": t.pmids}))
 
+    t = _read("antibody_epitopes.csv")
+    out.append(pd.DataFrame({
+        "source": "antibody_epitopes.csv",
+        "decision": [f"antibody epitope ({b})" if i == "yes" else "antibody epitope, none recorded" for i, b in zip(t.included, t.basis)],
+        "subject": t.gene + " (" + t.antibody + ")", "included": t.included,
+        "assertion": [e or n for e, n in zip(t.evidence, t.note)], "pmids": t.pmids,
+        "status": ["" if i == "yes" else "no epitope known" for i in t.included]}))
+
+    t = _read("segregation_probes.csv")
+    out.append(pd.DataFrame({
+        "source": "segregation_probes.csv", "decision": "protein placed in an antibody's gap",
+        "subject": t.name, "included": t.included, "assertion": t.evidence, "pmids": t.pmids}))
+
     t = _read("interaction_height_rules.csv")
     out.append(pd.DataFrame({
         "source": "interaction_height_rules.csv", "decision": "height rule: " + t.rule,

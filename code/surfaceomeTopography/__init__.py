@@ -10,5 +10,6 @@ from .hmmer_assignment import *
 from .coverage import *
 from .topography import *
 from .interface import *
+from .epitope import *
 from .interactions import *
 from .contact import *

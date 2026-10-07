@@ -245,6 +245,14 @@ def steps() -> list[Step]:
              args=lambda dl, out: ["--models", str(dl / "alphafold"),
                                    "--af-confidence", str(out / AF_CONF),
                                    "--out", str(_out(out, "inputs/alphafold/alphafold_dimensions.txt"))]),
+        Step("af_axes", "build_af_axis_positions.py",
+             makes=["inputs/alphafold/alphafold_axis_positions.csv"],
+             needs=["alphafold", AF_CONF],
+             note="where each residue of an antibody's antigen sits along its model's box axes, "
+                  "for the epitope heights (the antigens of curated/antibody_epitopes.csv)",
+             args=lambda dl, out: ["--models", str(dl / "alphafold"),
+                                   "--af-confidence", str(out / AF_CONF),
+                                   "--out", str(_out(out, "inputs/alphafold/alphafold_axis_positions.csv"))]),
     ]
 
 

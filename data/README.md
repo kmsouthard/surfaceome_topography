@@ -11,7 +11,7 @@ Paths in the notebooks are relative to this directory and go through
 
 | directory | what it holds | who changes it |
 |---|---|---|
-| `curated/` | the decision tables (the interaction-type calls per STRING pair and the review list of pairs awaiting a call, interaction rules, cis pairs, antibody bridges, height rules, corrections, the domain orientation calls, the assembled-model templates) and the citation sheet behind every decision | hand edits, then `python code/database/build_citation_sheet.py` |
+| `curated/` | the decision tables (the interaction-type calls per STRING pair and the review list of pairs awaiting a call, interaction rules, cis pairs, antibody bridges, each antibody's epitope and the structure it is read from, the proteins placed in an antibody's gap, height rules, corrections, the domain orientation calls, the assembled-model templates) and the citation sheet behind every decision | hand edits, then `python code/database/build_citation_sheet.py` |
 | `inputs/` | every external input a run reads, grouped by source, at the 2026 vintage | `python code/database/build_inputs.py` (stage 0) rebuilds the derived ones from the public databases |
 | `measurements/` | tables measured here on structures: the 2020 and 2026 domain measurements, the PDB structure sizes, the assembled interaction models | the scripts under `code/database/inputs/` and `code/figures/validation/` |
 
@@ -28,7 +28,7 @@ Paths in the notebooks are relative to this directory and go through
 | `inputs/domains/domain_assignments.csv.gz` | Pfam domains per ectodomain with their heights (stage 0, HMMER over Pfam 38.2) | 2026 |
 | `inputs/domains/domain_clan_heights.csv` | the per-family height table every domain assignment takes its height from (stage 0, from `measurements/domains_2026/`) | 2026 |
 | `inputs/domains/domain_disorder_annotations_20210419.csv` | the 2021 domain and disorder annotation the height notebook reconciles against | 2021 |
-| `inputs/alphafold/` | per-residue AlphaFold confidence and the measured ectodomain dimensions (stage 0, AlphaFold v6) | 2026 |
+| `inputs/alphafold/` | per-residue AlphaFold confidence, the measured ectodomain dimensions, and where each residue of an antibody's antigen sits along its model's box axes, for the epitope heights (stage 0, AlphaFold v6) | 2026 |
 | `inputs/structures/` | SIFTS chain to UniProt mapping, and the 2020 list of surfaceome proteins with a PDB structure | 2026, 2020 |
 | `inputs/string/string_surfaceome_pairs.csv.gz` | every STRING v12.0 link between surfaceome proteins at combined score 400 or more, in both orders, labelled cis/trans/secreted/pathway from `curated/interaction_types.csv` (the 2020 calls, made on v11) and `curated/string_v12_pair_review.csv` (stage 0, `build_string_interactions.py`; `download_string.py` fetches the release).  | v12.0 |
 | `inputs/cellphonedb/` | CellphoneDB v5.0.0, flattened to the four tables the notebooks read (stage 0); *fetched* | v5.0.0 |

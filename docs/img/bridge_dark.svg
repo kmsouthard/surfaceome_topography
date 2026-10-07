@@ -2122,12 +2122,12 @@ L 200.060096 86.876367
     <text style="fill: #c3c2b7; font: 9px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle" x="178.196268" y="158.284346" transform="rotate(-0 178.196268 158.284346)">anti-HER2 IgG</text>
    </g>
    <g id="text_4">
-    <text style="fill: #ffffff; font: 700 11px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start" x="253.38277" y="81.734206" transform="rotate(-0 253.38277 81.734206)">11.9 nm</text>
+    <text style="fill: #ffffff; font: 700 11px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start" x="253.38277" y="81.734206" transform="rotate(-0 253.38277 81.734206)">13.5 nm</text>
    </g>
    <g id="text_5">
     <text style="fill: #c3c2b7; font: 8.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(253.38277 93.782031)">FCGR3A 8.6 nm</text>
     <text style="fill: #c3c2b7; font: 8.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(253.38277 104.118031)">+ antibody 3.24 nm,</text>
-    <text style="fill: #c3c2b7; font: 8.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(253.38277 114.504499)">epitope at the membrane</text>
+    <text style="fill: #c3c2b7; font: 8.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(253.38277 114.504499)">epitope 1.6 nm above the membrane</text>
     <text style="fill: #c3c2b7; font: 8.5px 'Helvetica', 'Arial', 'DejaVu Sans', sans-serif" transform="translate(253.38277 124.899999)">(ERBB2 11.6 nm fits beneath)</text>
    </g>
    <g id="text_6">

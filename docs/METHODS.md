@@ -106,7 +106,27 @@ solved structure of the complex (`model_templates.csv` names each template and i
 2026 rebuilds superpose human AlphaFold v6 ectodomains on human complex structures); 26 pairs
 whose partners are known to bind extended keep the sum; 5 bind side by side and take the taller
 partner. A complex stands at its tallest subunit. Antibody bridges add the antibody's 3.24 nm
-between an Fc receptor and its target, with the epitope's height where it is known.
+between an Fc receptor and its target, and at a contact hold the gap at the epitope:
+
+    gap = max(epitope height + Fc receptor + 3.24 nm, antigen height)
+
+**Epitope heights.** An antibody's epitope is the antigen residues with a heavy atom within 4 Å of
+the antibody in a structure of the two bound, in UniProt numbering (`antibody_epitopes.csv` names
+the PDB entry and its paper for 10 of the 14 antibodies; `build_antibody_epitopes.py` derives the
+residues). Two more have no structure and a coarser epitope, marked by `basis`: catumaxomab's is
+the three EpCAM peptides its binding arm recognises in peptide mapping (residues 49-88 and
+175-196), and elotuzumab's is the membrane-proximal IgC2 domain of SLAMF7 it is reported to bind
+(131-206), the whole stretch standing in for the epitope. A residue's height is the ectodomain's stack of section 1 read part-way up: the
+segments between it and the membrane, plus its C-alpha's position along the box axis its model's
+height is measured on, or its share of a disordered chain's or a counted domain's residues. The
+membrane end is the ectodomain's C-terminal end when it is the chain's first ectodomain and its
+N-terminal end when it is the last; a loop between two helices is placed only inside a model,
+with the membrane at the end its two ends lie nearer. An epitope stands at the mean of its
+residues (`antibody_epitope_heights.csv`). The two antibodies with no epitope recorded,
+tafasitamab and olaratumab, are taken at the membrane. `code/predict_epitope.py` applies the same rule to any residues, and
+places CD45, CD45RO and CD148 (`segregation_probes.csv`) in the gap by the exclusion rule of
+section 5; it reports an epitope as within reach of phagocytosis up to 10 nm above the membrane
+(Bakalar et al. 2018).
 
 **Functional clustering.** The proteins of the trans pairs were clustered by DAVID functional
 annotation clustering (knowledgebase v2025_1, run 2026-09-16; Gene Ontology direct terms,
@@ -146,8 +166,11 @@ cells against triple-negative cells without one.
   established.
 - Expression data cover 970 of 3,146 proteins, so the weighted panels rest on 100 to 170
   proteins each, and every interaction is assumed to bind equally well.
-- The antibody model assumes the antibody binds next to the membrane, as trastuzumab does on
-  HER2.
+- An epitope's height assumes its antigen's model stands on the axis its height is measured on.
+  Where the model's membrane end lies in the middle half of that axis the orientation is flagged
+  as uncertain (EGFR, for cetuximab), as it is for 376 single-anchored ectodomains in all. Two
+  epitopes are no finer than a set of peptides or a domain, and two antibodies have none recorded
+  and are taken to bind at the membrane.
 
 ## 7. Reproducibility
 

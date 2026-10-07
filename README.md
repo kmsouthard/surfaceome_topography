@@ -63,7 +63,9 @@ proteome, each weighted by its share of total abundance.
 
 **3. Contacts.** Pairs that bind across two cells come from manual annotations of the STRING database and CellphoneDB. A pair's
 height is the sum of its partners' heights, unless a recorded rule gives another (a measured
-model of the complex, or partners that bind side by side).
+model of the complex, or partners that bind side by side). An antibody bridging an Fc receptor
+to its antigen holds the gap at its epitope's height, read off a structure of the antibody on
+the antigen.
 
 <p align="center">
   <picture>
@@ -85,9 +87,9 @@ model of the complex, or partners that bind side by side).
          alt="An antibody bridge: HER2 on the cancer cell, trastuzumab lying across its membrane-proximal epitope, and the Fc receptor CD16 hanging from the NK cell onto the antibody's Fc">
   </picture>
   <br>
-  <sub>The same contact's antibody bridge, as the pipeline models it: trastuzumab binds HER2 next to
-  the membrane, so the gap is the Fc receptor (CD16, FCGR3A) plus the antibody's 3.24 nm, and HER2
-  must fit beneath. The antibody is an intact human IgG1 (PDB 1HZH).</sub>
+  <sub>The same contact's antibody bridge, as the pipeline models it: trastuzumab binds HER2's
+  domain IV, 1.6 nm above the membrane, so the gap is that plus the Fc receptor (CD16, FCGR3A) and
+  the antibody's 3.24 nm, and HER2 must fit beneath. The antibody is an intact human IgG1 (PDB 1HZH).</sub>
 </p>
 
 <p align="center">
@@ -149,11 +151,50 @@ mean_height(surface)                           # abundance-weighted mean height,
 plot_surfaces({"my cell type": surface}).savefig("my_cell_type.pdf")
 ```
 
+## An antibody's epitope
+
+```bash
+python code/predict_epitope.py --antibody trastuzumab    # an epitope of data/curated/antibody_epitopes.csv
+python code/predict_epitope.py ERBB2 267-333 --models DIR    # any residues, on any protein of the height table
+```
+
+Each gives the epitope's height above the membrane, the gap an antibody on it holds to each Fc
+receptor, whether the epitope is within the 10 nm that phagocytosis tolerates (Bakalar et al.
+2018), and whether CD45, its short isoform CD45RO and CD148 fit in the gap or are excluded from
+it. Typed residues are uncurated: nothing checks that an antibody binds them. `--models` is a
+directory of AlphaFold v6 models, needed for proteins other than the curated antigens.
+
+## The explorer
+
+**[kmsouthard.github.io/surfaceome_topography](https://kmsouthard.github.io/surfaceome_topography/)**
+
+`explorer/` is a static web page over a run's tables, with four views: a protein (its height,
+its ectodomain drawn with CellScape and as its stack of segments, its partners), an antibody
+epitope (typed residues or a curated antibody's: its height, and the gap the antibody bridge
+would hold to each Fc receptor), a cell surface (proteins sampled by abundance and drawn to
+scale, and the height distribution, for the proteomes here or a file of your own), and a contact
+between two cell types (its gaps, with or without an antibody, and what they exclude by size).
+It computes nothing the pipeline does not: it reads the pairs' shares and applies the bridge and
+exclusion rules to the epitope chosen on the page.
+
+```bash
+python code/explorer/build_explorer.py out --models DIR    # a run's tables to explorer/data/
+conda run -n cellscape python code/explorer/build_cartoons.py out --alphafold DIR    # each protein's CellScape outline
+python -m http.server 8765 --directory explorer            # then open http://localhost:8765
+```
+
+Proteins are drawn as in the illustrations above: `build_cartoons.py` outlines each AlphaFold
+model with CellScape (in the environment of `code/figures/cellscape/environment.yml`), and the
+page draws the outlines, alone in the protein view and as a sample by abundance in the
+cell-surface view.
+
 ## Repository layout
 
 ```
 code/
   run_notebooks.py          runs the pipeline
+  predict_epitope.py        an epitope's height, and the gap an antibody on it holds
+  explorer/                 builds the explorer's data files from a run
   surfaceome_config.py      locates inputs under data/ and outputs under the run directory
   surfaceomeTopography/     the Python library the notebooks use
   database/notebooks/       the method
@@ -165,6 +206,7 @@ data/
   curated/                  decision tables and their citations
   inputs/                   external inputs, by source
   measurements/             domain and structure measurements made for this work
+explorer/                   the web explorer: one page, its script and style, and data/
 docs/METHODS.md             the method in full
 docs/img/                   the README illustrations
 ```
@@ -202,8 +244,10 @@ That needs HMMER, PyMOL and about 5 GB of AlphaFold models.
   membranes. Each protein has location and surface-evidence classification available for filtering if desired.
 - **Contacts assume every pair binds equally well**, since binding strengths are unknown for
   most pairs.
-- **Antibody bridges assume the antibody binds next to the membrane**, as trastuzumab does on
-  HER2.
+- **An antibody's epitope is known for 12 of the 14 antibodies**: 10 from a structure of the
+  antibody on its antigen, one from peptide mapping and one only to its domain. The other two are
+  taken to bind next to the membrane, the least gap their bridges can hold.
+  An epitope's height inherits its antigen's: it assumes the model stands on its long axis.
 
 ## Environment
 
