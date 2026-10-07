@@ -214,7 +214,7 @@ function placed(height, rows) {
   return out;
 }
 
-function placedBar(name, height, rows) {
+function placedBar(name, height, rows, where = "") {
   const p = placed(height, rows), W = 300, colors = { fits: "--good", partly: "--warning", excluded: "--critical" };
   let x = 0, g = "";
   for (const k of ["fits", "partly", "excluded"]) {
@@ -223,7 +223,7 @@ function placedBar(name, height, rows) {
       `data-tip="${esc(name)} ${FIT[k]} over ${pct(p[k])} of the contact"/>`;
     x += w;
   }
-  return `<tr><td><strong>${esc(name)}</strong><br><span class="muted">${fmt(height, 1)} nm</span></td>` +
+  return `<tr><td><strong>${esc(name)}</strong><br><span class="muted">${fmt(height, 1)} nm${where ? " · " + esc(where) : ""}</span></td>` +
     `<td style="min-width:96px"><svg viewBox="0 0 ${W} 16" preserveAspectRatio="none" style="width:100%;height:16px" role="img" ` +
     `aria-label="${esc(name)}: fits ${pct(p.fits)}, partly excluded ${pct(p.partly)}, excluded ${pct(p.excluded)}">${g}</svg></td>` +
     `<td class="num">${pct(p.fits)}</td><td class="num">${pct(p.partly)}</td><td class="num">${pct(p.excluded)}</td></tr>`;
@@ -366,7 +366,7 @@ async function renderProtein(p) {
   const curated = S.meta.antibodies.find((a) => a.acc === p.acc);
   const taller = S.proteins.filter((q) => q.height < p.height).length / S.proteins.length * 100;
   const partners = S.pairs.filter((x) => x[0] === p.acc || x[1] === p.acc)
-    .map((x) => ({ acc: x[0] === p.acc ? x[1] : x[0], gap: x[4], source: x[5] })).sort((a, b) => a.gap - b.gap);
+    .map((x) => ({ acc: x[0] === p.acc ? x[1] : x[0], gap: x[4], source: x[5], cls: x[6] })).sort((a, b) => a.gap - b.gap);
   const methods = (p.methods || "").split(",").map((m) => ({ alphafold: "AlphaFold model", disorder: "disorder model",
     domain: "domain counting", sequence: "sequence length" }[m] || m)).join(", ");
   const held = { first: "C-terminal anchor", last: "N-terminal anchor", loop: "loop" }[p.anchor] || "";
@@ -391,9 +391,9 @@ async function renderProtein(p) {
     histogram([{ name: "Surfaceome proteins", color: "--series-1", items: S.proteins.map((q) => [q.height, 1]) }],
       { ylabel: "proteins", unit: "", marker: { value: p.height, label: `${p.gene} ${fmt(p.height, 1)} nm` } }) + `</div>` +
     `<div class="card"><h3>Trans binding partners (${partners.length})</h3>` + (partners.length
-      ? `<div class="scroll"><table><thead><tr><th>Partner</th><th class="num">partner height, nm</th><th class="num">gap, nm</th><th>source</th></tr></thead><tbody>` +
+      ? `<div class="scroll"><table><thead><tr><th>Partner</th><th class="num">partner height, nm</th><th class="num">gap, nm</th><th>class</th><th>source</th></tr></thead><tbody>` +
         partners.map((x) => { const q = S.byAcc[x.acc]; return `<tr><td>${q ? `<a href="#protein/${esc(q.gene)}">${esc(q.gene)}</a>` : esc(x.acc)}</td>` +
-          `<td class="num">${q ? fmt(q.height, 1) : "–"}</td><td class="num">${fmt(x.gap, 1)}</td><td>${esc(x.source)}</td></tr>`; }).join("") + `</tbody></table></div>`
+          `<td class="num">${q ? fmt(q.height, 1) : "–"}</td><td class="num">${fmt(x.gap, 1)}</td><td>${x.cls ? esc(x.cls) : `<span class="muted">–</span>`}</td><td>${esc(x.source)}</td></tr>`; }).join("") + `</tbody></table></div>`
       : `<p class="muted small">None recorded.</p>`) + `</div>`;
 }
 
@@ -571,14 +571,29 @@ async function renderContact() {
       source = `<span class="tag warn">at the membrane</span> ` + (text ? "No residues in the ectodomain. " : `No epitope known for ${esc(ab.antibody)}. `) + `Placed at the membrane.`;
     }
   }
-  const rows = c.variants[antigen].map(([ia, ib, g, share, bridge, antigenH]) => ({
-    a: c.a[ia], b: c.b[ib], share, bridge, gap: bridge ? Math.max(g - antigenH + epitope, antigenH) : g,
+  const rows = c.variants[antigen].map(([ia, ib, g, share, bridge, antigenH, cls]) => ({
+    a: c.a[ia], b: c.b[ib], share, bridge, cls: bridge ? "Antibody bridge" : cls, gap: bridge ? Math.max(g - antigenH + epitope, antigenH) : g,
     name: `${c.a[ia][0]}–${c.b[ib][0]}`.replace(/_/g, " ") })).sort((x, y) => y.share - x.share);
   const total = rows.reduce((n, r) => n + r.share, 0) || 1;
   const mean = rows.reduce((n, r) => n + r.gap * r.share, 0) / total;
   const close = rows.reduce((n, r) => n + (r.gap < 20 ? r.share : 0), 0) / total * 100;
   const labels = Object.fromEntries(S.meta.surfaces.map((s) => [s.id, s.label]));
-  const ro = S.meta.probes.find((q) => q.name === "CD45RO"), roOut = ro ? placed(ro.height, rows).excluded : 0;
+
+  // The receptor-type tyrosine phosphatases each cell expresses: the proteins kinetic segregation is about.
+  const ALIAS = { PTPRC: "CD45", PTPRJ: "CD148" };
+  const phosphatases = new Map();
+  for (const [units, cell] of [[c.a, labels[a]], [c.b, labels[b]]]) for (const u of units) {
+    const q = S.byAcc[u[1]];
+    if (!q || q.gene !== u[0] || u[3] < 0.05 || !/Receptor-type tyrosine-protein phosphatase/.test(q.name || "")) continue;
+    const entry = phosphatases.get(q.gene) || { name: ALIAS[q.gene] || q.gene, height: u[2], cells: [] };
+    entry.cells.push(`${cell} ${pct(u[3])}`);
+    phosphatases.set(q.gene, entry);
+  }
+  const probes = [...phosphatases.values()].sort((x, y) => y.height - x.height);
+  const ro = S.meta.probes.find((q) => q.name === "CD45RO");
+  if (ro && phosphatases.has("PTPRC")) probes.splice(probes.findIndex((q) => q.name === "CD45") + 1, 0, { name: "CD45RO", height: ro.height, cells: ["short isoform"] });
+  const excludedAt = (gap) => probes.filter((q) => fit(q.height, gap) === "excluded").map((q) => q.name);
+  const cd45 = probes.find((q) => q.name === "CD45"), cd45Out = cd45 ? placed(cd45.height, rows).excluded : null;
 
   const unitTable = (units, side) => {
     const seen = [...units].filter((u) => u[3] > 0).sort((x, y) => y[3] - x[3]).slice(0, 14);
@@ -593,27 +608,33 @@ async function renderContact() {
     (source ? `<p class="small ink-2" style="margin:10px 0 0">${source}</p>` : "") +
     `<div class="tiles">${tile("Mean gap", fmt(mean, 1) + " nm", "weighted by share of the contact", true)}` +
     tile("Trans interactions", rows.length, antigen ? `${rows.filter((r) => r.bridge).length} antibody bridge${rows.filter((r) => r.bridge).length === 1 ? "" : "s"}` : "") +
-    tile("Contact under 20 nm", pct(close)) + tile("CD45RO excluded from", pct(roOut), "of the contact") + `</div>` +
+    tile("Contact under 20 nm", pct(close)) + (cd45Out == null ? "" : tile("CD45 excluded from", pct(cd45Out), "of the contact")) + `</div>` +
     `<div class="card"><h3>Gap heights</h3>${bullseye(rows)}` +
     `<p class="muted small">Ring area = share of the contact. Each band names its top interaction.</p></div>` +
-    `<div class="card"><h3>Size exclusion</h3>` +
+    `<div class="card"><h3>Phosphatase exclusion</h3>` +
     `<p class="small ink-2" style="margin:0 0 10px;max-width:78ch">A protein taller than the gap is excluded from it. ` +
-    `Bars show the share of the contact where each protein fits, is within ${S.meta.exclusion_margin} nm, or is excluded.</p>` +
-    `<div class="scroll"><table><thead><tr><th>Protein</th><th>Contact area</th>` +
+    `Bars show the share of the contact where each phosphatase on these cells fits, is within ${S.meta.exclusion_margin} nm, or is excluded.</p>` +
+    (probes.length + S.extra.length ? `<div class="scroll"><table><thead><tr><th>Protein</th><th>Contact area</th>` +
     `<th class="num">fits</th><th class="num">partly</th><th class="num">excluded</th></tr></thead><tbody>` +
-    [...S.meta.probes, ...S.extra].map((q) => placedBar(q.name, q.height, rows)).join("") + `</tbody></table></div>` +
+    probes.map((q) => placedBar(q.name, q.height, rows, q.cells.join(", "))).join("") +
+    S.extra.map((q) => placedBar(q.name, q.height, rows)).join("") + `</tbody></table></div>` +
     `<div class="legend"><span><span class="swatch" style="background:var(--good)"></span>fits</span>` +
     `<span><span class="swatch" style="background:var(--warning)"></span>partly excluded: up to ${S.meta.exclusion_margin} nm taller</span>` +
-    `<span><span class="swatch" style="background:var(--critical)"></span>excluded: ${S.meta.exclusion_margin} nm or more taller</span></div>` +
+    `<span><span class="swatch" style="background:var(--critical)"></span>excluded: ${S.meta.exclusion_margin} nm or more taller</span></div>`
+      : `<p class="muted small">No receptor-type tyrosine phosphatase detected on these cells.</p>`) +
     `<div class="inline-form" style="margin-top:12px"><label>Add a protein or a height (nm)` +
     `<input id="probe-input" list="protein-list" placeholder="e.g. SPN or 25" autocomplete="off"></label>` +
     (S.extra.length ? `<button id="probe-clear" class="quiet">Clear</button>` : "") + `</div>` +
-    `<p class="muted small" style="margin:8px 0 0">CD45 is the longest isoform, CD45RO the shortest. ${S.meta.exclusion_margin} nm margin: Schmid et al. 2016.</p></div>` +
+    `<p class="muted small" style="margin:8px 0 0">Receptor-type tyrosine phosphatases (UniProt) at 0.05% or more of either cell's surface, with their share of it. ` +
+    `${S.meta.exclusion_margin} nm margin: Schmid et al. 2016.</p></div>` +
     `<div class="card"><h3>Trans interactions</h3><div class="scroll"><table><thead><tr><th>${esc(labels[a])}</th><th>${esc(labels[b])}</th>` +
-    `<th class="num">gap, nm</th><th class="num">share of the contact</th><th></th></tr></thead><tbody>` +
-    rows.slice(0, 20).map((r) => `<tr><td>${esc(r.a[0].replace(/_/g, " "))}</td><td>${esc(r.b[0].replace(/_/g, " "))}</td><td class="num">${fmt(r.gap, 1)}</td>` +
-      `<td class="num">${pct(r.share / total * 100)}</td><td>${r.bridge ? `<span class="tag">antibody bridge</span>` : ""}</td></tr>`).join("") +
-    `</tbody></table></div></div>` +
+    `<th class="num">gap, nm</th><th class="num">share</th><th>phosphatases excluded at this gap</th><th>class</th></tr></thead><tbody>` +
+    rows.slice(0, 25).map((r) => { const out = excludedAt(r.gap); return `<tr><td>${esc(r.a[0].replace(/_/g, " "))}</td><td>${esc(r.b[0].replace(/_/g, " "))}</td>` +
+      `<td class="num">${fmt(r.gap, 1)}</td><td class="num">${pct(r.share / total * 100)}</td>` +
+      `<td>${out.length ? esc(out.join(", ")) : `<span class="muted">none</span>`}</td>` +
+      `<td>${r.cls ? esc(r.cls) : `<span class="muted">–</span>`}</td></tr>`; }).join("") +
+    `</tbody></table></div>` +
+    `<p class="muted small" style="margin:8px 0 0">Top 25 by share of the contact. Class: CellphoneDB, where it lists the pair.</p></div>` +
     `<div class="grid"><div class="card"><h3>Surface proteins, ${esc(labels[a])}</h3>${unitTable(c.a, "protein")}</div>` +
     `<div class="card"><h3>Surface proteins, ${esc(labels[b])}</h3>${unitTable(c.b, "protein")}</div></div>` +
     `<p class="muted small" style="margin:8px 0 0">Fits in, excluded from: share of the contact.</p>`;
@@ -621,7 +642,7 @@ async function renderContact() {
   $("probe-input").addEventListener("change", (e) => {
     const text = e.target.value.trim(), height = Number(text), found = findProtein(text);
     if (text && Number.isFinite(height) && height > 0) S.extra.push({ name: `${height} nm`, height });
-    else if (found && ![...S.meta.probes, ...S.extra].some((q) => q.name === found.gene)) S.extra.push({ name: found.gene, height: found.height });
+    else if (found && !S.extra.some((q) => q.name === found.gene)) S.extra.push({ name: found.gene, height: found.height });
     else return;
     renderContact();
   });

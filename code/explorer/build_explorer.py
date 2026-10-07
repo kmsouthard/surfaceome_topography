@@ -13,7 +13,8 @@ computes, and reads what this writes from a finished run (``python code/run_note
     pairs.json       the trans pairs and their gaps
     residues/NN.json every ectodomain residue's height (`surfaceomeTopography.epitope`), in 64
                      files by a hash of the accession; the page fetches the one it needs
-    surfaces.json    each cell type's surface: its proteins and their shares of the abundance
+    surfaces.json    each cell type's surface: its proteins and their shares of the abundance (the
+                     blood cells of E-PROT-1, not its tissues)
     contacts/*.json  each contact between two cell types: the units on both sides, and the pairs
                      with their gaps and shares, without an antibody and with each one that can
                      bridge it (`surfaceomeTopography.contact.contact_pairs`)
@@ -46,6 +47,9 @@ DATA = REPO / "data"
 #: The cell types a contact is offered for: one side from the first list, the other from both.
 BLOOD = ["adult, B cell", "adult, CD4-positive T cell", "adult, CD8-positive T cell", "adult, monocyte",
          "adult, natural killer cell", "adult, platelet"]
+#: E-PROT-27 is tumour tissue (40 breast tumours, Tyanova et al. 2016), and is named as such.
+TUMOURS = {"HER2 Positive Breast Carcinoma": "HER2-positive breast tumour", "breast tumor luminal": "luminal breast tumour",
+           "triple-negative breast cancer": "triple-negative breast tumour"}
 MONOCYTE_SUBSETS = ["Classical monocytes", "Intermediate monocytes", "Non-classical monocytes"]
 SHARDS = 64
 
@@ -121,13 +125,21 @@ def build_proteins(run: Path, models: Path | None, dest: Path) -> pd.DataFrame:
     return estimates
 
 
+def interaction_classes(run: Path) -> dict:
+    """CellphoneDB's class of each of its interactions (``Signaling by Notch``, ``Adhesion by ICAM``), by its id."""
+    cp = pd.read_csv(run / "database/cellphonedb_tm_interaction_sizes.csv").dropna(subset=["classification"])
+    return dict(zip(cp["id_cp_interaction"], cp["classification"]))
+
+
 def build_pairs(run: Path, dest: Path) -> pd.DataFrame:
     interactions = pd.read_csv(run / "database/interaction_heights.csv")
+    classes = interaction_classes(run)
     trans = interactions[interactions["_merge"] != "FcR"].drop_duplicates("Human interaction_id")
     write(dest / "pairs.json", [[r["Human ID link_prot1"], r["Human ID link_prot2"], clean(r["Human gene name_prot1"]),
                                  clean(r["Human gene name_prot2"]), round(float(r["interaction_dim"]), 2),
                                  "CellphoneDB" if isinstance(r["id_cp_interaction"], str) and not isinstance(r["_merge"], str)
-                                 else {"string": "STRING", "curated": "curated"}.get(r["_merge"], "CellphoneDB")]
+                                 else {"string": "STRING", "curated": "curated"}.get(r["_merge"], "CellphoneDB"),
+                                 classes.get(r["id_cp_interaction"])]
                                 for _, r in trans.iterrows() if pd.notna(r["interaction_dim"])])
     print(f"  {len(trans):,} trans pairs")
     return interactions
@@ -158,12 +170,14 @@ def expression_tables(run: Path):
 def build_surfaces(run: Path, tables: dict, dest: Path) -> list:
     surfaces, listing = {}, []
     for key, dataset in (("immune", "Expression Atlas E-PROT-1 (Kim et al. 2014)"),
-                         ("cancer", "Expression Atlas E-PROT-27 (breast cancer)")):
+                         ("cancer", "Expression Atlas E-PROT-27 (breast tumours, Tyanova et al. 2016)")):
         long = tables[key][0].dropna(subset=["percent_expression"]).drop_duplicates(["sample", "ID link"])
         for sample, rows in long.groupby("sample", sort=False):
+            if key == "immune" and sample not in BLOOD:      # the explorer shows cells, not E-PROT-1's tissues
+                continue
             surfaces[slug(sample)] = [[a, round(float(p), 4)] for a, p in zip(rows["ID link"], rows["percent_expression"])
                                       if p > 0]
-            listing.append({"id": slug(sample), "label": sample.replace("adult, ", ""), "dataset": dataset,
+            listing.append({"id": slug(sample), "label": TUMOURS.get(sample, sample.replace("adult, ", "")), "dataset": dataset,
                             "proteins": len(surfaces[slug(sample)])})
     monocytes = pd.read_csv(run / "tables/ravenhill_2020_monocyte_expression_dataset.csv")
     for subset in MONOCYTE_SUBSETS:
@@ -186,6 +200,7 @@ def unit_table(surface: pd.DataFrame) -> pd.DataFrame:
 def build_contacts(run: Path, tables: dict, interactions: pd.DataFrame, bridges: pd.DataFrame, dest: Path) -> list:
     interactions = interactions.drop(columns=["ID link_prot1", "ID_prot1", "ID link_prot2", "ID_prot2"])
     antigens = bridges[(bridges["role"] == "antigen") & (bridges["included"] == "yes")]
+    classes = interaction_classes(run)
     sides = [("immune", s) for s in BLOOD] + [("cancer", s) for s in tables["cancer"][0]["sample"].unique()]
     listing = []
     for sample_a in BLOOD:
@@ -213,9 +228,10 @@ def build_contacts(run: Path, tables: dict, interactions: pd.DataFrame, bridges:
                 bridge = (pairs["_merge"] == "FcR").to_numpy()
                 raw = contact_pairs(a, b, interactions, antibody_target=target, epitope_heights=1e6)["interaction_dim"] - 1e6
                 return [[ua, ub, round(float(r if f else g), 3), round(float(s), 4), int(f),
-                         round(float(h), 3) if f else 0]
-                        for ua, ub, g, r, s, f, h in zip(unit_a, unit_b, pairs["interaction_dim"], raw + pairs["total_height_prot1"],
-                                                         pairs["interface_shared"], bridge, pairs["total_height_prot1"])]
+                         round(float(h), 3) if f else 0, classes.get(c)]
+                        for ua, ub, g, r, s, f, h, c in zip(unit_a, unit_b, pairs["interaction_dim"], raw + pairs["total_height_prot1"],
+                                                            pairs["interface_shared"], bridge, pairs["total_height_prot1"],
+                                                            pairs["id_cp_interaction"])]
 
             variants[""] = variant(surface_units(long_b, cplx_b, sample_b), None)
             for g in antigens.itertuples():

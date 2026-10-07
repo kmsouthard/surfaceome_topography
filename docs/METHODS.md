@@ -139,7 +139,7 @@ a cluster's name is its top term unless a hand name is recorded for that term.
 **Expression weighting.** A cell type's surface is the set of surfaceome proteins with a value
 in a proteome of that cell type, each weighted by its share of the summed abundance. Immune
 cells use Expression Atlas E-PROT-1 (Kim et al. 2014 draft proteome, re-downloaded with current
-gene symbols), the monocyte subtypes Ravenhill et al. 2020, breast cancer cells E-PROT-27. The
+gene symbols), the monocyte subtypes Ravenhill et al. 2020, breast tumours E-PROT-27 (Tyanova et al. 2016). The
 weighted mean height and the height distribution of a cell type are what Figures 3 and 4 show.
 
 **Contacts.** For an immune cell against a cancer cell, every trans pair whose partners both
@@ -166,6 +166,8 @@ cells against triple-negative cells without one.
   established.
 - Expression data cover 970 of 3,146 proteins, so the weighted panels rest on 100 to 170
   proteins each, and every interaction is assumed to bind equally well.
+- The breast cancer surfaces are tumour proteomes (Tyanova et al. 2016), not purified cancer
+  cells.
 - An epitope's height assumes its antigen's model stands on the axis its height is measured on.
   Where the model's membrane end lies in the middle half of that axis the orientation is flagged
   as uncertain (EGFR, for cetuximab), as it is for 376 single-anchored ectodomains in all. Two
