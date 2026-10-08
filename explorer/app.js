@@ -223,10 +223,11 @@ function placedBar(name, height, rows, where = "") {
       `data-tip="${esc(name)} ${FIT[k]} over ${pct(p[k])} of the contact"/>`;
     x += w;
   }
-  return `<tr><td><strong>${esc(name)}</strong><br><span class="muted">${fmt(height, 1)} nm${where ? " · " + esc(where) : ""}</span></td>` +
+  return `<tr class="bar-row"><td><strong>${esc(name)}</strong></td>` +
     `<td style="min-width:96px"><svg viewBox="0 0 ${W} 16" preserveAspectRatio="none" style="width:100%;height:16px" role="img" ` +
     `aria-label="${esc(name)}: fits ${pct(p.fits)}, partly excluded ${pct(p.partly)}, excluded ${pct(p.excluded)}">${g}</svg></td>` +
-    `<td class="num">${pct(p.fits)}</td><td class="num">${pct(p.partly)}</td><td class="num">${pct(p.excluded)}</td></tr>`;
+    `<td class="num">${pct(p.fits)}</td><td class="num">${pct(p.partly)}</td><td class="num">${pct(p.excluded)}</td></tr>` +
+    `<tr class="bar-note"><td colspan="5" class="muted">${fmt(height, 1)} nm${where ? " · " + esc(where) : ""}</td></tr>`;
 }
 
 /* ---------- CellScape cartoons ---------- */
