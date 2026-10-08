@@ -14,7 +14,7 @@ const KIND = { alphafold: ["AlphaFold model", "--model"], disorder: ["Disordered
   domain: ["Counted domain", "--domain"], sequence: ["No structure", "--sequence"] };
 
 async function load(name) {
-  const r = await fetch("data/" + name);
+  const r = await fetch("data/" + name + "?v=" + window.EXPLORER_VERSION);
   if (!r.ok) throw new Error(name + ": " + r.status);
   return r.json();
 }

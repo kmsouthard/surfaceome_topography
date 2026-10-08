@@ -118,6 +118,16 @@
 </footer>
 
 <div id="tip" role="tooltip" hidden></div>
-<script src="app.js"></script>
+<script>
+  // One version for every file of a deploy, so a new page never runs with older cached files.
+  // The deploy writes version.json; without it (a local copy) nothing is cached.
+  fetch("version.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then((v) => {
+    window.EXPLORER_VERSION = v.version || String(Date.now());
+    document.querySelector('link[rel="stylesheet"]').href = "style.css?v=" + window.EXPLORER_VERSION;
+    const script = document.createElement("script");
+    script.src = "app.js?v=" + window.EXPLORER_VERSION;
+    document.body.appendChild(script);
+  });
+</script>
 </body>
 </html>

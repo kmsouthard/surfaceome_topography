@@ -25,6 +25,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Stamp the deploy, so browsers never mix its files with an older one's
+        run: |
+          printf '{"version": "%s"}\n' "${GITHUB_SHA::12}" > explorer/version.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
