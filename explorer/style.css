@@ -138,3 +138,5 @@ button.quiet:hover { color: var(--ink); border-color: var(--ink-2); }
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .controls select, .controls input { max-width: calc(100vw - 32px); }
 }
+
+[hidden] { display: none !important; }

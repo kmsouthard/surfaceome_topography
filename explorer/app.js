@@ -546,6 +546,8 @@ function renderSurface() {
 /* ---------- contact ---------- */
 
 async function renderContact() {
+  $("contact-controls").hidden = !!S.liana;
+  if (S.liana) return renderUpload();
   const a = $("contact-a").value, b = $("contact-b").value, id = `${a}__${b}`;
   const entry = S.meta.contacts.find((c) => c.id === id);
   const abSel = $("contact-ab"), wanted = abSel.value;
@@ -650,6 +652,138 @@ async function renderContact() {
   $("probe-clear")?.addEventListener("click", () => { S.extra = []; renderContact(); });
 }
 
+/* ---------- an uploaded LIANA result ---------- */
+
+// A delimited table as rows of cells: commas or tabs, with quoted cells.
+function parseTable(text) {
+  const tab = (text.split("\n", 1)[0].match(/\t/g) || []).length > (text.split("\n", 1)[0].match(/,/g) || []).length;
+  const sep = tab ? "\t" : ",", rows = [];
+  let row = [], cell = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (quoted) {
+      if (ch === '"' && text[i + 1] === '"') { cell += '"'; i++; } else if (ch === '"') quoted = false; else cell += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === sep) { row.push(cell); cell = ""; }
+    else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && text[i + 1] === "\n") i++;
+      row.push(cell); cell = "";
+      if (row.some((c) => c !== "")) rows.push(row);
+      row = [];
+    } else cell += ch;
+  }
+  row.push(cell);
+  if (row.some((c) => c !== "")) rows.push(row);
+  return rows;
+}
+
+const WEIGHTS = ["lr_means", "expr_prod", "lrscore"];        // LIANA's magnitude scores: higher is stronger
+const SPECIFICITY = ["specificity_rank", "cellphone_pvals"];  // lower is more specific
+const CALL = { t: "trans", c: "cis", s: "secreted", p: "pathway" };
+
+// One side of an interaction: its subunits' proteins, and its height as a complex's is, the tallest.
+function side(complex) {
+  const found = complex.split("_").map((g) => S.byGene[g.toUpperCase()]).filter(Boolean);
+  return { found, height: found.length ? Math.max(...found.map((q) => q.height)) : null };
+}
+
+// What the pipeline says of a ligand-receptor row: its call, its gap and where the gap comes from.
+function annotate(ligand, receptor) {
+  const l = side(ligand), r = side(receptor);
+  if (!l.found.length || !r.found.length) return { call: "not surface", gap: null, basis: "", cls: null };
+  let call = null, gap = null, cls = null;
+  for (const x of l.found) for (const y of r.found) {
+    const key = [x.acc, y.acc].sort().join("|"), c = S.calls[key], known = S.pairGap[key];
+    if (c && (!call || "tcsp".indexOf(c) < "tcsp".indexOf(call))) call = c;
+    if (known && (gap == null || known[0] > gap)) { gap = known[0]; cls = known[1] || cls; }
+  }
+  if (gap != null) return { call: "trans", gap, basis: "pipeline", cls };
+  const sum = l.height + r.height;
+  if (call === "t") return { call: "trans", gap: sum, basis: "sum of heights", cls };
+  if (call) return { call: CALL[call], gap: null, basis: "", cls };
+  return { call: "no call", gap: sum, basis: "sum of heights, if trans", cls };
+}
+
+async function loadUpload(file) {
+  const rows = parseTable(await file.text());
+  const head = (rows.shift() || []).map((h) => h.trim());
+  const col = Object.fromEntries(head.map((h, i) => [h, i]));
+  const need = ["source", "target", "ligand_complex", "receptor_complex"].filter((h) => !(h in col));
+  if (need.length) return `That file has no ${need.join(", ")} column. A LIANA result has source, target, ligand_complex and receptor_complex.`;
+  S.calls ??= await load("calls.json");
+  S.pairGap ??= Object.fromEntries(S.pairs.map((x) => [[x[0], x[1]].sort().join("|"), [x[4], x[6]]]));
+  const number = (r, h) => (h in col && r[col[h]] !== "" && Number.isFinite(+r[col[h]]) ? +r[col[h]] : null);
+  S.liana = { name: file.name, head, weights: WEIGHTS.filter((h) => h in col), specificity: SPECIFICITY.find((h) => h in col) || null,
+    rows: rows.map((r) => ({ raw: r, source: r[col.source], target: r[col.target], ligand: r[col.ligand_complex], receptor: r[col.receptor_complex],
+      score: Object.fromEntries([...WEIGHTS, ...SPECIFICITY].map((h) => [h, number(r, h)])), ...annotate(r[col.ligand_complex], r[col.receptor_complex]) })) };
+  S.liana.weight = S.liana.weights[0] || "";
+  return "";
+}
+
+function excludedNames(gap) {
+  return S.meta.probes.filter((q) => fit(q.height, gap) === "excluded").map((q) => q.name);
+}
+
+function downloadAnnotated() {
+  const quote = (v) => (/[",\n]/.test(String(v ?? "")) ? `"${String(v).replace(/"/g, '""')}"` : String(v ?? ""));
+  const added = ["explorer_call", "explorer_gap_nm", "explorer_gap_basis", "explorer_class", ...S.meta.probes.map((q) => `${q.name}_at_gap`)];
+  const lines = [[...S.liana.head, ...added].map(quote).join(",")];
+  for (const r of S.liana.rows) lines.push([...r.raw, r.call, r.gap == null ? "" : r.gap.toFixed(2), r.basis, r.cls || "",
+    ...S.meta.probes.map((q) => (r.gap == null ? "" : FIT[fit(q.height, r.gap)]))].map(quote).join(","));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n") + "\n"], { type: "text/csv" }));
+  a.download = S.liana.name.replace(/\.[^.]*$/, "") + "_with_gaps.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function renderUpload() {
+  const L = S.liana, body = $("contact-body");
+  const sources = [...new Set(L.rows.map((r) => r.source))].sort(), targets = [...new Set(L.rows.map((r) => r.target))].sort();
+  if (!sources.includes(L.source)) L.source = sources[0];
+  if (!targets.includes(L.target)) L.target = targets.find((t) => t !== L.source) || targets[0];
+  const cut = L.cut ? +L.cut : null;
+  const here = L.rows.filter((r) => r.source === L.source && r.target === L.target &&
+    (cut == null || (r.score[L.specificity] != null && r.score[L.specificity] <= cut)));
+  const weight = (r) => (L.weight ? Math.max(r.score[L.weight] ?? 0, 0) : 1);
+  const trans = here.filter((r) => r.call === "trans" && r.gap != null).map((r) => ({ ...r, share: weight(r), name: `${r.ligand}–${r.receptor}`.replace(/_/g, " ") }));
+  const total = trans.reduce((n, r) => n + r.share, 0) || 1;
+  const mean = trans.reduce((n, r) => n + r.gap * r.share, 0) / total;
+  const count = (c) => here.filter((r) => r.call === c).length;
+  const option = (v, t, now) => `<option value="${esc(v)}"${v === now ? " selected" : ""}>${esc(t)}</option>`;
+  const shown = [...here].sort((x, y) => weight(y) - weight(x)).slice(0, 50);
+
+  body.innerHTML =
+    `<div class="controls" style="margin-top:10px"><label>Source <select id="up-source">${sources.map((v) => option(v, v, L.source)).join("")}</select></label>` +
+    `<label>Target <select id="up-target">${targets.map((v) => option(v, v, L.target)).join("")}</select></label>` +
+    `<label>Weight <select id="up-weight">${L.weights.map((v) => option(v, v, L.weight)).join("")}${option("", "equal", L.weight)}</select></label>` +
+    (L.specificity ? `<label>${esc(L.specificity)} <select id="up-cut">${[["", "all"], ["0.05", "≤ 0.05"], ["0.01", "≤ 0.01"]].map(([v, t]) => option(v, t, L.cut || "")).join("")}</select></label>` : "") +
+    `<button id="up-download" class="quiet">Download with gaps</button><button id="up-clear" class="quiet">Clear</button></div>` +
+    `<p class="small ink-2" style="margin:10px 0 0"><span class="tag">your data</span> ${esc(L.name)}, ${L.rows.length.toLocaleString()} interactions. ` +
+    `Expression and scores are yours. Calls and gaps are from this pipeline.</p>` +
+    `<div class="tiles">${tile("Interactions", here.length.toLocaleString(), `${esc(L.source)} to ${esc(L.target)}`)}` +
+    tile("Trans", count("trans"), "with a gap") + tile("Cis, secreted or pathway", count("cis") + count("secreted") + count("pathway")) +
+    tile("Not surface", count("not surface"), "a partner is not in the surfaceome") + tile("No call", count("no call")) + `</div>` +
+    (trans.length ? `<div class="card"><h3>Gap heights</h3>${bullseye(trans)}` +
+      `<p class="muted small">Trans interactions only. Ring area = share of ${L.weight ? esc(L.weight) : "the interactions, equal weights"}. Mean gap ${fmt(mean, 1)} nm.</p></div>` : "") +
+    `<div class="card"><h3>Interactions</h3><div class="scroll"><table><thead><tr><th>ligand</th><th>receptor</th>` +
+    (L.weight ? `<th class="num">${esc(L.weight)}</th>` : "") + `<th>call</th><th class="num">gap, nm</th><th>phosphatases excluded at this gap</th><th>class</th></tr></thead><tbody>` +
+    shown.map((r) => { const out = r.call === "trans" && r.gap != null ? excludedNames(r.gap) : null;
+      return `<tr><td>${esc(r.ligand.replace(/_/g, " "))}</td><td>${esc(r.receptor.replace(/_/g, " "))}</td>` +
+        (L.weight ? `<td class="num">${r.score[L.weight] == null ? "–" : fmt(r.score[L.weight], 2)}</td>` : "") +
+        `<td>${esc(r.call)}</td><td class="num">${r.gap == null ? "–" : r.basis === "pipeline" ? fmt(r.gap, 1) : `<span class="muted" data-tip="${esc(r.basis)}">${fmt(r.gap, 1)}</span>`}</td>` +
+        `<td>${out == null ? `<span class="muted">–</span>` : out.length ? esc(out.join(", ")) : `<span class="muted">none</span>`}</td>` +
+        `<td>${r.cls ? esc(r.cls) : `<span class="muted">–</span>`}</td></tr>`; }).join("") +
+    `</tbody></table></div>` +
+    `<p class="muted small" style="margin:8px 0 0">Top ${shown.length} of ${here.length} by ${L.weight ? esc(L.weight) : "order"}. Grey gaps are the sum of the two heights, not a curated gap. ` +
+    `Phosphatases: ${S.meta.probes.map((q) => `${esc(q.name)} ${fmt(q.height, 0)} nm`).join(", ")}.</p></div>`;
+
+  for (const [id, key] of [["up-source", "source"], ["up-target", "target"], ["up-weight", "weight"], ["up-cut", "cut"]])
+    $(id)?.addEventListener("change", (e) => { L[key] = e.target.value; renderUpload(); });
+  $("up-download").addEventListener("click", downloadAnnotated);
+  $("up-clear").addEventListener("click", () => { S.liana = null; $("contact-file").value = ""; $("contact-controls").hidden = false; renderContact(); });
+}
+
 /* ---------- navigation ---------- */
 
 function show(view) {
@@ -735,6 +869,13 @@ async function start() {
     location.hash = `contact/${$("contact-a").value}/${$("contact-b").value}/${$("contact-ab").value}`;
   });
   $("contact-epitope").addEventListener("change", renderContact);
+  $("contact-file").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const problem = await loadUpload(file);
+    if (problem) { S.liana = null; $("contact-body").innerHTML = `<p class="note">${esc(problem)}</p>`; return; }
+    renderContact();
+  });
 
   const d = S.meta.databases;
   $("vintage").innerHTML = `UniProt ${esc(d.uniprot)}, AlphaFold ${esc(d.alphafold)}, Pfam ${esc(d.pfam)}, STRING ${esc((d.string || "").split(" ")[0])}, ` +

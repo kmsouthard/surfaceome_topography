@@ -30,7 +30,7 @@ The results can be browsed at
 | Protein | The height of any surface protein, with a drawing of it to scale |
 | Epitope | The gap an antibody sets between two cells, from the residues it binds |
 | Cell surface | The proteins on a cell type drawn to scale. You can upload your own expression data |
-| Contact | The gaps between two cell types, with or without an antibody |
+| Contact | The gaps between two cell types, with or without an antibody. You can upload a LIANA result |
 
 ## Quick start
 

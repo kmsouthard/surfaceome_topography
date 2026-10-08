@@ -60,7 +60,7 @@
   </section>
 
   <section id="view-contact" class="view" hidden>
-    <div class="controls">
+    <div class="controls" id="contact-controls">
       <label>Cell 1 <select id="contact-a"></select></label>
       <label>Cell 2 <select id="contact-b"></select></label>
       <label>Antibody <select id="contact-ab"></select></label>
@@ -68,6 +68,12 @@
         <input id="contact-epitope" placeholder="e.g. 579-625" autocomplete="off">
       </label>
     </div>
+    <div class="controls">
+      <label class="file">Upload a LIANA result
+        <input id="contact-file" type="file" accept=".csv,.tsv,.txt">
+      </label>
+    </div>
+    <p class="muted small">A table with source, target, ligand_complex and receptor_complex columns. The file stays in your browser.</p>
     <div id="contact-body"></div>
   </section>
 </main>

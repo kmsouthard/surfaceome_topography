@@ -11,6 +11,8 @@ computes, and reads what this writes from a finished run (``python code/run_note
     proteins.json    every protein of the height table: names, height, classification, its
                      ectodomain's stack of segments and which end the membrane holds
     pairs.json       the trans pairs and their gaps
+    calls.json       every pair's call (trans, cis, secreted, pathway), read when a user uploads an
+                     interaction table of their own
     residues/NN.json every ectodomain residue's height (`surfaceomeTopography.epitope`), in 64
                      files by a hash of the accession; the page fetches the one it needs
     surfaces.json    each cell type's surface: its proteins and their shares of the abundance (the
@@ -145,6 +147,33 @@ def build_pairs(run: Path, dest: Path) -> pd.DataFrame:
     return interactions
 
 
+def build_calls(interactions: pd.DataFrame, dest: Path) -> None:
+    """Every pair's call, for annotating an uploaded interaction table: ``{"ACC1|ACC2": "t" | "c" | "s" | "p"}``.
+
+    The calls of ``interaction_types.csv`` with the corrections of ``interaction_type_corrections.csv``;
+    then every pair of the run's trans table is trans and every pair of ``cis_pairs.csv`` cis, as the
+    pipeline has them. Accessions are in sorted order.
+    """
+    key = lambda a, b: "|".join(sorted((a, b)))
+    types = pd.read_csv(DATA / "curated/interaction_types.csv")
+    calls = {key(a, b): t[0] for a, b, t in zip(types["accession_1"], types["accession_2"], types["type"])}
+    corrections = pd.read_csv(DATA / "curated/interaction_type_corrections.csv")
+    for a, b, to in zip(corrections["Human ID link_prot1"], corrections["Human ID link_prot2"], corrections["corrected"]):
+        if to == "removed":
+            calls.pop(key(a, b), None)
+        else:
+            calls[key(a, b)] = to[0]
+    cis = pd.read_csv(DATA / "curated/cis_pairs.csv")
+    for a, b in zip(cis["Human ID link_prot1"], cis["Human ID link_prot2"]):
+        calls[key(a, b)] = "c"
+    trans = interactions[interactions["_merge"] != "FcR"]
+    for a, b in zip(trans["Human ID link_prot1"], trans["Human ID link_prot2"]):
+        calls[key(a, b)] = "t"
+    write(dest / "calls.json", calls)
+    counts = pd.Series(list(calls.values())).value_counts().to_dict()
+    print(f"  {len(calls):,} pair calls: {counts}")
+
+
 def expression_tables(run: Path):
     """The two Expression Atlas proteomes as long surface tables, as the Figure 6 notebook builds them."""
     names = pd.concat([pd.read_csv(DATA / "inputs/mapping/uniprot_surfaceome_gene_name.tab", sep="\t"),
@@ -258,6 +287,7 @@ def main() -> int:
 
     estimates = build_proteins(a.run, a.models, a.dest)
     interactions = build_pairs(a.run, a.dest)
+    build_calls(interactions, a.dest)
     tables = expression_tables(a.run)
     surfaces = build_surfaces(a.run, tables, a.dest)
     bridges = pd.read_csv(DATA / "curated/antibody_bridges.csv")
