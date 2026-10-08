@@ -73,6 +73,13 @@ def decisions() -> pd.DataFrame:
         "assertion": [e or n for e, n in zip(t.evidence, t.note)], "pmids": t.pmids,
         "status": ["" if i == "yes" else "no epitope known" for i in t.included]}))
 
+    t = _read("curated_complexes.csv")
+    out.append(pd.DataFrame({
+        "source": "curated_complexes.csv",
+        "decision": ["complex added" if i == "yes" else "complex considered and left out" for i in t.included],
+        "subject": t.gene_1 + "–" + t.gene_2, "included": t.included,
+        "assertion": [e or n for e, n in zip(t.evidence, t.note)], "pmids": t.pmids}))
+
     t = _read("segregation_probes.csv")
     out.append(pd.DataFrame({
         "source": "segregation_probes.csv", "decision": "protein placed in an antibody's gap",

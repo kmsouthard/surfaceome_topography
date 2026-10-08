@@ -1,0 +1,9 @@
+complex_name,uniprot_1,uniprot_2,gene_1,gene_2,included,pmids,evidence,note
+HLA_DRA_DRB1_complex,P01903,P01911,HLA-DRA,HLA-DRB1,yes,8316295,crystal structure of HLA-DR1: class II alpha-beta heterodimers,
+HLA_DRA_DRB3_complex,P01903,P79483,HLA-DRA,HLA-DRB3,yes,17583734,"crystal structure of HLA-DR52a, HLA-DRA/DRB3*0101: alpha-beta heterodimers",
+HLA_DRA_DRB4_complex,P01903,P13762,HLA-DRA,HLA-DRB4,no,,,needs citation: no structure or pairing paper found in PubMed for DRA with DRB4
+HLA_DRA_DRB5_complex,P01903,Q30154,HLA-DRA,HLA-DRB5,yes,11080454,DRB1*1501 and DRB5*0101 each form a functional cell-surface heterodimer with DRA (HLA-DR2b and HLA-DR2a); crystal structure of HLA-DR2a,
+HLA_DQA1_DQB1_complex,P01909,P01920,HLA-DQA1,HLA-DQB1,yes,11376336,crystal structure of the class II molecule HLA-DQ8,"the abstract names DQ8, not its chains; DQA1 and DQB1 are from the gene names"
+HLA_DQA2_DQB2_complex,P01906,P05538,HLA-DQA2,HLA-DQB2,yes,22407913,HLA-DQ alpha 2 and beta 2 chains form heterodimers expressed at the cell surface of Langerhans cells,the same paper reports mixed DQ alpha 2 / DQ beta 1 heterodimers leaving the ER; not listed as a complex here
+HLA_DPA1_DPB1_complex,P20036,P04440,HLA-DPA1,HLA-DPB1,yes,20356827,crystal structure of HLA-DP2,the abstract names DP2 and its beta chain allele DPB1*0201
+HLA_DOA_DOB_complex,P06340,P13765,HLA-DOA,HLA-DOB,no,,,"left out: non-classical class II, not a CD4 ligand at the surface; needs a citation if kept out by rule"

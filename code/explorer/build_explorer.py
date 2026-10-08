@@ -42,6 +42,7 @@ from surfaceomeTopography import (cell_surface, contact_pairs, expressed_complex
                                   surface_units)
 from surfaceomeTopography.epitope import (ANTIBODY_LENGTH, PHAGOCYTOSIS_RANGE, ectodomain_segments,  # noqa: E402
                                           probe_heights, residue_heights)
+from surfaceomeTopography.interactions import with_curated_complexes  # noqa: E402
 from surfaceomeTopography.interface import BULLSEYE_BANDS, _unit_heights  # noqa: E402
 from surfaceomeTopography.topography import HEIGHT_BINS  # noqa: E402
 
@@ -140,7 +141,7 @@ def build_pairs(run: Path, dest: Path) -> pd.DataFrame:
     write(dest / "pairs.json", [[r["Human ID link_prot1"], r["Human ID link_prot2"], clean(r["Human gene name_prot1"]),
                                  clean(r["Human gene name_prot2"]), round(float(r["interaction_dim"]), 2),
                                  "CellphoneDB" if isinstance(r["id_cp_interaction"], str) and not isinstance(r["_merge"], str)
-                                 else {"string": "STRING", "curated": "curated"}.get(r["_merge"], "CellphoneDB"),
+                                 else {"string": "STRING", "curated": "curated", "complex": "complex"}.get(r["_merge"], "CellphoneDB"),
                                  classes.get(r["id_cp_interaction"])]
                                 for _, r in trans.iterrows() if pd.notna(r["interaction_dim"])])
     print(f"  {len(trans):,} trans pairs")
@@ -184,7 +185,8 @@ def expression_tables(run: Path):
     heights = heights.drop(columns=["max_dim_first", "min_dim_first", "seq_len_first", "source_last"])
     ids = ["ID link", "Entry", "Entry name", "Status", "Protein names", "Gene names", "Organism", "Length",
            "Gene names  (primary )", "Gene ID", "Gene Name", "ID", "methods_<lambda>", "total_height"]
-    complexes = pd.read_csv(DATA / "inputs/cellphonedb/complex_curated.csv")
+    complexes = with_curated_complexes(pd.read_csv(DATA / "inputs/cellphonedb/complex_curated.csv"),
+                                       pd.read_csv(DATA / "curated/curated_complexes.csv"))
     out = {}
     for key, file in (("immune", "E-PROT-1-query-results.tsv.gz"), ("cancer", "E-PROT-27-query-results.tsv")):
         expression = pd.read_csv(DATA / "inputs/expression" / file, sep="\t", header=4)

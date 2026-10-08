@@ -95,17 +95,25 @@ complexes). STRING says two proteins associate, not how: whether a pair binds ac
 here per pair and kept in `interaction_types.csv`, the 2020 calls made on STRING v11 and carried
 over by pair, so a STRING refresh re-joins the pairs to the calls rather than re-annotating them.
 A pair new in v12 has no call and is not trans until it is called; `string_v12_pair_review.csv`
-lists the ones worth calling, with their evidence. The trans set is 890 pairs with a height. 32 pairs carry a hand correction of their type recorded in
+lists the ones worth calling, with their evidence. The trans set is 906 pairs with a height. 32 pairs carry a hand correction of their type recorded in
 `interaction_type_corrections.csv`; 494 pairs are classed as cis, binding on the same cell, in
 `cis_pairs.csv`, with the pairs left out of that class and why.
+
+**Complexes.** CellphoneDB's complexes are joined by those curated here (`curated_complexes.csv`):
+the MHC class II heterodimers HLA-DR (DRA with DRB1, DRB3 or DRB5), HLA-DQ (DQA1 with DQB1, DQA2
+with DQB2) and HLA-DP (DPA1 with DPB1). DRA with DRB4 is left out until its pairing is cited. A
+trans pair recorded with one chain of a curated complex holds for its other chain, because a
+proteome often detects only one chain and the complex then never forms as a unit. With LAG3
+added as a class II ligand (`curated_trans_interactions.csv`), this gives CD4 and LAG3 a pair
+with every class II chain but DRB4: 16 of the 906 pairs.
 
 **The height of a pair.** By default the two partners' heights are summed, the extended limit.
 Three kinds of exception are recorded per pair in `interaction_height_rules.csv`: 22 pairs take
 the measured length of an assembled model, the full ectodomains of both partners placed on a
 solved structure of the complex (`model_templates.csv` names each template and its paper; the
 2026 rebuilds superpose human AlphaFold v6 ectodomains on human complex structures); 26 pairs
-whose partners are known to bind extended keep the sum; 5 bind side by side and take the taller
-partner. A complex stands at its tallest subunit. Antibody bridges add the antibody's 3.24 nm
+whose partners are known to bind extended keep the sum; 6 bind side by side and take the taller
+partner (LAG3 with class II among them, from the structure of mouse LAG3 on mouse I-Ab). A complex stands at its tallest subunit. Antibody bridges add the antibody's 3.24 nm
 between an Fc receptor and its target, and at a contact hold the gap at the epitope:
 
     gap = max(epitope height + Fc receptor + 3.24 nm, antigen height)

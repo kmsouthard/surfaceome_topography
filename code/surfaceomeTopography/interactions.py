@@ -63,6 +63,55 @@ def drop_corrected_pairs(interactions: pd.DataFrame, corrections: pd.DataFrame) 
     return interactions[[p not in drop for p in pair]]
 
 
+def with_curated_complexes(complexes: pd.DataFrame, curated: pd.DataFrame) -> pd.DataFrame:
+    """CellphoneDB's complexes with the ones curated here added.
+
+    ``curated`` is `curated_complexes.csv`: ``complex_name``, its subunits' accessions in
+    ``uniprot_1`` and ``uniprot_2``, ``included`` and the citations. Rows with ``included`` =
+    ``no`` are left out. A curated complex is a transmembrane complex like any other: it is one
+    unit on a cell's surface, expressed when both subunits are, standing at its taller subunit.
+    """
+    used = curated[curated["included"] == "yes"]
+    added = pd.DataFrame({"complex_name": used["complex_name"], "uniprot_1": used["uniprot_1"],
+                          "uniprot_2": used["uniprot_2"], "transmembrane": True, "peripheral": False,
+                          "secreted": False, "comments_complex": used["evidence"]})
+    clash = set(added["complex_name"]) & set(complexes["complex_name"])
+    if clash:
+        raise ValueError(f"curated complexes already in CellphoneDB: {sorted(clash)}")
+    return pd.concat([complexes, added], ignore_index=True)
+
+
+def inherit_through_complexes(trans: pd.DataFrame, curated: pd.DataFrame) -> pd.DataFrame:
+    """Trans pairs extended to the other chain of a curated complex.
+
+    A pair recorded with one chain of a complex in `curated_complexes.csv` holds for the complex,
+    so the same pair is added with each sibling chain: CD4 binds HLA-DRA in the table, and so
+    binds HLA-DRB1. A proteome often detects one chain of a heterodimer and not the other, and
+    the complex then never forms as a unit; without this the detected chain would have no pair.
+    Added rows carry ``_merge`` = ``complex``; a pair already in the table is not added again.
+    """
+    used = curated[curated["included"] == "yes"]
+    siblings = {}
+    for r in used.itertuples():
+        siblings.setdefault(r.uniprot_1, set()).add((r.uniprot_2, r.gene_2))
+        siblings.setdefault(r.uniprot_2, set()).add((r.uniprot_1, r.gene_1))
+    have = {frozenset(p) for p in zip(trans["Human ID link_prot1"], trans["Human ID link_prot2"])}
+    added = []
+    for side, other in (("prot1", "prot2"), ("prot2", "prot1")):
+        for _, row in trans[trans[f"Human ID link_{side}"].isin(siblings)].iterrows():
+            for accession, gene in sorted(siblings[row[f"Human ID link_{side}"]]):
+                pair = frozenset((accession, row[f"Human ID link_{other}"]))
+                if pair in have or len(pair) == 1:
+                    continue
+                have.add(pair)
+                new = row.copy()
+                new[f"Human ID link_{side}"], new[f"Human gene name_{side}"], new["_merge"] = accession, gene, "complex"
+                if f"Entry name_{side}" in new:
+                    new[f"Entry name_{side}"] = np.nan
+                added.append(new)
+    return pd.concat([trans, pd.DataFrame(added)], ignore_index=True) if added else trans
+
+
 def antibody_bridge_pairs(bridges: pd.DataFrame) -> pd.DataFrame:
     """Antibody bridges: every antigen of a therapeutic antibody paired with every Fc-gamma receptor.
 

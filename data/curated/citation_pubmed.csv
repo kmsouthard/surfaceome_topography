@@ -2,6 +2,7 @@ pmid,first_author,year,journal,title
 1378817,McCall MN,1992,Immunology,Expression of soluble isoforms of rat CD45. Analysis by electron microscopy and use in epitope mapping of anti-CD45R monoclonal antibodies.
 1379234,Ernst LK,1992,J Biol Chem,Three genes for the human high affinity Fc receptor for IgG (Fc gamma RI) encode four distinct transcription products.
 1380002,Rao Y,1992,J Cell Biol,Identification of a peptide sequence involved in homophilic binding in the neural cell adhesion molecule NCAM.
+1380059,Baixeras E,1992,J Exp Med,Characterization of the lymphocyte activation gene 3-encoded protein. A new ligand for human leukocyte antigen class II antigens.
 1400585,Vestal DJ,1992,J Cell Biol,"Glycosyl phosphatidylinositol--anchored T-cadherin mediates calcium-dependent, homophilic cell adhesion."
 1430234,Porges AJ,1992,J Clin Invest,Novel Fc gamma receptor I family gene products in human mononuclear cells.
 1527169,Mauro VP,1992,J Cell Biol,"Homophilic and heterophilic binding activities of Nr-CAM, a nervous system cell adhesion molecule."
@@ -17,6 +18,7 @@ pmid,first_author,year,journal,title
 7743928,Zhukareva V,1995,Development,The limbic system-associated membrane protein (LAMP) selectively mediates interactions with specific central neuron populations.
 7750650,Kimura Y,1995,Dev Biol,"Cadherin-11 expressed in association with mesenchymal morphogenesis in the head, somite, and limb bud of early mouse embryos."
 8270638,Matsunami H,1993,J Cell Sci,Cell binding specificity of mouse R-cadherin and chromosomal mapping of the gene.
+8316295,Brown JH,1993,Nature,Three-dimensional structure of the human class II histocompatibility antigen HLA-DR1.
 8570640,Yang LJ,1996,Proc Natl Acad Sci U S A,Gangliosides are neuronal ligands for myelin-associated glycoprotein.
 9060475,Kreft B,1997,J Cell Biol,LI-cadherin-mediated cell-cell adhesion does not require cytoplasmic interactions.
 9153399,Casasnovas JM,1997,Nature,Crystal structure of ICAM-2 reveals a distinctive integrin recognition surface.
@@ -42,9 +44,11 @@ pmid,first_author,year,journal,title
 10882062,Mumm JS,2000,Mol Cell,A ligand-induced extracellular cleavage regulates gamma-secretase-like proteolytic activation of Notch1.
 10882063,Brou C,2000,Mol Cell,A novel proteolytic cleavage involved in Notch signaling: the role of the disintegrin-metalloprotease TACE.
 10993067,Yu G,2000,Nature,Nicastrin modulates presenilin-mediated notch/glp-1 signal transduction and betaAPP processing.
+11080454,Li Y,2000,J Mol Biol,Structural basis for the binding of an immunodominant peptide from myelin basic protein in different registers by two HLA-DR2 proteins.
 11083924,Montero JC,2000,Mol Cell Neurosci,Differential shedding of transmembrane neuregulin isoforms by the tumor necrosis factor-alpha-converting enzyme.
 11248153,Slamon DJ,2001,N Engl J Med,Use of chemotherapy plus a monoclonal antibody against HER2 for metastatic breast cancer that overexpresses HER2.
 11279501,Schwartz JC,2001,Nature,Structural basis for co-stimulation by the human CTLA-4/B7-2 complex.
+11376336,Lee KH,2001,Nat Immunol,Structure of a human insulin peptide-HLA-DQ8 complex and susceptibility to type 1 diabetes.
 11535811,Wang JH,2001,Proc Natl Acad Sci U S A,Crystal structure of the human CD4 N-terminal two-domain fragment complexed to a class II MHC molecule.
 11698424,Allen RL,2001,J Immunol,Leukocyte receptor complex-encoded immunomodulatory receptors show differing specificity for alternative HLA-B27 structures.
 12213342,Allan DS,2002,J Immunol Methods,"Tetrameric complexes of HLA-E, HLA-F, and HLA-G."
@@ -93,6 +97,7 @@ pmid,first_author,year,journal,title
 17107962,Dyczynska E,2007,J Biol Chem,Proteolytic processing of delta-like 1 by ADAM proteases.
 17169360,Sahin U,2007,FEBS Lett,Ectodomain shedding of the EGF-receptor ligand epigen is mediated by ADAM17.
 17558405,Spiegel I,2007,Nat Neurosci,A central role for Necl4 (SynCAM4) in Schwann cell-axon interaction and myelination.
+17583734,Parry CS,2007,J Mol Biol,"Crystallographic structure of the human leukocyte antigen DRA, DRB3*0101: models of a directional alloimmune response and autoimmunity."
 17622246,Ruf P,2007,Br J Cancer,Characterisation of the new EpCAM-specific antibody HO-3: implications for trifunctional antibody immunotherapy of cancer.
 17629517,Butte MJ,2007,Immunity,Programmed death-1 ligand 1 interacts specifically with the B7-1 costimulatory molecule to inhibit T cell responses.
 17673459,Shi M,2007,J Biol Chem,A structural hypothesis for the transition between bent and extended conformations of the leukocyte beta2 integrins.
@@ -119,6 +124,7 @@ pmid,first_author,year,journal,title
 20038681,Francavilla C,2009,J Cell Biol,The binding of NCAM to FGFR1 induces a specific cellular response mediated by receptor trafficking.
 20133774,Bouyain S,2010,Proc Natl Acad Sci U S A,The protein tyrosine phosphatases PTPRZ and PTPRG bind to distinct members of the contactin family of neural recognition molecules.
 20190755,Ciatto C,2010,Nat Struct Mol Biol,T-cadherin structures reveal a novel adhesive binding mechanism.
+20356827,Dai S,2010,Proc Natl Acad Sci U S A,Crystal structure of HLA-DP2 and implications for chronic beryllium disease.
 20473913,Heiss MM,2010,Int J Cancer,The trifunctional antibody catumaxomab for the treatment of malignant ascites due to epithelial cancer: Results of a prospective randomized phase II/III trial.
 20525992,Hodi FS,2010,N Engl J Med,Improved survival with ipilimumab in patients with metastatic melanoma.
 20676056,Kuhn PH,2010,EMBO J,"ADAM10 is the physiologically relevant, constitutive alpha-secretase of the amyloid precursor protein in primary neurons."
@@ -133,6 +139,7 @@ pmid,first_author,year,journal,title
 21576249,Luo X,2011,J Biol Chem,Cleavage of neuregulin-1 by BACE1 or ADAM10 protein produces differential effects on myelination.
 21827946,Franklin MC,2011,Structure,The structural basis for the function of two anti-VEGF receptor 2 antibodies.
 22039361,Eddy SR,2011,PLoS Comput Biol,Accelerated Profile HMM Searches.
+22407913,Lenormand C,2012,J Immunol,HLA-DQA2 and HLA-DQB2 genes are specifically expressed in human Langerhans cells and encode a new HLA class II molecule.
 22421438,Stengel KF,2012,Proc Natl Acad Sci U S A,Structure of TIGIT immunoreceptor bound to poliovirus receptor reveals a cell-cell adhesion and signaling mechanism that requires cis-trans receptor clustering.
 22431638,Yin Y,2012,Proc Natl Acad Sci U S A,"Crystal structure of a complete ternary complex of T-cell receptor, peptide-MHC, and CD4."
 22658127,Topalian SL,2012,N Engl J Med,"Safety, activity, and immune correlates of anti-PD-1 antibody in cancer."
@@ -193,6 +200,7 @@ pmid,first_author,year,journal,title
 29958103,Bakalar MH,2018,Cell,Size-Dependent Segregation Controls Macrophage Phagocytosis of Antibody-Opsonized Targets.
 30057206,Dionne G,2018,Neuron,Mechanotransduction by PCDH15 Relies on a Novel cis-Dimeric Architecture.
 30333625,Deng M,2018,Nature,LILRB4 signalling in leukaemia cells mediates T cell suppression and tumour infiltration.
+30349037,Maruhashi T,2018,Nat Immunol,LAG-3 inhibits the activation of CD4(+) T cells that recognize stable pMHCII through its conformation-dependent recognition of pMHCII.
 30361447,Liu X,2019,Cancer Discov,Homophilic CD44 Interactions Mediate Tumor Cell Aggregation and Polyclonal Metastasis in Patient-Derived Breast Cancer Models.
 30373828,Bausch-Fluck D,2018,Proc Natl Acad Sci U S A,The in silico human surfaceome.
 30445541,Dana JM,2019,Nucleic Acids Res,"SIFTS: updated Structure Integration with Function, Taxonomy and Sequences resource allows 40-fold increase in coverage of structure-based annotations for proteins."
@@ -229,6 +237,7 @@ pmid,first_author,year,journal,title
 36408920,UniProt Consortium,2023,Nucleic Acids Res,UniProt: the Universal Protein Knowledgebase in 2023.
 36416266,Piovesan D,2023,Nucleic Acids Res,MobiDB: 10 years of intrinsically disordered proteins.
 37933859,Varadi M,2024,Nucleic Acids Res,AlphaFold Protein Structure Database in 2024: providing structure coverage for over 214 million protein sequences.
+39209860,Ming Q,2024,Nat Commun,Structural basis for mouse LAG3 interactions with the MHC class II molecule I-A(b).
 40133495,Troulé K,2025,Nat Protoc,CellPhoneDB v5: inferring cell-cell communication from single-cell multiomics data.
 41991904,Berbeira-Santana M,2026,Nat Commun,Structurally exclusive Teneurin complexes orchestrate divergent programs in early cortical development.
 42099277,Sherman BT,2026,Nucleic Acids Res,DAVID: a web server for functional annotation and functional enrichment analysis of gene lists (2025 update).

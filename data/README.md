@@ -11,7 +11,7 @@ Paths in the notebooks are relative to this directory and go through
 
 | directory | what it holds | who changes it |
 |---|---|---|
-| `curated/` | the decision tables (the interaction-type calls per STRING pair and the review list of pairs awaiting a call, interaction rules, cis pairs, antibody bridges, each antibody's epitope and the structure it is read from, the proteins placed in an antibody's gap, height rules, corrections, the domain orientation calls, the assembled-model templates) and the citation sheet behind every decision | hand edits, then `python code/database/build_citation_sheet.py` |
+| `curated/` | the decision tables (the interaction-type calls per STRING pair and the review list of pairs awaiting a call, interaction rules, cis pairs, the complexes added to CellphoneDB's, antibody bridges, each antibody's epitope and the structure it is read from, the proteins placed in an antibody's gap, height rules, corrections, the domain orientation calls, the assembled-model templates) and the citation sheet behind every decision | hand edits, then `python code/database/build_citation_sheet.py` |
 | `inputs/` | every external input a run reads, grouped by source, at the 2026 vintage | `python code/database/build_inputs.py` (stage 0) rebuilds the derived ones from the public databases |
 | `measurements/` | tables measured here on structures: the 2020 and 2026 domain measurements, the PDB structure sizes, the assembled interaction models | the scripts under `code/database/inputs/` and `code/figures/validation/` |
 
