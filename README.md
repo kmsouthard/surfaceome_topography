@@ -277,3 +277,9 @@ protein structures into vector cartoons and composing them into cell-surface sce
 > Silvestre-Ryan J, Fletcher DA, Holmes I. CellScape: Protein structure visualization with
 > vector graphics cartoons. *bioRxiv* 2022.
 > [doi:10.1101/2022.06.14.495869](https://doi.org/10.1101/2022.06.14.495869)
+
+## AI assistance
+
+During the preparation of this work the author used Claude (Anthropic) to assist in writing code
+and documentation. After using this tool, the author reviewed and edited the content as needed
+and takes full responsibility for the content of this work.
