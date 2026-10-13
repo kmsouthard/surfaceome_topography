@@ -1,4 +1,4 @@
-# The cell surface topography
+# Computational prediction of cell surface molecular topography
 
 A pipeline to estimate the heights of human cell-surface proteins
 
@@ -246,6 +246,25 @@ That needs HMMER, PyMOL and about 5 GB of AlphaFold models.
 
 Python 3.9 and pandas 1.5, pinned in [`environment.yml`](environment.yml): later pandas versions
 change grouping defaults in ways that alter results without an error.
+
+## Citation and contributions
+
+To cite this resource, use "Cite this repository" on its GitHub page, which reads
+[`CITATION.cff`](CITATION.cff):
+
+> Southard KM, Silvestre-Ryan J. Computational prediction of cell surface molecular topography.
+> Version 0.2.0. https://github.com/kmsouthard/surfaceome_topography
+
+| author | contribution |
+|---|---|
+| Kaden M. Southard | surfaceome modeling, analysis pipeline, and integration |
+| Jordi Silvestre-Ryan | development of the membrane/protein visualization methods and software |
+
+The protein drawings are made with [CellScape](https://github.com/jordisr/cellscape). Cite it
+as well, as given under Acknowledgements.
+
+A manuscript is in preparation by Kaden Southard, Jordi Silvestre-Ryan and Daniel A. Fletcher.
+Its authorship is separate from this software citation.
 
 ## Licence
 

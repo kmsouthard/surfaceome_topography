@@ -1,14 +1,25 @@
 cff-version: 1.2.0
 message: >-
   If you use this code or the heights it produces, please cite it as below. A manuscript
-  describing the method is in preparation.
-title: "The cell surface topography"
+  describing the method is in preparation, with its own author list.
+title: "Computational prediction of cell surface molecular topography"
 type: software
 authors:
   - family-names: Southard
-    given-names: Kaden
-  - name: "Fletcher Lab, UC Berkeley"
-    website: "https://fletchlab.berkeley.edu/"
+    given-names: Kaden M.
+  - family-names: Silvestre-Ryan
+    given-names: Jordi
+version: "0.2.0"
+abstract: >-
+  A pipeline to estimate the heights of human cell-surface proteins from AlphaFold models, Pfam
+  domains and a polymer model of disordered regions, with a web explorer of cell surfaces, cell
+  contacts and antibody epitopes.
+keywords:
+  - surfaceome
+  - cell surface proteins
+  - protein height
+  - AlphaFold
+  - cell-cell contacts
 license: MIT
 repository-code: "https://github.com/kmsouthard/surfaceome_topography"
 references:
