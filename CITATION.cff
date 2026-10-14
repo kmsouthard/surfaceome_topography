@@ -11,9 +11,10 @@ authors:
     given-names: Jordi
 version: "0.2.0"
 abstract: >-
-  A pipeline to estimate the heights of human cell-surface proteins from AlphaFold models, Pfam
-  domains and a polymer model of disordered regions, with a web explorer of cell surfaces, cell
-  contacts and antibody epitopes.
+  Computational estimates of extracellular domain heights for the human surfaceome, from
+  AlphaFold models and sequence-based domain prediction, accounting for folded domains and
+  unstructured regions. Includes predicted cell-cell gaps for trans binding pairs and a web
+  explorer of cell surfaces, contacts and antibody epitopes.
 keywords:
   - surfaceome
   - cell surface proteins
