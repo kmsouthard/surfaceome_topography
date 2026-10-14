@@ -7,8 +7,12 @@ type: software
 authors:
   - family-names: Southard
     given-names: Kaden M.
+    orcid: "https://orcid.org/0000-0002-5017-0687"
+    affiliation: "Department of Bioengineering, University of California, Berkeley"
   - family-names: Silvestre-Ryan
     given-names: Jordi
+    orcid: "https://orcid.org/0000-0002-6520-5790"
+    affiliation: "Department of Bioengineering, University of California, Berkeley"
 version: "0.2.0"
 abstract: >-
   Computational estimates of extracellular domain heights for the human surfaceome, from
