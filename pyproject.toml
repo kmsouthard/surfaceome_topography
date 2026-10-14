@@ -9,7 +9,7 @@ description = "Modeling cell surface topography from structural models of extrac
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-authors = [{ name = "Kaden M. Southard" }, { name = "Jordi Silvestre-Ryan" }]
+authors = [{ name = "Kaden M. Southard" }, { name = "Jordi Silvestre-Ryan" }, { name = "Daniel A. Fletcher" }]
 dependencies = [
     "pandas",
     "numpy",

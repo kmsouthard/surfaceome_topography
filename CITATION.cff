@@ -13,6 +13,10 @@ authors:
     given-names: Jordi
     orcid: "https://orcid.org/0000-0002-6520-5790"
     affiliation: "Department of Bioengineering, University of California, Berkeley"
+  - family-names: Fletcher
+    given-names: Daniel A.
+    orcid: "https://orcid.org/0000-0002-1890-5364"
+    affiliation: "Department of Bioengineering, University of California, Berkeley"
 version: "0.2.0"
 abstract: >-
   Computational estimates of extracellular domain heights for the human surfaceome, from

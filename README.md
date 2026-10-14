@@ -252,7 +252,7 @@ change grouping defaults in ways that alter results without an error.
 To cite this resource, use "Cite this repository" on its GitHub page, which reads
 [`CITATION.cff`](CITATION.cff):
 
-> Southard KM, Silvestre-Ryan J. Computational prediction of cell surface molecular topography.
+> Southard KM, Silvestre-Ryan J, Fletcher DA. Computational prediction of cell surface molecular topography.
 > Version 0.2.0. https://github.com/kmsouthard/surfaceome_topography
 
 | author | contribution |
