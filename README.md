@@ -259,12 +259,12 @@ To cite this resource, use "Cite this repository" on its GitHub page, which read
 |---|---|
 | Kaden M. Southard | surfaceome modeling, analysis pipeline, and integration |
 | Jordi Silvestre-Ryan | development of the membrane/protein visualization methods and software |
+| Daniel A. Fletcher | supervision |
 
 The protein drawings are made with [CellScape](https://github.com/jordisr/cellscape). Cite it
 as well, as given under Acknowledgements.
 
 A manuscript is in preparation by Kaden Southard, Jordi Silvestre-Ryan and Daniel A. Fletcher.
-Its authorship is separate from this software citation.
 
 ## Licence
 
